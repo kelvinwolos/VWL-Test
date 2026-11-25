@@ -90,6 +90,10 @@ svg.ch{width:100%;height:auto;display:block;user-select:none;-webkit-user-select
 .meta{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:13px;color:var(--muted);margin-bottom:6px}
 .chip.mode-k{border-color:var(--ok);color:var(--ok)}.chip.mode-t{border-color:var(--rev);color:var(--rev)}.chip.mode-v{border-color:var(--dem);color:var(--dem)}
 .frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.9em;line-height:1.15;margin:0 .12em}.frac>span{padding:0 .2em;white-space:nowrap}.frac>span:first-child{border-bottom:1.3px solid currentColor;padding-bottom:1px}.frac>span:last-child{padding-top:1px}.frac .frac{font-size:.92em}
+.xh{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px}.xchk{display:grid;gap:8px}.xchk label{display:flex;gap:10px;align-items:center;cursor:pointer}.xchk input{width:18px;height:18px;accent-color:var(--ink)}
+@media (max-width:640px){#xart{display:grid;grid-template-columns:1fr 1fr}#xart button{border-bottom:1px solid var(--line)}}
+.xtop{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.xtime{margin-left:auto;font-family:var(--mono);font-size:13px}.xtime.warn{color:var(--bad);font-weight:700}.qnav button.ans{background:var(--grid);border-color:var(--muted)}
+details.xrev{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:8px 0;background:var(--paper)}details.xrev summary{cursor:pointer;font-weight:600}details.xrev.r summary{color:var(--ok)}details.xrev.w summary{color:var(--bad)}details.xrev.h summary{color:var(--rev)}details.xrev .qtext{font-size:15px;margin:10px 0}
 .chip{font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);padding:2px 8px;border-radius:99px}
 .score{font-family:var(--mono);font-size:13px}
 .qtext{font-size:17px;font-weight:500;margin:6px 0 16px;text-wrap:pretty}
@@ -171,6 +175,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--rev);outline-of
       <button id="tabQuiz" role="tab" aria-selected="true">Abfrage</button>
       <button id="tabLab" role="tab" aria-selected="false">Freies Labor</button>
       <button id="tabF" role="tab" aria-selected="false" hidden>Formeln</button>
+      <button id="tabX" role="tab" aria-selected="false">Test</button>
     </div>
   </header>
   <nav class="levels" id="levels" aria-label="Stufen"></nav>
@@ -1971,7 +1976,7 @@ const LVV=[
  {n:'Zertifikate',d:'Wer verkauft, wer kauft, wer gewinnt, und warum es dasselbe Ergebnis wie die Steuer ist.',fig:figV,gen:genV('zert',10),T:[]},
  {n:'Gemischt',d:'Alles durcheinander. Mit „Neue Zahlen“ beliebig oft wiederholen.',fig:figV,gen:genV('mix',12),T:[]}
 ];
-function initKV(){ if(!ST.kvSeeds) ST.kvSeeds={}; LVV.forEach((l,i)=>{ if(ST.kvSeeds[i]==null) ST.kvSeeds[i]=Math.floor(Math.random()*1e9); l.T=l.gen(ST.kvSeeds[i]); }); }
+function initKV(){ if(!ST.kvSeeds) ST.kvSeeds={}; LVV.forEach((l,i)=>{ if(!l.gen) return; if(ST.kvSeeds[i]==null) ST.kvSeeds[i]=Math.floor(Math.random()*1e9); l.T=l.gen(ST.kvSeeds[i]); }); }
 function newNumbersV(l){ ST.kvSeeds[l]=Math.floor(Math.random()*1e9); LVV[l].T=LVV[l].gen(ST.kvSeeds[l]); RES[l]=LVV[l].T.map(()=>null); cur={l,i:0}; save(); renderLevels(); renderTask(); }
 
 // ---------- Labor ----------
@@ -2354,7 +2359,7 @@ const LV11=[
   const NC=[5,3,3,3,4,4,2];
   LV11.forEach((L,l)=>{ L.gen=seed=>{ const R=rngV(seed); let T=[]; PLAN[l].forEach(k=>{ T=T.concat(T11[k](R)); }); const con=shufV(R,L.pool).slice(0,NC[l]); return shufV(R,con).concat(T); }; });
 })();
-function initK11(){ if(!ST.k11Seeds) ST.k11Seeds={}; LV11.forEach((l,i)=>{ if(ST.k11Seeds[i]!=null) l.T=l.gen(ST.k11Seeds[i]); }); }
+function initK11(){ if(!ST.k11Seeds) ST.k11Seeds={}; LV11.forEach((l,i)=>{ if(l.gen&&ST.k11Seeds[i]!=null) l.T=l.gen(ST.k11Seeds[i]); }); }
 function newNumbers11(l){ ST.k11Seeds[l]=Math.floor(Math.random()*1e9); LV11[l].T=LV11[l].gen(ST.k11Seeds[l]); RES[l]=LV11[l].T.map(()=>null); cur={l,i:0}; save(); renderLevels(); renderTask(); }
 // ================= Kapitel 11: Labor =================
 const DEM11={m:{A:120,B:2,n:'mittel'},e:{A:100,B:1,n:'flacher (elastischer)'},s:{A:160,B:4,n:'steiler (unelastischer)'}};
@@ -2700,10 +2705,48 @@ const CH={k3:{LV:LV3,tag:'Kap. 3.2',eb:'Einführung in die VWL · Kapitel 3 Teil
           kv:{LV:LVV,tag:'Vertiefung',eb:'Einführung in die VWL · Kapitel 9 · Vertiefung mit Zufallszahlen',h1:'<span class="s">Vermeidungs</span>training',form:()=>renderFormV()},
           k11:{LV:LV11,tag:'Kap. 11',eb:'Einführung in die VWL · Kapitel 11',h1:'Das <span class="s">Monopol</span>',form:()=>renderForm11()},
           k17:{LV:LV17,tag:'Kap. 17',eb:'Einführung in die VWL · Kapitel 17 Teil 1',h1:'Interdependenz und <span class="s">Handelsvorteile</span>',form:()=>renderForm17()}};
+// ================= Überreiter Kopfrechnen / Taschenrechner für alle Kapitel =================
+function hardNum(x){ if(!isFinite(x)) return false; const a=Math.abs(x);
+  if(Number.isInteger(x)) return a<=100?false:(a<1000?(a%10!==0&&a%25!==0):a%100!==0);
+  return !(Number.isInteger(x*4)&&a<100); }
+function optNum(o){ const s=String(o).replace(/<[^>]+>/g,'').replace(/[€%]|\s|kg|t\b|Stück/g,''); if(!/^[−\-]?[\d.,]+$/.test(s)) return null; return num(s); }
+function classifyTask(t){
+  if(t.m) return t.m;
+  if(/Kopfrechnen|Leichte Rechnung/i.test(t.text||'')) return 'k';
+  if(t.t==='calc') return t.fields.some(f=>hardNum(f[1]))?'t':'k';
+  if(t.t==='mc'){ const v=t.opts.map(optNum); if(v.every(x=>x!=null)) return hardNum(v[t.c])?'t':'k'; return 'v'; }
+  return 'v';
+}
+const GMAP={};
+function groupChapter(k){
+  const A=CH[k].LV; if(A.some(l=>l.grp)) return;
+  const K=[],T=[];
+  A.forEach((L,li)=>{
+    if(!L.T.length&&L.gen){ K.push({nl:Object.assign(L,{grp:'k'}),li,idx:[],gen:1}); return; }
+    const cls=L.T.map(t=>{ const c=classifyTask(t); t.m=t.m||c; return c==='t'?'t':'k'; });
+    const nt=cls.filter(c=>c==='t').length, major=L.gen?(nt>L.T.length/2?'t':'k'):null;
+    ['k','t'].forEach(g=>{ const idx=L.T.map((_,i)=>i).filter(i=>cls[i]===g); if(!idx.length&&major!==g) return;
+      const nl=Object.assign({},L,{grp:g,T:idx.map(i=>L.T[i])}); if(L.gen&&major!==g) delete nl.gen;
+      (g==='k'?K:T).push({nl,li,idx,gen:!!nl.gen}); }); });
+  const all=K.concat(T); A.length=0; all.forEach(x=>A.push(x.nl)); GMAP[k]=all.map(x=>({li:x.li,idx:x.idx,gen:x.gen}));
+}
+function migrateGroups(){
+  if(ST.grpv1) return; ST.grpv1=1;
+  Object.keys(GMAP).forEach(k=>{ const M=GMAP[k], st=ST[k];
+    if(st&&st.res){ const res=M.map(m=>(m.gen&&!m.idx.length)?(st.res[m.li]||null):m.idx.map(i=>(st.res[m.li]&&st.res[m.li][i]!==undefined)?st.res[m.li][i]:null));
+      let c={l:0,i:0}; if(st.cur){ M.forEach((m,nl)=>{ const j=m.idx.indexOf(st.cur.i); if(m.li===st.cur.l&&j>=0) c={l:nl,i:j}; }); }
+      ST[k]={res,cur:c}; }
+    const sk={kv:'kvSeeds',k11:'k11Seeds'}[k];
+    if(sk&&ST[sk]){ const o=ST[sk], n={}; M.forEach((m,nl)=>{ if(m.gen&&o[m.li]!=null) n[nl]=o[m.li]; }); ST[sk]=n;
+      if(k==='k11'&&ST.k11){ M.forEach((m,nl)=>{ if(m.gen&&o[m.li]!=null&&ST.k11.res) ST.k11.res[nl]=null; }); } }
+  });
+}
+['k3','k5','k7','k8','kv','k11'].forEach(groupChapter);
 const KEY='vwllab-v2';
 let ST=null; try{ST=JSON.parse(localStorage.getItem(KEY)||'null');}catch(e){}
 if(!ST||typeof ST!=='object'){ ST={ch:'k3'}; try{const o=JSON.parse(localStorage.getItem('elastlab-v1')||'null'); if(o&&o.res) ST.k3=o;}catch(e){} }
 let chKey='k3', LV=LV3, RES=[], cur={l:0,i:0}, mode='quiz';
+migrateGroups();
 initKV();
 if(ST.k11&&!ST.k11mc){ delete ST.k11; } ST.k11mc=1;
 initK11();
@@ -2726,7 +2769,7 @@ const GRPN={k:'Kopfrechnen',t:'Taschenrechner'};
 function lvNum(i){ const g=LV[i].grp; if(!g) return i+1; let n=0; for(let j=0;j<=i;j++) if(LV[j].grp===g) n++; return n; }
 function renderLevels(){
   const g=LV[cur.l].grp;
-  const gh=g?`<div class="seg lgrp">${Object.keys(GRPN).map(k=>{const ix=LV.map((l,i)=>l.grp===k?i:-1).filter(i=>i>=0); let ok=0,n=0; ix.forEach(i=>RES[i].forEach(x=>{n++; if(x===true) ok++;})); return `<button class="${k===g?'on':''}" data-g="${k}">${GRPN[k]}<small>${ok}/${n}</small></button>`;}).join('')}</div>`:'';
+  const gh=g?`<div class="seg lgrp">${Object.keys(GRPN).filter(k=>LV.some(l=>l.grp===k)).map(k=>{const ix=LV.map((l,i)=>l.grp===k?i:-1).filter(i=>i>=0); let ok=0,n=0; ix.forEach(i=>RES[i].forEach(x=>{n++; if(x===true) ok++;})); return `<button class="${k===g?'on':''}" data-g="${k}">${GRPN[k]}<small>${ok}/${n}</small></button>`;}).join('')}</div>`:'';
   levelsEl.innerHTML=gh+LV.map((l,i)=>{ if(g&&l.grp!==g) return '';const r=RES[i],ok=r.filter(x=>x===true).length,no=r.filter(x=>x===false).length;
     return `<button class="lvl ${i===cur.l?'cur':''}" data-l="${i}"><span class="ln">${lvNum(i)}</span><span class="lt">${l.n}<small>${ok}/${r.length}</small></span><span class="lbar"><i style="width:${(ok+no)/r.length*100}%"></i><b style="width:${ok/r.length*100}%"></b></span></button>`;}).join('');
   const cl=levelsEl.querySelector('.lvl.cur'), lg=levelsEl.querySelector('.lgrp'); if(cl&&levelsEl.scrollWidth>levelsEl.clientWidth) levelsEl.scrollLeft=Math.max(0,cl.offsetLeft-levelsEl.offsetLeft-16-(lg?lg.offsetWidth+8:0));
@@ -2926,16 +2969,113 @@ function labB(){
   upd();
 }
 
+// ================= Testmodus (Probeklausur über alle Kapitel) =================
+const CHN={k3:'Elastizität (Kap. 3.2)',k5:'Unternehmen im Wettbewerb (Kap. 5)',k7:'Preiskontrollen und Steuern (Kap. 7)',k8:'Öffentliche Güter und Externalitäten (Kap. 8 und 9)',kv:'Vermeidungstraining (Kap. 9+)',k11:'Monopol (Kap. 11)',k17:'Handelsvorteile (Kap. 17)'};
+const XKEY='vwltest-v1';
+let XS=null; try{XS=JSON.parse(localStorage.getItem(XKEY)||'null');}catch(e){} if(!XS) XS={ch:Object.keys(CHN),art:'mix',n:20,min:0,hist:[]};
+const xsave=()=>{try{localStorage.setItem(XKEY,JSON.stringify(XS));}catch(e){}};
+let EX=null, exTimer=null;
+function examPool(){
+  const pool=[];
+  XS.ch.forEach(k=>{ const A=CH[k]; if(!A) return;
+    A.LV.forEach(L=>{ let T=L.T; if(L.gen){ try{ T=T.concat(L.gen(Math.floor(Math.random()*1e9))); }catch(e){} }
+      T.forEach(t=>{ if(!['mc','calc','sort'].includes(t.t)) return; const m=t.m||classifyTask(t);
+        if(XS.art==='k'&&m==='t') return; if(XS.art==='t'&&m!=='t') return; if(XS.art==='v'&&m!=='v') return;
+        pool.push({t,ch:k,lv:L.n,fig:t.fig||L.fig,m}); }); }); });
+  return pool;
+}
+function renderExam(){
+  clearInterval(exTimer); animId++; dragCb=null; areaCb=null; levelsEl.hidden=true; minibox.hidden=true;
+  if(EX&&!EX.done) return renderExQ();
+  if(EX&&EX.done) return renderExRes();
+  drawScene(G17?G17.av(1):dScene({a:100,b:10,Pmax:10,Qmax:100}));
+  const hist=(XS.hist||[]).slice(-6).reverse();
+  panel.innerHTML=`<div class="lab"><h2>Test zusammenstellen</h2><p>Zufällige Aufgaben aus den gewählten Kapiteln, ohne Rückmeldung während des Tests. Am Ende siehst du Punktzahl, Auswertung je Kapitel und alle Lösungswege.</p>
+   <div class="xh">Kapitel</div><div class="xchk">${Object.keys(CHN).filter(k=>CH[k]).map(k=>`<label><input type="checkbox" value="${k}" ${XS.ch.includes(k)?'checked':''}> ${CHN[k]}</label>`).join('')}</div>
+   <div class="xh">Art der Aufgaben</div><div class="seg" id="xart">${[['mix','Gemischt'],['v','Verständnis'],['k','Kopfrechnen'],['t','Taschenrechner']].map(a=>`<button data-v="${a[0]}" class="${XS.art===a[0]?'on':''}">${a[1]}</button>`).join('')}</div>
+   <div class="xh">Anzahl Aufgaben</div><div class="seg" id="xn">${[10,20,30,40].map(n=>`<button data-v="${n}" class="${XS.n===n?'on':''}">${n}</button>`).join('')}</div>
+   <div class="xh">Zeitlimit</div><div class="seg" id="xmin">${[[0,'ohne'],[20,'20 min'],[45,'45 min'],[90,'90 min']].map(a=>`<button data-v="${a[0]}" class="${XS.min===a[0]?'on':''}">${a[1]}</button>`).join('')}</div>
+   <p class="hint" id="xpool"></p>
+   <div class="actions"><button class="btn" id="xgo">Test starten</button></div>
+   ${hist.length?`<div class="xh">Letzte Tests</div><div class="tblwrap"><table class="tbl"><tr><th>Datum</th><th>Art</th><th>Aufgaben</th><th>Ergebnis</th></tr>${hist.map(h=>`<tr><td>${h.d}</td><td>${h.a}</td><td>${h.n}</td><td>${fmt(h.p,0)} %</td></tr>`).join('')}</table></div>`:''}</div>`;
+  const upd=()=>{ const n=examPool().length; document.getElementById('xpool').textContent=`Verfügbar: ${n} Aufgaben${n<XS.n?' (weniger als gewählt, der Test wird kürzer)':''}.`; };
+  panel.querySelectorAll('.xchk input').forEach(c=>c.onchange=()=>{ XS.ch=[...panel.querySelectorAll('.xchk input:checked')].map(x=>x.value); xsave(); upd(); });
+  [['xart','art',v=>v],['xn','n',v=>+v],['xmin','min',v=>+v]].forEach(([id,key,f])=>panel.querySelectorAll('#'+id+' button').forEach(b=>b.onclick=()=>{ XS[key]=f(b.dataset.v); xsave(); panel.querySelectorAll('#'+id+' button').forEach(x=>x.classList.toggle('on',x===b)); upd(); }));
+  document.getElementById('xgo').onclick=()=>{ const P=examPool(); if(!P.length){ document.getElementById('xpool').textContent='Bitte mindestens ein Kapitel mit passenden Aufgaben wählen.'; return; }
+    const R=rngV(Math.floor(Math.random()*1e9)); const Q=shufV(R,P).slice(0,XS.n);
+    EX={Q,A:Q.map(()=>null),i:0,t0:Date.now(),lim:XS.min*60000,done:false}; renderExQ(); };
+  upd();
+}
+function exLeft(){ return EX.lim?Math.max(0,EX.lim-(Date.now()-EX.t0)):null; }
+function mmss(ms){ const s=Math.ceil(ms/1000); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
+function renderExQ(){
+  const q=EX.Q[EX.i], t=q.t, a=EX.A[EX.i];
+  try{ drawScene(q.fig(0)); }catch(e){}
+  const cats=it=>it[2]||t.cats;
+  let h=`<div class="xtop"><span class="chtag">${CH[q.ch].tag}</span><span class="chip mode-${q.m}">${({k:'Kopfrechnen',t:'Taschenrechner',v:'Verständnis'})[q.m]}</span><span class="xtime" id="xtime"></span></div>`;
+  h+=`<div class="qnav">${EX.Q.map((_,i)=>`<button data-go="${i}" class="${i===EX.i?'cur':''} ${EX.A[i]!=null?'ans':''}">${i+1}</button>`).join('')}</div>`;
+  h+=`<p class="hint">Aufgabe ${EX.i+1} von ${EX.Q.length} · ${q.lv}</p><div class="qtext">${t.text}</div>`;
+  if(t.formula) h+=`<div class="formula">${t.formula.map(f=>`<span>${f}</span>`).join('')}</div>`;
+  if(t.t==='mc') h+=`<div class="opts">${t.opts.map((o,k)=>`<button class="opt ${a===k?'on':''}" data-o="${k}"><b>${String.fromCharCode(65+k)}</b><span>${o}</span></button>`).join('')}</div>`;
+  if(t.t==='calc') h+=`<div class="step">${t.fields.map((f,k)=>`<div class="field"><label for="x${k}">${f[0]}</label><input type="text" id="x${k}" inputmode="decimal" autocomplete="off" value="${a&&a[k]!=null?a[k]:''}"></div>`).join('')}</div>`;
+  if(t.t==='sort') h+=`<div class="step">${t.items.map((it,k)=>`<div class="srow"><div class="sl">${it[0]}</div><div class="seg" data-r="${k}">${cats(it).map((c,j)=>`<button data-v="${j}" class="${a&&a[k]===j?'on':''}">${c}</button>`).join('')}</div></div>`).join('')}</div>`;
+  h+=`<div class="actions"><button class="btn ghost" id="xp" ${EX.i===0?'disabled':''}>Zurück</button><button class="btn ghost" id="xn2">${EX.i===EX.Q.length-1?'Zur Übersicht':'Weiter'}</button><button class="btn" id="xend">Abgeben</button></div>`;
+  panel.innerHTML=h;
+  panel.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ EX.A[EX.i]=+b.dataset.o; panel.querySelectorAll('.opt').forEach(x=>x.classList.toggle('on',x===b)); });
+  panel.querySelectorAll('.seg[data-r] button').forEach(b=>b.onclick=()=>{ const r=+b.parentElement.dataset.r; const cur=EX.A[EX.i]||t.items.map(()=>null); cur[r]=+b.dataset.v; EX.A[EX.i]=cur; b.parentElement.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); });
+  const keep=()=>{ if(t.t==='calc'){ const v=t.fields.map((_,k)=>document.getElementById('x'+k).value.trim()); EX.A[EX.i]=v.some(x=>x!=='')?v:null; } };
+  const go=i=>{ keep(); EX.i=Math.max(0,Math.min(EX.Q.length-1,i)); renderExQ(); };
+  panel.querySelectorAll('.qnav [data-go]').forEach(b=>b.onclick=()=>go(+b.dataset.go));
+  document.getElementById('xp').onclick=()=>go(EX.i-1);
+  document.getElementById('xn2').onclick=()=>go(EX.i+1);
+  document.getElementById('xend').onclick=()=>{ keep(); const open=EX.A.filter(x=>x==null).length; if(open&&!document.getElementById('xconf')){ document.querySelector('.actions').insertAdjacentHTML('afterend',`<p class="hint" id="xconf">Noch ${open} Aufgabe(n) unbeantwortet. Zum Abgeben nochmal auf „Abgeben“ tippen.</p>`); return; } finishExam(); };
+  const tick=()=>{ const el=document.getElementById('xtime'); if(!el) return; const l=exLeft(); if(l==null){ el.textContent='Zeit: '+mmss(Date.now()-EX.t0); return; } el.textContent='Restzeit '+mmss(l); el.classList.toggle('warn',l<60000); if(l<=0){ keep(); finishExam(); } };
+  clearInterval(exTimer); exTimer=setInterval(tick,1000); tick();
+}
+function scoreQ(q,a){ const t=q.t;
+  if(a==null) return 0;
+  if(t.t==='mc') return a===t.c?1:0;
+  if(t.t==='calc'){ let ok=0; t.fields.forEach((f,k)=>{ const v=num(a[k]||''), tol=f[2]||Math.max(0.011,Math.abs(f[1])*0.006); if(Math.abs(v-f[1])<=tol) ok++; }); return ok/t.fields.length; }
+  if(t.t==='sort'){ let ok=0; t.items.forEach((it,k)=>{ if(a[k]===it[1]) ok++; }); return ok/t.items.length; }
+  return 0; }
+function finishExam(){ clearInterval(exTimer); EX.done=true; EX.sc=EX.Q.map((q,i)=>scoreQ(q,EX.A[i])); EX.t1=Date.now();
+  const p=EX.sc.reduce((s,x)=>s+x,0)/EX.Q.length*100, d=new Date();
+  XS.hist=(XS.hist||[]).concat([{d:d.toLocaleDateString('de-DE')+' '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}),a:({mix:'Gemischt',v:'Verständnis',k:'Kopfrechnen',t:'Taschenrechner'})[XS.art],n:EX.Q.length,p}]).slice(-30); xsave(); renderExRes(); }
+function ansTxt(q,a){ const t=q.t; if(a==null) return '<i>keine Antwort</i>';
+  if(t.t==='mc') return t.opts[a]; if(t.t==='calc') return t.fields.map((f,k)=>`${f[0]}: ${a[k]||'–'}`).join('<br>');
+  if(t.t==='sort') return t.items.map((it,k)=>`${it[0]}: ${a[k]!=null?(it[2]||t.cats)[a[k]]:'–'}`).join('<br>'); }
+function solTxt(q){ const t=q.t; if(t.t==='mc') return t.opts[t.c]; if(t.t==='calc') return t.fields.map(f=>`${f[0]}: ${fmt(f[1])}`).join('<br>'); if(t.t==='sort') return t.items.map(it=>`${it[0]}: ${(it[2]||t.cats)[it[1]]}`).join('<br>'); }
+function renderExRes(){
+  const S=EX.sc.reduce((s,x)=>s+x,0), n=EX.Q.length, p=S/n*100;
+  const by={}; EX.Q.forEach((q,i)=>{ const b=by[q.ch]||(by[q.ch]={s:0,n:0}); b.s+=EX.sc[i]; b.n++; });
+  const grade=p>=87.5?'sehr gut':p>=75?'gut':p>=62.5?'befriedigend':p>=50?'bestanden':'noch nicht bestanden';
+  drawScene(EX.Q[0].fig(1));
+  let h=`<div class="lab"><h2>Ergebnis: ${fmt(S,1)} von ${n} Punkten (${fmt(p,0)} %)</h2><p>Grobe Einordnung: <b>${grade}</b> (Orientierung ab 50 % bestanden). Dauer: ${mmss(EX.t1-EX.t0)}.</p>
+   <div class="tblwrap"><table class="tbl"><tr><th>Kapitel</th><th>Punkte</th><th>Quote</th></tr>${Object.keys(by).map(k=>`<tr><td>${CHN[k]}</td><td>${fmt(by[k].s,1)} von ${by[k].n}</td><td>${fmt(by[k].s/by[k].n*100,0)} %</td></tr>`).join('')}</table></div>
+   <div class="actions"><button class="btn" id="xwrong" ${EX.sc.every(x=>x===1)?'disabled':''}>Falsche Aufgaben wiederholen</button><button class="btn ghost" id="xnew">Neuer Test</button></div>
+   <div class="xh">Alle Aufgaben</div>`;
+  h+=EX.Q.map((q,i)=>`<details class="xrev ${EX.sc[i]===1?'r':EX.sc[i]>0?'h':'w'}"><summary><b>${i+1}.</b> ${EX.sc[i]===1?'richtig':EX.sc[i]>0?'teilweise ('+fmt(EX.sc[i]*100,0)+' %)':'falsch'} · ${CH[q.ch].tag} · ${q.lv}</summary>
+     <div class="qtext">${q.t.text}</div><p><b>Deine Antwort:</b><br>${ansTxt(q,EX.A[i])}</p><p><b>Richtig:</b><br>${solTxt(q)}</p><div class="note">${q.t.ex||''}</div><button class="btn ghost xfig" data-i="${i}">Diagramm anzeigen</button></details>`).join('');
+  h+='</div>'; panel.innerHTML=h;
+  panel.querySelectorAll('.xfig').forEach(b=>b.onclick=()=>{ try{drawScene(EX.Q[+b.dataset.i].fig(1));}catch(e){} window.scrollTo({top:0,behavior:'smooth'}); });
+  document.getElementById('xnew').onclick=()=>{ EX=null; renderExam(); };
+  document.getElementById('xwrong').onclick=()=>{ const Q=EX.Q.filter((_,i)=>EX.sc[i]<1); EX={Q,A:Q.map(()=>null),i:0,t0:Date.now(),lim:0,done:false}; renderExQ(); };
+}
 // ================= Tabs =================
 const tq=document.getElementById('tabQuiz'), tl=document.getElementById('tabLab');
 const tfb=document.getElementById('tabF'); tfb.onclick=()=>{mode='form';renderAll();};
-function renderAll(){ tq.setAttribute('aria-selected',mode==='quiz'); tl.setAttribute('aria-selected',mode==='lab'); tfb.setAttribute('aria-selected',mode==='form');
-  areaCb=null; if(mode==='form') return CH[chKey].form();
+const txb=document.getElementById('tabX'); txb.onclick=()=>{mode='exam';renderAll();};
+function renderAll(){ tq.setAttribute('aria-selected',mode==='quiz'); tl.setAttribute('aria-selected',mode==='lab'); tfb.setAttribute('aria-selected',mode==='form'); txb.setAttribute('aria-selected',mode==='exam');
+  clearInterval(exTimer); areaCb=null; const ex=mode==='exam';
+  document.getElementById('chapters').hidden=ex||!!window.EXAM_ONLY;
+  document.getElementById('eb').textContent=ex?'Einführung in die VWL · Testmodus über alle Kapitel':CH[chKey].eb; document.getElementById('h1').innerHTML=ex?'Probe<span class="s">klausur</span>':CH[chKey].h1;
+  if(ex){ delete document.documentElement.dataset.ch; return renderExam(); } document.documentElement.dataset.ch=chKey;
+  if(mode==='form') return CH[chKey].form();
   if(mode==='quiz'){levelsEl.hidden=false;renderLevels();renderTask();} else renderLab(); }
 tq.onclick=()=>{mode='quiz';renderAll();};
 tl.onclick=()=>{mode='lab';renderAll();};
 document.querySelectorAll('#chapters button').forEach(b=>b.onclick=()=>{ if(b.dataset.ch===chKey) return; loadCh(b.dataset.ch); save(); renderAll(); window.scrollTo({top:0}); });
-loadCh(ST.ch); renderAll();
+loadCh(ST.ch); if(window.EXAM_ONLY){ mode='exam'; document.querySelector('.tabs').hidden=true; document.title='VWL-Probeklausur'; } renderAll();
 </script>
 
 <script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));}</script>
