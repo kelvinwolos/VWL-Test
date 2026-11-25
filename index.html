@@ -21,10 +21,10 @@
   --dem:#6f9bff; --sup:#ff8466; --el:#b590ff; --un:#3fd0bf; --rev:#f2bd4a; --rev-soft:#f2bd4a2b;
   --ok:#4cc27f; --ok-soft:#4cc27f1f; --bad:#ff6b6b; --bad-soft:#ff6b6b1f; --gain-soft:#4cc27f33; --loss-soft:#ff6b6b30; --ps-soft:#6f9bff33; color-scheme:dark}
 *{box-sizing:border-box}
-:root{--chap:var(--el)} :root[data-ch="k5"]{--chap:var(--sup)} :root[data-ch="k7"]{--chap:var(--un)} :root[data-ch="k8"]{--chap:var(--dem)} :root[data-ch="kv"]{--chap:var(--ok)} :root[data-ch="k11"]{--chap:var(--rev)}
+:root{--chap:var(--el)} :root[data-ch="k5"]{--chap:var(--sup)} :root[data-ch="k7"]{--chap:var(--un)} :root[data-ch="k8"]{--chap:var(--dem)} :root[data-ch="kv"]{--chap:var(--ok)} :root[data-ch="k11"]{--chap:var(--rev)} :root[data-ch="k17"]{--chap:var(--bad)}
 .chapters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:18px}
 .chapters button{--c:var(--el);font:inherit;display:flex;gap:12px;align-items:center;text-align:left;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink);cursor:pointer;min-width:0}
-.chapters button[data-ch="k5"]{--c:var(--sup)} .chapters button[data-ch="k7"]{--c:var(--un)} .chapters button[data-ch="k8"]{--c:var(--dem)} .chapters button[data-ch="kv"]{--c:var(--ok)} .chapters button[data-ch="k11"]{--c:var(--rev)}
+.chapters button[data-ch="k5"]{--c:var(--sup)} .chapters button[data-ch="k7"]{--c:var(--un)} .chapters button[data-ch="k8"]{--c:var(--dem)} .chapters button[data-ch="kv"]{--c:var(--ok)} .chapters button[data-ch="k11"]{--c:var(--rev)} .chapters button[data-ch="k17"]{--c:var(--bad)}
 .chapters .cn{flex:0 0 auto;font-family:var(--display);font-weight:800;font-size:18px;min-width:44px;height:44px;padding:0 6px;border-radius:10px;display:grid;place-items:center;border:2px solid var(--c);color:var(--c)}
 .chapters b{display:block;font-size:14.5px;line-height:1.25}
 .chapters small{display:block;font-family:var(--mono);font-size:11.5px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
@@ -87,6 +87,7 @@ svg.ch{width:100%;height:auto;display:block;user-select:none;-webkit-user-select
 .qnav button.ok{background:var(--ok);border-color:var(--ok);color:#fff}
 .qnav button.no{background:var(--bad);border-color:var(--bad);color:#fff}
 .meta{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:13px;color:var(--muted);margin-bottom:6px}
+.chip.mode-k{border-color:var(--ok);color:var(--ok)}.chip.mode-t{border-color:var(--rev);color:var(--rev)}.chip.mode-v{border-color:var(--dem);color:var(--dem)}
 .chip{font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);padding:2px 8px;border-radius:99px}
 .score{font-family:var(--mono);font-size:13px}
 .qtext{font-size:17px;font-weight:500;margin:6px 0 16px;text-wrap:pretty}
@@ -157,6 +158,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--rev);outline-of
     <button data-ch="k8"><span class="cn">8·9</span><span><b>Öffent&shy;liche Güter und Exter&shy;nali&shy;täten</b><small>Kapitel 8 und 9</small></span></button>
     <button data-ch="kv"><span class="cn">9+</span><span><b>Vermei&shy;dungs&shy;training</b><small>Kapitel 9 · Vertiefung</small></span></button>
     <button data-ch="k11"><span class="cn">11</span><span><b>Monopol</b><small>Kapitel 11</small></span></button>
+    <button data-ch="k17"><span class="cn">17</span><span><b>Handels&shy;vorteile</b><small>Kapitel 17</small></span></button>
   </nav>
   <header>
     <div>
@@ -2411,13 +2413,262 @@ function renderForm11(){
   panel.innerHTML=h;
 }
 
+// ================= Kapitel 17: Interdependenz und Handelsvorteile =================
+// Produktionsmöglichkeitenkurven: L = [{n, x (max. Gut X), y (max. Gut Y), col}]
+const C17=['var(--dem)','var(--sup)'];
+function ppfScene(o){
+  const xm=Math.max(...o.L.map(l=>l.x)), ym=Math.max(...o.L.map(l=>l.y));
+  const S={Pmax:o.Pmax||ym*1.2,Qmax:o.Qmax||xm*1.12,x:o.xl||'Gut X',y:o.yl||'Gut Y',curves:[],points:[],rects:[],lines:[],polys:[],extra:'',legend:[]};
+  o.L.forEach((l,i)=>{ const col=l.col||C17[i];
+    if(o.fill) S.polys.push({pts:[[0,0],[l.x,0],[0,l.y]],kind:i?'neutral':'ps'});
+    S.curves.push({type:'lin',a:l.x,b:-l.x/l.y,col,kind:i?'S':'D',label:l.n,lq:o.lq?o.lq[i]:null,w:3});
+    S.legend.push(['',col,'PMK '+l.n]); });
+  (o.trade||[]).forEach(t=>{ S.curves.push({type:'lin',a:t.a,b:t.b,col:'var(--rev)',dash:1,w:2.5,label:t.label||''}); });
+  if(o.trade&&o.trade.length) S.legend.push(['','var(--rev)','Tauschgerade (Konsum mit Handel)']);
+  (o.pts||[]).forEach(p=>S.points.push({P:p.y,Q:p.x,guides:1,tags:p.tags!==false,label:p.label||'',col:p.col,hollow:p.hollow}));
+  return S;
+}
+// Fleisch (Y) und Kartoffeln (X): Ackerbauer 32 K / 8 F, Viehbauer 48 K / 24 F
+const AV=[{n:'Ackerbauer',x:32,y:8},{n:'Viehbauer',x:48,y:24}];
+const AVS={L:AV,xl:'Kartoffeln (kg)',yl:'Fleisch (kg)'};
+const HW=[{n:'Land A',x:1000,y:100},{n:'Land B',x:500,y:200}];
+const HWS={L:HW,xl:'Hemden',yl:'Waschmaschinen'};
+const DC=[{n:'Deutschland',x:6,y:3},{n:'China',x:1,y:2}];
+const G17={
+  av:k=>ppfScene({...AVS,pts:k>0?[{x:16,y:4,label:'A'},{x:24,y:12,label:'B'}]:[]}),
+  avA:k=>ppfScene({...AVS,L:[AV[0]],pts:k>0?[{x:16,y:4,label:'A'}]:[]}),
+  avT:k=>ppfScene({...AVS,trade:[{a:32,b:-3,label:'1 F = 3 K'},{a:66,b:-3}],pts:k>0?[{x:17,y:5,label:"A'"},{x:27,y:13,label:"B'"},{x:16,y:4,label:'A',hollow:1},{x:24,y:12,label:'B',hollow:1}]:[{x:16,y:4,label:'A'},{x:24,y:12,label:'B'}],Qmax:76}),
+  hw:k=>ppfScene({...HWS,L:k>0?[HW[0],{n:'Land B (neu)',x:2000,y:200}]:HW,Qmax:k>0?2150:1120}),
+  hw0:()=>ppfScene({...HWS,Qmax:1120}),
+  dc:()=>ppfScene({L:DC,xl:'Maschinen (pro 6 h)',yl:'E-Autos (pro 6 h)'}),
+  s48a:()=>ppfScene({L:[{n:'Land A',x:6,y:5},{n:'Land B',x:9,y:7.5}],xl:'Gut X',yl:'Gut Y',Pmax:10,Qmax:11}),
+  s48b:()=>ppfScene({L:[{n:'Land A',x:7,y:5},{n:'Land B',x:5,y:8}],xl:'Gut X',yl:'Gut Y',Pmax:10,Qmax:11}),
+  s48c:()=>ppfScene({L:[{n:'Land A',x:7,y:3.5},{n:'Land B',x:8,y:8}],xl:'Gut X',yl:'Gut Y',Pmax:10,Qmax:11})
+};
+const KF={},TR={};
+const k17=(t,m)=>(t.m=m,t);
+// ---------------- statische Aufgaben ----------------
+const LV17=[
+{n:'Grundlagen',d:'Autarkie, Spezialisierung, absoluter und komparativer Vorteil. Verständnisfragen.',fig:G17.av,T:[
+ {t:'mc',text:'Was bedeutet es, wenn eine Volkswirtschaft autark ist?',opts:['Sie ist wirtschaftlich unabhängig und verbraucht nur, was sie selbst produziert.','Sie exportiert mehr, als sie importiert.','Sie hat in allen Gütern einen absoluten Vorteil.','Sie handelt nur mit Nachbarländern.'],c:0,ex:'Ohne Handel sind die Produktionsmöglichkeiten zugleich die Konsummöglichkeiten. Mit Spezialisierung und Handel entstehen dagegen ökonomische Verflechtungen.'},
+ {t:'sort',text:'Wer hat welche Erkenntnis geprägt?',cats:['Adam Smith (1776)','David Ricardo (1817)'],items:[['Arbeitsteilung steigert die Produktivität.',0],['Unterschiedliche Opportunitätskosten schaffen Handelsgewinne.',1],['„Wohlstand der Nationen“',0],['Auch wer alles besser kann, sollte nicht alles selbst machen.',1]],ex:'Smith betont die Arbeitsteilung, Ricardo das Prinzip des komparativen Vorteils.'},
+ {t:'mc',text:'MrBeast kann besser filmen und besser schneiden als sein Cutter. Warum stellt er trotzdem einen Cutter ein?',opts:['Entscheidend sind die Opportunitätskosten: Seine Zeit ist beim Filmen viel wertvoller.','Weil er beim Schneiden einen absoluten Nachteil hat.','Weil der Cutter beides besser kann.','Weil Spezialisierung nur zwischen Ländern sinnvoll ist.'],c:0,ex:'Jede Stunde Schneiden kostet ihn eine Stunde Filmen. Beim Filmen sind seine Opportunitätskosten relativ geringer, also spezialisiert er sich darauf.'},
+ {t:'mc',text:'Warum ist Interdependenz (gegenseitige Abhängigkeit durch Handel) laut Vorlesung die Norm?',opts:['Spezialisierung und Handel führen zu Wohlstandsgewinnen.','Weil Staaten Autarkie verbieten.','Weil alle Länder dieselben Opportunitätskosten haben.','Weil nur Länder mit absoluten Vorteilen handeln dürfen.'],c:0,ex:'Die Struktur von Produktion und Handel gründet sich auf Unterschiede in den Opportunitätskosten.'},
+ {t:'sort',text:'Absoluter oder komparativer Vorteil?',cats:['absoluter Vorteil','komparativer Vorteil'],items:[['Weniger Input (Stunden) je Einheit',0],['Geringere Opportunitätskosten',1],['Mehr Output bei gleichem Input',0],['Grundlage von Spezialisierung und Handel',1],['Bestimmt das Lohnniveau eines Landes',0],['Die PMK liegt weiter außen',0]],ex:'Absoluter Vorteil = Produktivität. Komparativer Vorteil = geringere Opportunitätskosten. Handel beruht auf dem komparativen Vorteil, Löhne auf der absoluten Produktivität.'},
+ {t:'mc',text:'Worauf beruhen Handelsvorteile laut Zusammenfassung der Vorlesung?',opts:['Auf dem komparativen, nicht dem absoluten Vorteil.','Auf dem absoluten Vorteil.','Auf niedrigen Löhnen.','Auf Zöllen.'],c:0,ex:'Wohlfahrtsgewinne entstehen, wenn sich jeder auf die Tätigkeit spezialisiert, bei der er einen komparativen Vorteil hat. Das gilt für Personen wie für Länder.'},
+ {t:'mc',text:'Kann eine Person in beiden Gütern einen komparativen Vorteil haben?',opts:['Nein. Wer bei einem Gut geringere Opportunitätskosten hat, hat beim anderen automatisch höhere.','Ja, wenn sie in beiden Gütern produktiver ist.','Ja, immer.','Nur wenn sie autark lebt.'],c:0,ex:'Die Opportunitätskosten der beiden Güter sind Kehrwerte voneinander. Ist der eine Wert kleiner als beim anderen Produzenten, ist der Kehrwert größer.'},
+ {t:'mc',text:'Wie wird Handel zwischen Ländern laut Vorlesung koordiniert?',opts:['Über den Preismechanismus: Händler kaufen dort, wo ein Gut billig ist, und verkaufen, wo es teuer ist.','Über Verträge zwischen Regierungen.','Über die Löhne.','Gar nicht, Handel entsteht zufällig.'],c:0,ex:'Marktpreise spiegeln Opportunitätskosten. Wo die Opportunitätskosten gering sind, ist der Preis niedrig.'}
+]},
+{n:'PMK · Kopfrechnen',d:'Produktionsmöglichkeitenkurven aus Arbeitszeiten ablesen und berechnen.',fig:G17.av,T:[
+ k17({t:'mc',text:'Der Ackerbauer braucht 60 Minuten für 1 kg Fleisch und arbeitet 8 Stunden. Wie viel Fleisch kann er höchstens produzieren?',opts:['8 kg','6 kg','16 kg','60 kg'],c:0,ex:'8 Stunden = 480 Minuten. 480 / 60 = 8 kg.',fig:G17.avA},'k'),
+ k17({t:'mc',text:'Für 1 kg Kartoffeln braucht er 15 Minuten. Wie viele Kartoffeln schafft er in 8 Stunden höchstens?',opts:['32 kg','15 kg','24 kg','48 kg'],c:0,ex:'480 / 15 = 32 kg.',fig:G17.avA},'k'),
+ k17({t:'mc',text:'Der Viehbauer teilt seine Zeit gleichmäßig auf (je 4 Stunden). Er braucht 20 Minuten je kg Fleisch und 10 Minuten je kg Kartoffeln. Was produziert er?',opts:['12 kg Fleisch und 24 kg Kartoffeln','24 kg Fleisch und 48 kg Kartoffeln','8 kg Fleisch und 16 kg Kartoffeln','12 kg Fleisch und 12 kg Kartoffeln'],c:0,ex:'240 / 20 = 12 kg Fleisch, 240 / 10 = 24 kg Kartoffeln. Das ist Punkt B auf seiner PMK.',fig:G17.av},'k'),
+ k17({t:'mc',text:'Wie groß ist die Steigung der PMK des Ackerbauern (Fleisch pro kg Kartoffeln)?',opts:['−0,25','−4','−0,5','−2'],c:0,ex:'8 kg Fleisch oder 32 kg Kartoffeln: −8/32 = −0,25. Für jedes zusätzliche kg Kartoffeln muss er ¼ kg Fleisch aufgeben.',fig:G17.av},'k'),
+ k17({t:'mc',text:'Kann der Ackerbauer ohne Handel 6 kg Fleisch und 12 kg Kartoffeln konsumieren?',opts:['Nein, der Punkt liegt außerhalb seiner PMK.','Ja, der Punkt liegt genau auf seiner PMK.','Ja, der Punkt liegt innerhalb.','Das hängt vom Preis ab.'],c:0,ex:'6 kg Fleisch kosten 6 · 60 = 360 Minuten. Es bleiben 120 Minuten für 120/15 = 8 kg Kartoffeln. 12 kg sind also nicht möglich.',fig:G17.av},'k'),
+ k17({t:'mc',text:'Wessen PMK liegt weiter außen, und was bedeutet das?',opts:['Die des Viehbauern: Er hat in beiden Gütern einen absoluten Vorteil.','Die des Ackerbauern: Er hat einen komparativen Vorteil.','Die des Viehbauern: Er hat in beiden Gütern einen komparativen Vorteil.','Beide liegen gleich.'],c:0,ex:'24 > 8 kg Fleisch und 48 > 32 kg Kartoffeln. Eine weiter außen liegende PMK zeigt absolute Vorteile, sagt aber nichts über komparative Vorteile.',fig:G17.av},'k'),
+ k17({t:'mc',text:'Ohne Handel konsumiert der Ackerbauer 4 kg Fleisch. Wie viele Kartoffeln kann er dann höchstens konsumieren?',opts:['16 kg','28 kg','8 kg','32 kg'],c:0,ex:'4 kg Fleisch brauchen 240 Minuten. Bleiben 240 Minuten für 16 kg Kartoffeln. In Autarkie sind Produktion und Konsum gleich.',fig:G17.av},'k')
+]},
+{n:'Vorteile · Kopfrechnen',d:'Opportunitätskosten berechnen, absolute und komparative Vorteile bestimmen.',fig:G17.av,T:[
+ k17({t:'mc',text:'Ackerbauer: 8 kg Fleisch oder 32 kg Kartoffeln pro Tag. Opportunitätskosten von 1 kg Fleisch (in kg Kartoffeln)?',opts:['4','¼','8','2'],c:0,ex:'Für 1 kg Fleisch gibt er 32/8 = 4 kg Kartoffeln auf. Oder über die Zeit: 60 Minuten Fleisch statt 4 · 15 Minuten Kartoffeln.',fig:G17.av},'k'),
+ k17({t:'mc',text:'Viehbauer: 24 kg Fleisch oder 48 kg Kartoffeln. Opportunitätskosten von 1 kg Kartoffeln (in kg Fleisch)?',opts:['½','2','¼','24'],c:0,ex:'24/48 = ½ kg Fleisch je kg Kartoffeln.',fig:G17.av},'k'),
+ k17({t:'sort',text:'Ackerbauer (OK Fleisch 4, OK Kartoffeln ¼) und Viehbauer (OK Fleisch 2, OK Kartoffeln ½). Wer hat welchen Vorteil?',items:[['Absoluter Vorteil bei Fleisch',1,['Ackerbauer','Viehbauer','keiner']],['Absoluter Vorteil bei Kartoffeln',1,['Ackerbauer','Viehbauer','keiner']],['Komparativer Vorteil bei Fleisch',1,['Ackerbauer','Viehbauer','keiner']],['Komparativer Vorteil bei Kartoffeln',0,['Ackerbauer','Viehbauer','keiner']]],ex:'Der Viehbauer ist in beidem produktiver (absolute Vorteile). Komparativ: Fleisch kostet ihn nur 2 kg Kartoffeln (Ackerbauer 4), Kartoffeln kosten den Ackerbauern nur ¼ kg Fleisch (Viehbauer ½).',fig:G17.av},'k'),
+ k17({t:'mc',text:'Alte MC-Aufgabe: Ein Arbeiter in Land A kann 4 Uhren oder 2 Smartphones herstellen, in Land B 2 Uhren oder 2 Smartphones. Welche Aussage stimmt?',opts:['Land A hat einen komparativen Vorteil in der Produktion von Smartphones.','Keines der Länder hat einen komparativen Vorteil in der Produktion von Smartphones.','Land B hat einen absoluten Vorteil in der Produktion von Uhren.','Land B hat einen komparativen Vorteil in der Produktion von Smartphones.'],c:3,ex:'Ein Smartphone kostet A 2 Uhren, B nur 1 Uhr. Also hat B den komparativen Vorteil bei Smartphones. Bei Uhren hat A den absoluten Vorteil (4 > 2).'},'k'),
+ k17({t:'mc',text:'Deutschland braucht 1 Stunde je Maschine und 2 Stunden je E-Auto, China 6 Stunden je Maschine und 3 Stunden je E-Auto. Was kostet eine Maschine in Deutschland (in E-Autos)?',opts:['½ E-Auto','2 E-Autos','1 E-Auto','6 E-Autos'],c:0,ex:'In 6 Stunden: 6 Maschinen oder 3 E-Autos. Eine Maschine kostet 3/6 = ½ E-Auto. In China kostet sie 2 E-Autos.',fig:G17.dc},'k'),
+ k17({t:'sort',text:'Deutschland–China: Wer hat welchen Vorteil?',items:[['Absoluter Vorteil bei Maschinen',0,['Deutschland','China']],['Absoluter Vorteil bei E-Autos',0,['Deutschland','China']],['Komparativer Vorteil bei Maschinen',0,['Deutschland','China']],['Komparativer Vorteil bei E-Autos',1,['Deutschland','China']],['Exportiert E-Autos',1,['Deutschland','China']]],ex:'Deutschland ist in beidem produktiver, hat aber nur bei Maschinen die geringeren Opportunitätskosten (½ statt 2 E-Autos). China hat den komparativen Vorteil bei E-Autos (½ statt 2 Maschinen) und exportiert sie.',fig:G17.dc},'k'),
+ k17({t:'mc',text:'Folie „Handelsvorteile und Spezialisierung“, linkes Bild: Die PMK von Land B liegt parallel weiter außen. Was gilt?',opts:['B hat in beiden Gütern einen absoluten Vorteil, aber keiner hat einen komparativen Vorteil. Handel bringt keine Gewinne.','B hat in beiden Gütern einen komparativen Vorteil.','A hat einen komparativen Vorteil bei Gut X.','Beide gewinnen durch Handel.'],c:0,ex:'Parallele Kurven heißen gleiche Steigung, also gleiche Opportunitätskosten. Ohne Unterschied in den Opportunitätskosten gibt es keine Handelsgewinne.',fig:G17.s48a},'v'),
+ k17({t:'mc',text:'Mittleres Bild: Die Kurven schneiden sich. A schafft mehr X, B mehr Y. Was gilt?',opts:['A hat absoluten und komparativen Vorteil bei X, B bei Y. A spezialisiert sich auf X, B auf Y.','B hat in beiden Gütern einen absoluten Vorteil.','Es gibt keine komparativen Vorteile.','A sollte Y produzieren.'],c:0,ex:'B hat die steilere Kurve, für B ist X also teurer (mehr Y je X). A produziert X, B produziert Y.',fig:G17.s48b},'v'),
+ k17({t:'mc',text:'Rechtes Bild: B liegt überall außen, die Kurve von B ist aber steiler. Was gilt?',opts:['B hat absolute Vorteile in beiden Gütern, A hat trotzdem einen komparativen Vorteil bei X.','B hat komparative Vorteile in beiden Gütern.','A hat keinen Vorteil, Handel lohnt sich nicht.','A hat einen absoluten Vorteil bei X.'],c:0,ex:'Steilere Kurve: X kostet B mehr Y als A. Also produziert A X und B Y, und beide gewinnen, obwohl B in allem produktiver ist.',fig:G17.s48c},'v')
+]},
+{n:'Handel · Kopfrechnen',d:'Spezialisierung, Tauschverhältnis und Handelsgewinne. Erste Runde: Ackerbauer und Viehbauer.',fig:G17.avT,T:[
+ k17({t:'mc',text:'In welchem Bereich muss der Preis für 1 kg Fleisch (in kg Kartoffeln) liegen, damit beide vom Handel profitieren?',opts:['Zwischen 2 und 4 kg Kartoffeln','Zwischen ¼ und ½ kg Kartoffeln','Über 4 kg Kartoffeln','Unter 2 kg Kartoffeln'],c:0,ex:'Fleisch kostet den Viehbauern 2 kg Kartoffeln, den Ackerbauern 4 kg. Der Preis muss zwischen den Opportunitätskosten liegen.',fig:G17.avT},'k'),
+ k17({t:'mc',text:'Tausch 1 kg Fleisch gegen 3 kg Kartoffeln. Der Ackerbauer gibt 15 kg Kartoffeln ab. Wie viel Fleisch bekommt er?',opts:['5 kg','45 kg','3 kg','15 kg'],c:0,ex:'15 / 3 = 5 kg Fleisch.',fig:G17.avT},'k'),
+ k17({t:'mc',text:'Er produziert nur Kartoffeln (32 kg) und tauscht 15 kg gegen 5 kg Fleisch. Was konsumiert er?',opts:['5 kg Fleisch und 17 kg Kartoffeln','4 kg Fleisch und 16 kg Kartoffeln','5 kg Fleisch und 32 kg Kartoffeln','8 kg Fleisch und 17 kg Kartoffeln'],c:0,ex:'32 − 15 = 17 kg Kartoffeln plus 5 kg Fleisch. Ohne Handel waren es 4 kg Fleisch und 16 kg Kartoffeln: je 1 kg mehr.',fig:G17.avT},'k'),
+ k17({t:'mc',text:'Der Viehbauer produziert 18 kg Fleisch und 12 kg Kartoffeln und gibt 5 kg Fleisch für 15 kg Kartoffeln ab. Handelsgewinn gegenüber Autarkie (12 kg F, 24 kg K)?',opts:['+1 kg Fleisch und +3 kg Kartoffeln','+5 kg Fleisch und +15 kg Kartoffeln','−5 kg Fleisch und +15 kg Kartoffeln','Kein Gewinn'],c:0,ex:'Konsum: 18 − 5 = 13 kg Fleisch, 12 + 15 = 27 kg Kartoffeln. Gegenüber 12 und 24: +1 kg und +3 kg.',fig:G17.avT},'k'),
+ k17({t:'mc',text:'Wie viel Fleisch hätte der Ackerbauer selbst produzieren können, wenn er auf die 15 kg Kartoffeln verzichtet hätte?',opts:['3,75 kg','5 kg','60 kg','15 kg'],c:0,ex:'Ein kg Kartoffeln kostet ihn ¼ kg Fleisch: 15 · ¼ = 3,75 kg. Durch Handel bekommt er 5 kg, also 1,25 kg mehr.',fig:G17.avT},'k'),
+ {t:'pick',axis:'T',lab:'Preis für 1 kg Fleisch (in kg Kartoffeln)',m:'k',text:'Stell ein Tauschverhältnis ein, bei dem beide gewinnen. Die gestrichelten Linien zeigen, was jeder bei voller Spezialisierung konsumieren könnte.',
+  min:1,max:5,step:0.25,v0:1.5,target:3,tol:0.76,tl:'ein Preis zwischen 2 und 4 kg Kartoffeln',
+  scene:(v)=>ppfScene({...AVS,trade:[{a:32,b:-v},{a:24*v,b:-v}],Qmax:Math.max(76,24*v*1.05)}),
+  read:v=>{const a=v<4?'gewinnt':'gewinnt nicht', b=v>2?'gewinnt':'gewinnt nicht';return rd([['1 kg Fleisch kostet',fmt(v)+' kg Kartoffeln'],['Ackerbauer (OK 4)',a],['Viehbauer (OK 2)',b]]);},
+  ex:'Für den Ackerbauern lohnt sich Fleisch kaufen, solange es weniger als 4 kg Kartoffeln kostet. Für den Viehbauern lohnt sich verkaufen, solange er mehr als 2 kg bekommt. Bei genau 2 oder 4 gewinnt eine Seite nichts.'},
+ k17({t:'mc',text:'Wie steigt die Gesamtproduktion durch die Spezialisierung (Ackerbauer 0 F / 32 K, Viehbauer 18 F / 12 K statt 4/16 und 12/24)?',opts:['Fleisch +2 kg, Kartoffeln +4 kg','Fleisch +6 kg, Kartoffeln +8 kg','Sie bleibt gleich','Fleisch +2 kg, Kartoffeln −4 kg'],c:0,ex:'Fleisch: 0 + 18 = 18 statt 16. Kartoffeln: 32 + 12 = 44 statt 40. Genau diese Mehrproduktion teilen die beiden über den Handel auf.',fig:G17.avT},'k')
+]},
+{n:'Außenhandel',d:'Komparativer Vorteil zwischen Ländern, Preismechanismus und Lohnniveau.',fig:G17.dc,T:[
+ {t:'mc',text:'Deutschland hat in beiden Gütern einen absoluten Vorteil gegenüber China. Was exportiert Deutschland?',opts:['Maschinen, weil es dort den komparativen Vorteil hat.','Beide Güter.','Nichts, China kann gegen Deutschland nicht konkurrieren.','E-Autos.'],c:0,ex:'Deutschland exportiert Maschinen und importiert E-Autos. Entscheidend ist der komparative Vorteil.',fig:G17.dc},
+ {t:'mc',text:'Warum hat Deutschland höhere Löhne als China?',opts:['Weil die Arbeitsproduktivität in Deutschland höher ist (absoluter Vorteil).','Wegen des komparativen Vorteils bei Maschinen.','Wegen des Handels mit China.','Weil Deutschland mehr exportiert.'],c:0,ex:'Das Lohnniveau eines Landes beruht auf absoluten Vorteilen in der Produktivität, der Außenhandel auf komparativen Vorteilen.'},
+ {t:'sort',text:'Richtig oder falsch?',cats:['richtig','falsch'],items:[['Marktpreise spiegeln Opportunitätskosten wider.',0],['Ein Land mit absolutem Nachteil in allen Gütern kann nicht vom Handel profitieren.',1],['Das Prinzip gilt auch für WGs, Teams und Unternehmen.',0],['Handel lohnt sich nur, wenn ein Land in einem Gut produktiver ist.',1],['Wo die Opportunitätskosten gering sind, ist der Preis relativ niedrig.',0]],ex:'Auch China profitiert, obwohl es in beidem weniger produktiv ist. Es kommt allein auf unterschiedliche Opportunitätskosten an.'},
+ {t:'mc',text:'In einer WG kocht Lena schneller und putzt schneller als Tom. Was sagt die Theorie?',opts:['Lena sollte die Aufgabe übernehmen, bei der ihre Opportunitätskosten relativ geringer sind, Tom die andere.','Lena sollte alles machen.','Tom sollte alles machen.','Sie sollten sich alles teilen.'],c:0,ex:'Wie beim Viehbauern: Auch wer alles besser kann, profitiert von Spezialisierung nach komparativen Vorteilen.'},
+ {t:'mc',text:'Zwei Länder haben genau dieselben Opportunitätskosten, eines ist aber doppelt so produktiv. Lohnt sich Handel?',opts:['Nein, ohne Unterschied in den Opportunitätskosten gibt es keine Handelsgewinne.','Ja, das produktivere Land gewinnt immer.','Ja, beide gewinnen immer.','Nur für das weniger produktive Land.'],c:0,ex:'Das ist das linke Bild der Folie: parallele PMK. Es gibt keinen Tauschpreis, der für beide besser ist als die eigene Produktion.',fig:G17.s48a},
+ {t:'mc',text:'Was passiert, wenn der Tauschpreis außerhalb der Opportunitätskosten beider Partner liegt?',opts:['Einer der beiden würde schlechter gestellt und handelt deshalb nicht.','Beide gewinnen trotzdem.','Beide verlieren immer.','Der Preis spielt keine Rolle.'],c:0,ex:'Nur wenn der Preis zwischen den Opportunitätskosten liegt, bekommt jeder mehr als bei eigener Produktion.'}
+]},
+{n:'Vorteile · Taschenrechner',d:'Opportunitätskosten und Vorteile mit krummen Zahlen. Ergebnisse auf zwei Nachkommastellen.',fig:()=>ppfScene({L:[{n:'Land X',x:10.67,y:6.4},{n:'Land Y',x:12,y:9.6}],xl:'Tuch',yl:'Wein'}),T:[
+ k17({t:'calc',text:'Land X braucht 75 Minuten für eine Einheit Wein und 45 Minuten für eine Einheit Tuch, Land Y 50 Minuten für Wein und 40 Minuten für Tuch. Je Tag stehen 8 Stunden zur Verfügung.',
+  formula:['Max. Menge = 480 / Minuten je Einheit'],
+  fields:[['Land X: max. Wein',6.4],['Land X: max. Tuch',10.67],['Land Y: max. Wein',9.6],['Land Y: max. Tuch',12]],
+  ex:'480/75 = 6,4 · 480/45 = 10,67 · 480/50 = 9,6 · 480/40 = 12.',fig:()=>ppfScene({L:[{n:'Land X',x:480/45,y:6.4},{n:'Land Y',x:12,y:9.6}],xl:'Tuch',yl:'Wein'})},'t'),
+ k17({t:'calc',text:'Gleiche Länder. Berechne die Opportunitätskosten.',formula:['OK Wein (in Tuch) = Minuten Wein / Minuten Tuch'],
+  fields:[['Land X: OK 1 Wein (in Tuch)',1.67],['Land X: OK 1 Tuch (in Wein)',0.6],['Land Y: OK 1 Wein (in Tuch)',1.25],['Land Y: OK 1 Tuch (in Wein)',0.8]],
+  ex:'X: 75/45 = 1,67 und 45/75 = 0,6. Y: 50/40 = 1,25 und 40/50 = 0,8. Kontrolle: Die beiden Werte je Land sind Kehrwerte.'},'t'),
+ k17({t:'sort',text:'Land X (OK Wein 1,67, OK Tuch 0,6) und Land Y (OK Wein 1,25, OK Tuch 0,8). Y braucht für beide Güter weniger Zeit.',items:[['Absoluter Vorteil bei Wein',1,['Land X','Land Y']],['Absoluter Vorteil bei Tuch',1,['Land X','Land Y']],['Komparativer Vorteil bei Wein',1,['Land X','Land Y']],['Komparativer Vorteil bei Tuch',0,['Land X','Land Y']]],ex:'Y ist in beidem schneller. Komparativ: Wein ist für Y billiger (1,25 < 1,67), Tuch für X (0,6 < 0,8).'},'t'),
+ k17({t:'calc',text:'In welchem Intervall muss der Preis für eine Einheit Wein (in Tuch) liegen?',fields:[['Untergrenze',1.25],['Obergrenze',1.67]],ex:'Zwischen den Opportunitätskosten von Wein: 1,25 (Y) und 1,67 (X).'},'t'),
+ k17({t:'calc',text:'Land C hat 200 Arbeiter, jeder schafft 3 Einheiten Kaffee oder 7,5 Einheiten Zucker. Land D hat 150 Arbeiter mit 4,2 Kaffee oder 6,3 Zucker.',
+  fields:[['C: max. Kaffee',600],['C: max. Zucker',1500],['D: max. Kaffee',630],['D: max. Zucker',945],['C: OK 1 Kaffee (in Zucker)',2.5],['D: OK 1 Kaffee (in Zucker)',1.5]],
+  ex:'C: 200 · 3 = 600, 200 · 7,5 = 1.500. D: 150 · 4,2 = 630, 150 · 6,3 = 945. OK Kaffee: C 7,5/3 = 2,5; D 6,3/4,2 = 1,5. D hat den komparativen Vorteil bei Kaffee, C bei Zucker.',fig:()=>ppfScene({L:[{n:'C',x:1500,y:600},{n:'D',x:945,y:630}],xl:'Zucker',yl:'Kaffee'})},'t'),
+ k17({t:'calc',text:'Gleiche Länder C und D. Opportunitätskosten von Zucker und Preisintervall für Kaffee.',
+  fields:[['C: OK 1 Zucker (in Kaffee)',0.4],['D: OK 1 Zucker (in Kaffee)',0.67],['Preis 1 Kaffee: Untergrenze (in Zucker)',1.5],['Preis 1 Kaffee: Obergrenze (in Zucker)',2.5]],
+  ex:'C: 3/7,5 = 0,4. D: 4,2/6,3 = 0,67. C hat den komparativen Vorteil bei Zucker. Kaffeepreis zwischen 1,5 und 2,5 Zucker.'},'t')
+]},
+{n:'Handel · Taschenrechner',d:'Handelsgewinne mit krummen Zahlen berechnen: Konsum mit und ohne Handel.',fig:()=>ppfScene({L:[{n:'C',x:1500,y:600},{n:'D',x:945,y:630}],xl:'Zucker',yl:'Kaffee',trade:[{a:1500,b:-2},{a:1260,b:-2}]}),T:[
+ k17({t:'calc',text:'C und D (OK Kaffee: C 2,5 Zucker, D 1,5 Zucker). D spezialisiert sich auf Kaffee (630) und verkauft 200 Kaffee zum Preis 1 Kaffee = 2 Zucker an C.',
+  fields:[['Zucker, den D erhält',400],['Zucker, den D selbst für 200 Kaffee hätte herstellen können',300],['Handelsgewinn von D (Zucker)',100]],
+  ex:'200 · 2 = 400 Zucker. Selbst: 200 · 1,5 = 300. Gewinn 100 Zucker.'},'t'),
+ k17({t:'calc',text:'Gleicher Handel aus Sicht von C: C produziert nur Zucker (1.500) und kauft 200 Kaffee für 400 Zucker.',
+  fields:[['Zucker, den C 200 Kaffee in Eigenproduktion gekostet hätten',500],['Ersparnis von C (Zucker)',100],['Konsum von C: Zucker',1100],['Max. Zucker von C ohne Handel bei 200 Kaffee',1000]],
+  ex:'200 · 2,5 = 500 Zucker. Ersparnis 500 − 400 = 100. C konsumiert 1.500 − 400 = 1.100 Zucker und 200 Kaffee. Ohne Handel wären bei 200 Kaffee nur 1.500 − 500 = 1.000 Zucker möglich.'},'t'),
+ k17({t:'calc',text:'Konsum von D nach dem Handel (produziert 630 Kaffee, verkauft 200 für 400 Zucker).',
+  fields:[['Konsum von D: Kaffee',430],['Konsum von D: Zucker',400],['Max. Zucker von D ohne Handel bei 430 Kaffee',300]],
+  ex:'630 − 200 = 430 Kaffee, 400 Zucker. Ohne Handel: Zucker = 945 − 1,5 · 430 = 300. Mit Handel konsumiert D außerhalb seiner PMK.'},'t'),
+ k17({t:'calc',text:'Ackerbauer und Viehbauer, Tausch 1 kg Fleisch = 3 kg Kartoffeln. Ohne Handel: 4 F / 16 K und 12 F / 24 K. Mit Handel produzieren sie 0 F / 32 K und 18 F / 12 K.',
+  fields:[['Gesamtproduktion Fleisch ohne Handel',16],['Gesamtproduktion Fleisch mit Spezialisierung',18],['Gesamtproduktion Kartoffeln ohne Handel',40],['Gesamtproduktion Kartoffeln mit Spezialisierung',44]],
+  ex:'4 + 12 = 16, 0 + 18 = 18. 16 + 24 = 40, 32 + 12 = 44. Die Spezialisierung erhöht die Gesamtproduktion, der Handel verteilt sie.',fig:G17.avT},'t'),
+ k17({t:'calc',text:'Land X (OK Wein 1,67 Tuch) und Land Y (OK Wein 1,25 Tuch). Preis: 1 Wein = 1,4 Tuch. Y verkauft 5 Wein an X.',
+  fields:[['Tuch, das Y erhält',7],['Tuch, das Y für 5 Wein selbst hätte herstellen können',6.25],['Handelsgewinn von Y (Tuch)',0.75],['Ersparnis von X (Tuch)',1.33]],
+  ex:'5 · 1,4 = 7 Tuch. Y selbst: 5 · 1,25 = 6,25. Gewinn 0,75. X hätte für 5 Wein 5 · 1,667 = 8,33 Tuch aufgeben müssen, zahlt aber nur 7: Ersparnis 1,33.'},'t')
+]},
+{n:'Klausur',d:'Die alte Klausuraufgabe Hemden und Waschmaschinen a) bis h), gemischt Kopfrechnen und Taschenrechner.',fig:G17.hw0,T:[
+ k17({t:'calc',text:'Alte Klausur: Die Länder A und B konsumieren nur Hemden (H) und Waschmaschinen (WM). Ein Arbeiter schafft pro Jahr: A 1 WM oder 10 H, B 2 WM oder 5 H. Beide Länder haben 100 Arbeiter. a) Achsenabschnitte der PMK.',
+  fields:[['A: max. WM',100],['A: max. H',1000],['B: max. WM',200],['B: max. H',500]],ex:'A: 100 · 1 = 100 WM oder 100 · 10 = 1.000 H. B: 200 WM oder 500 H. Die PMK verbinden diese Achsenabschnitte geradlinig.',fig:G17.hw0},'k'),
+ k17({t:'calc',text:'b) Opportunitätskosten beider Güter.',fields:[['A: OK 1 WM (in H)',10],['A: OK 1 H (in WM)',0.1],['B: OK 1 WM (in H)',2.5],['B: OK 1 H (in WM)',0.4]],ex:'A: 10/1 = 10 und 1/10 = 0,1. B: 5/2 = 2,5 und 2/5 = 0,4.',fig:G17.hw0},'k'),
+ k17({t:'sort',text:'c) Wer hat welchen Vorteil?',items:[['Absoluter Vorteil bei WM',1,['Land A','Land B']],['Absoluter Vorteil bei H',0,['Land A','Land B']],['Komparativer Vorteil bei WM',1,['Land A','Land B']],['Komparativer Vorteil bei H',0,['Land A','Land B']]],ex:'WM: B schafft 2 statt 1 und hat die geringeren OK (2,5 < 10). H: A schafft 10 statt 5 und hat die geringeren OK (0,1 < 0,4).',fig:G17.hw0},'k'),
+ k17({t:'mc',text:'d) Können beide vom Freihandel profitieren, und worauf spezialisieren sie sich?',opts:['Ja: A auf Hemden, B auf Waschmaschinen.','Ja: A auf Waschmaschinen, B auf Hemden.','Nein, weil jedes Land einen absoluten Vorteil hat.','Nein, weil B produktiver ist.'],c:0,ex:'Die Opportunitätskosten unterscheiden sich, also gibt es Handelsgewinne. Jeder spezialisiert sich auf sein Gut mit komparativem Vorteil.',fig:G17.hw0},'k'),
+ k17({t:'calc',text:'e) Intervall für den Preis einer Waschmaschine (in Hemden).',fields:[['Untergrenze',2.5],['Obergrenze',10]],ex:'Zwischen den Opportunitätskosten einer WM: 2,5 (B) und 10 (A).',fig:G17.hw0},'k'),
+ {t:'pick',axis:'T',lab:'Preis für 1 WM (in Hemden)',m:'k',text:'e) Stell einen Preis für eine Waschmaschine ein, bei dem beide Länder gewinnen.',min:0.5,max:12,step:0.5,v0:1,target:6.25,tol:3.74,tl:'ein Preis zwischen 2,5 und 10 Hemden',
+  scene:v=>ppfScene({...HWS,trade:[{a:1000,b:-v},{a:200*v,b:-v}],Qmax:Math.max(1120,200*v*1.05)}),
+  read:v=>rd([['1 WM kostet',fmt(v)+' Hemden'],['Land A (OK 10)',v<10?'gewinnt':'gewinnt nicht'],['Land B (OK 2,5)',v>2.5?'gewinnt':'gewinnt nicht']]),
+  ex:'A kauft WM, solange sie weniger als 10 Hemden kosten. B verkauft, solange es mehr als 2,5 Hemden bekommt.'},
+ k17({t:'calc',text:'f) Eine Erfindung erhöht die Produktivität in B auf 20 Hemden je Arbeiter. Neue Werte für B.',fields:[['B: max. H',2000],['B: OK 1 WM (in H)',10],['B: OK 1 H (in WM)',0.1]],ex:'100 · 20 = 2.000 Hemden. OK WM: 20/2 = 10 H. OK H: 2/20 = 0,1 WM. Genau wie bei A.',fig:G17.hw},'k'),
+ k17({t:'mc',text:'f) Wie verändern sich die Vorteile?',opts:['B hat nun in beiden Gütern absolute Vorteile, komparative Vorteile hat keiner mehr.','A behält den komparativen Vorteil bei Hemden.','B hat komparative Vorteile in beiden Gütern.','Nichts ändert sich.'],c:0,ex:'B schafft jetzt 2 WM und 20 H je Arbeiter, mehr als A. Die Opportunitätskosten sind in beiden Ländern gleich (10 bzw. 0,1).',fig:G17.hw},'k'),
+ k17({t:'mc',text:'g/h) Die neue PMK von B verläuft parallel zu der von A. Lohnt sich Freihandel noch?',opts:['Nein, bei gleichen Opportunitätskosten gibt es keine Handelsgewinne.','Ja, weil B produktiver ist.','Ja, für Land A.','Ja, solange der Preis bei 10 Hemden liegt.'],c:0,ex:'Ohne Unterschied in den Opportunitätskosten gibt es keinen Preis, bei dem beide besser gestellt werden als in Autarkie.',fig:G17.hw},'k')
+]}
+];
+// ---------------- Zufallsaufgaben („Neue Zahlen“) ----------------
+(function(){
+  const NAMES=[['Land A','Land B'],['Anna','Ben'],['Deutschland','Polen'],['Kiel','Lübeck'],['Firma Nord','Firma Süd'],['Spanien','Italien']];
+  const GOODS=[['Kartoffeln','Fleisch'],['Hemden','Waschmaschinen'],['Uhren','Smartphones'],['Tuch','Wein'],['Brot','Kuchen'],['Fahrräder','Laptops']];
+  const OUT=[4,5,6,8,10,12,15,16,20,24,30,32,40,48,60];
+  const RAT=[0.25,0.5,1,2,3,4];
+  const q=x=>deV(x);
+  // Kopfrechen-Fall: Output pro 8-Stunden-Tag, ganze Zahlen, einfache Verhältnisse
+  function kc(R){ for(let k=0;k<400;k++){ const nm=pickV(R,NAMES), g=pickV(R,GOODS), rA=pickV(R,RAT), rB=pickV(R,RAT); if(rA===rB) continue;
+      const xA=pickV(R,OUT), xB=pickV(R,OUT), yA=xA*rA, yB=xB*rB; if(!OUT.includes(yA)||!OUT.includes(yB)||xA===xB||yA===yB) continue;
+      return mk(nm,g,xA,yA,xB,yB,'pro Tag (8 Stunden)'); } }
+  // Taschenrechner-Fall: Arbeiter mal Produktivität mit Dezimalzahlen
+  function tc(R){ for(let k=0;k<400;k++){ const nm=pickV(R,NAMES.filter(x=>x[0]!=='Anna')), g=pickV(R,GOODS), WA=pickV(R,[80,100,120,150,200,250]), WB=pickV(R,[80,100,120,150,200,250]);
+      const P=[1.2,1.5,1.8,2.4,2.5,3,3.5,3.6,4.2,4.5,5,6,6.3,7.5,8,9];
+      const a=pickV(R,P),b=pickV(R,P),c=pickV(R,P),d=pickV(R,P); if(Math.abs(b/a-d/c)<0.15||a===c||b===d) continue;
+      const t=mk(nm,g,WA*a,WA*b,WB*c,WB*d,'pro Jahr'); t.per={WA,WB,a,b,c,d}; t.intro=`${nm[0]} hat ${WA} Arbeiter, jeder schafft pro Jahr ${q(a)} ${g[0]} oder ${q(b)} ${g[1]}. ${nm[1]} hat ${WB} Arbeiter mit ${q(c)} ${g[0]} oder ${q(d)} ${g[1]}.`; return t; } }
+  function mk(nm,g,xA,yA,xB,yB,per){
+    const K={nm,g,xA,yA,xB,yB,okXA:yA/xA,okXB:yB/xB,okYA:xA/yA,okYB:xB/yB};
+    K.cX=K.okXA<K.okXB?0:1; K.cY=1-K.cX; K.aX=xA>xB?0:1; K.aY=yA>yB?0:1;
+    K.lo=Math.min(K.okXA,K.okXB); K.hi=Math.max(K.okXA,K.okXB);
+    K.intro=`${nm[0]} kann ${per} ${q(xA)} ${g[0]} oder ${q(yA)} ${g[1]} herstellen, ${nm[1]} ${q(xB)} ${g[0]} oder ${q(yB)} ${g[1]}.`;
+    K.fig=k=>ppfScene({L:[{n:nm[0],x:xA,y:yA},{n:nm[1],x:xB,y:yB}],xl:g[0],yl:g[1]});
+    return K; }
+  const who=(K,i)=>K.nm[i];
+  const mcN=(R,text,c,dis,ex,fig)=>mcV(R,text,c,dis,ex,fig,q);
+  const mcW=(R,text,i,K,ex)=>mcT(R,text,K.nm[i],[K.nm[1-i],'keiner von beiden','beide gleichermaßen'],ex,K.fig);
+  const kT={
+    max:R=>{ const m=pickV(R,[10,12,15,16,20,24,30,40,48,60]), g=pickV(R,GOODS)[0]; return mcN(R,`Eine Person braucht ${m} Minuten für 1 Einheit ${g} und arbeitet 8 Stunden. Wie viele Einheiten schafft sie höchstens?`,480/m,[480/m*2,m/8,60/m*4],`8 Stunden = 480 Minuten. 480 / ${m} = ${q(480/m)}.`); },
+    half:R=>{ const K=kc(R); return mcT(R,`${K.intro} ${K.nm[0]} teilt die Zeit gleichmäßig auf. Was produziert ${K.nm[0]}?`,`${q(K.xA/2)} ${K.g[0]} und ${q(K.yA/2)} ${K.g[1]}`,[`${q(K.xA)} ${K.g[0]} und ${q(K.yA)} ${K.g[1]}`,`${q(K.xA/2)} ${K.g[0]} und ${q(K.yA)} ${K.g[1]}`,`${q(K.xA/4)} ${K.g[0]} und ${q(K.yA/4)} ${K.g[1]}`],`Mit halber Zeit schafft man jeweils die Hälfte des Maximums.`,K.fig); },
+    slope:R=>{ const K=kc(R); return mcN(R,`${K.intro} Wie groß ist die Steigung der PMK von ${K.nm[1]} (${K.g[1]} pro Einheit ${K.g[0]}, ${K.g[0]} auf der waagerechten Achse)?`,-K.okXB,[-K.okYB,K.okXB,-K.okXA],`−${q(K.yB)} / ${q(K.xB)} = ${q(-K.okXB)}. Der Betrag der Steigung sind die Opportunitätskosten von ${K.g[0]}.`,K.fig); },
+    point:R=>{ const K=kc(R), x1=K.xA/2; return mcN(R,`${K.intro} ${K.nm[0]} produziert ${q(x1)} ${K.g[0]}. Wie viel ${K.g[1]} ist dann höchstens möglich?`,K.yA/2,[K.yA,K.yA-x1,K.yA/4],`Die Hälfte der ${K.g[0]} braucht die Hälfte der Zeit. Es bleibt Zeit für ${q(K.yA/2)} ${K.g[1]}.`,K.fig); },
+    okX:R=>{ const K=kc(R), i=R()<0.5?0:1; const v=i?K.okXB:K.okXA, w=i?K.okYB:K.okYA; return mcN(R,`${K.intro} Opportunitätskosten von 1 ${K.g[0]} für ${K.nm[i]} (in ${K.g[1]})?`,v,[w,i?K.okXA:K.okXB,v*2],`${q(i?K.yB:K.yA)} / ${q(i?K.xB:K.xA)} = ${q(v)} ${K.g[1]}. Der Kehrwert ${q(w)} sind die OK von 1 ${K.g[1]}.`,K.fig); },
+    okY:R=>{ const K=kc(R), i=R()<0.5?0:1; const v=i?K.okYB:K.okYA, w=i?K.okXB:K.okXA; return mcN(R,`${K.intro} Opportunitätskosten von 1 ${K.g[1]} für ${K.nm[i]} (in ${K.g[0]})?`,v,[w,i?K.okYA:K.okYB,v/2],`${q(i?K.xB:K.xA)} / ${q(i?K.yB:K.yA)} = ${q(v)} ${K.g[0]}.`,K.fig); },
+    absX:R=>{ const K=kc(R); return mcW(R,`${K.intro} Wer hat den absoluten Vorteil bei ${K.g[0]}?`,K.aX,K,`${q(Math.max(K.xA,K.xB))} > ${q(Math.min(K.xA,K.xB))}: mehr Output bei gleicher Zeit.`); },
+    compX:R=>{ const K=kc(R); return mcW(R,`${K.intro} Wer hat den komparativen Vorteil bei ${K.g[0]}?`,K.cX,K,`OK von 1 ${K.g[0]}: ${K.nm[0]} ${q(K.okXA)}, ${K.nm[1]} ${q(K.okXB)} ${K.g[1]}. Die geringeren OK hat ${K.nm[K.cX]}.`); },
+    compY:R=>{ const K=kc(R); return mcW(R,`${K.intro} Wer hat den komparativen Vorteil bei ${K.g[1]}?`,K.cY,K,`OK von 1 ${K.g[1]}: ${K.nm[0]} ${q(K.okYA)}, ${K.nm[1]} ${q(K.okYB)} ${K.g[0]}. Die geringeren OK hat ${K.nm[K.cY]}.`); },
+    spec:R=>{ const K=kc(R); return {t:'sort',text:`${K.intro} Worauf spezialisiert sich wer?`,items:[[K.nm[0],K.cX===0?0:1,[K.g[0],K.g[1]]],[K.nm[1],K.cX===1?0:1,[K.g[0],K.g[1]]]],ex:`Jeder auf das Gut mit den geringeren Opportunitätskosten: ${K.nm[K.cX]} auf ${K.g[0]}, ${K.nm[K.cY]} auf ${K.g[1]}.`,fig:K.fig}; },
+    intv:R=>{ const K=kc(R); return mcT(R,`${K.intro} In welchem Bereich muss der Preis für 1 ${K.g[0]} (in ${K.g[1]}) liegen, damit beide gewinnen?`,`zwischen ${q(K.lo)} und ${q(K.hi)}`,[`zwischen ${q(1/K.hi)} und ${q(1/K.lo)}`,`über ${q(K.hi)}`,`unter ${q(K.lo)}`],`Zwischen den Opportunitätskosten von ${K.g[0]}: ${q(K.lo)} und ${q(K.hi)} ${K.g[1]}.`,K.fig); },
+    gain:R=>{ const K=kc(R), p=(K.lo+K.hi)/2, s=K.cX, k=pickV(R,[2,4,6,8]); const got=k*p, own=k*K.lo;
+      return mcN(R,`${K.intro} ${K.nm[s]} spezialisiert sich auf ${K.g[0]} und tauscht ${k} ${K.g[0]} zum Preis 1 ${K.g[0]} = ${q(p)} ${K.g[1]}. Wie viel ${K.g[1]} gewinnt ${K.nm[s]} gegenüber Eigenproduktion?`,got-own,[got,own,k*(K.hi-p)*2],`Durch Tausch: ${k} · ${q(p)} = ${q(got)} ${K.g[1]}. Selbst hätte ${K.nm[s]} für ${k} ${K.g[0]} nur ${k} · ${q(K.lo)} = ${q(own)} ${K.g[1]} herstellen können. Gewinn ${q(got-own)}.`,K.fig); },
+    who:R=>{ const K=kc(R), p=pickV(R,[K.hi+1,K.lo/2]), los=p>K.hi?K.nm[K.cY]:K.nm[K.cX];
+      return mcT(R,`${K.intro} Der Preis für 1 ${K.g[0]} liegt bei ${q(p)} ${K.g[1]}. Was passiert?`,`${los} würde schlechter gestellt und handelt nicht.`,[`Beide gewinnen.`,`${los===K.nm[0]?K.nm[1]:K.nm[0]} würde schlechter gestellt und handelt nicht.`,`Beide verlieren immer.`],`Erlaubt ist nur ein Preis zwischen ${q(K.lo)} und ${q(K.hi)}. ${p>K.hi?`Bei ${q(p)} wäre ${K.g[0]} für den Käufer teurer als die eigene Produktion.`:`Bei ${q(p)} bekäme der Verkäufer weniger, als ihn ${K.g[0]} selbst kostet.`}`,K.fig); }
+  };
+  const tT={
+    max:R=>{ const K=tc(R), P=K.per; return {t:'calc',text:K.intro,fields:[[`${K.nm[0]}: max. ${K.g[0]}`,K.xA],[`${K.nm[0]}: max. ${K.g[1]}`,K.yA],[`${K.nm[1]}: max. ${K.g[0]}`,K.xB],[`${K.nm[1]}: max. ${K.g[1]}`,K.yB]],ex:`Arbeiter mal Produktivität: ${P.WA} · ${q(P.a)} = ${q(K.xA)}, ${P.WA} · ${q(P.b)} = ${q(K.yA)}, ${P.WB} · ${q(P.c)} = ${q(K.xB)}, ${P.WB} · ${q(P.d)} = ${q(K.yB)}.`,fig:K.fig}; },
+    ok:R=>{ const K=tc(R), P=K.per, r=x=>Math.round(x*100)/100; return {t:'calc',text:`${K.intro} Berechne die Opportunitätskosten (auf zwei Nachkommastellen).`,fields:[[`${K.nm[0]}: OK 1 ${K.g[0]} (in ${K.g[1]})`,r(K.okXA)],[`${K.nm[0]}: OK 1 ${K.g[1]} (in ${K.g[0]})`,r(K.okYA)],[`${K.nm[1]}: OK 1 ${K.g[0]} (in ${K.g[1]})`,r(K.okXB)],[`${K.nm[1]}: OK 1 ${K.g[1]} (in ${K.g[0]})`,r(K.okYB)]],ex:`${K.nm[0]}: ${q(P.b)}/${q(P.a)} = ${q(K.okXA)} und Kehrwert ${q(K.okYA)}. ${K.nm[1]}: ${q(P.d)}/${q(P.c)} = ${q(K.okXB)} und ${q(K.okYB)}.`,fig:K.fig}; },
+    adv:R=>{ const K=tc(R); return {t:'sort',text:`${K.intro} Wer hat welchen Vorteil?`,items:[[`Absoluter Vorteil bei ${K.g[0]}`,K.aX,K.nm],[`Absoluter Vorteil bei ${K.g[1]}`,K.aY,K.nm],[`Komparativer Vorteil bei ${K.g[0]}`,K.cX,K.nm],[`Komparativer Vorteil bei ${K.g[1]}`,K.cY,K.nm]],ex:`Absolut (mehr pro Arbeiter): ${K.g[0]} ${K.nm[K.aX]}, ${K.g[1]} ${K.nm[K.aY]}. Komparativ (geringere OK): ${K.g[0]} ${K.nm[K.cX]} (${q(Math.min(K.okXA,K.okXB))} statt ${q(Math.max(K.okXA,K.okXB))}), ${K.g[1]} ${K.nm[K.cY]}.`,fig:K.fig}; },
+    intv:R=>{ const K=tc(R), r=x=>Math.round(x*100)/100; return {t:'calc',text:`${K.intro} Intervall für den Preis von 1 ${K.g[0]} (in ${K.g[1]}).`,fields:[['Untergrenze',r(K.lo)],['Obergrenze',r(K.hi)]],ex:`Zwischen den Opportunitätskosten von ${K.g[0]}: ${q(K.lo)} (${K.nm[K.cX]}) und ${q(K.hi)} (${K.nm[K.cY]}).`,fig:K.fig}; },
+    gain:R=>{ const K=tc(R), r=x=>Math.round(x*100)/100, p=r(K.lo+(K.hi-K.lo)*pickV(R,[0.3,0.5,0.7])), s=K.cX, k=pickV(R,[10,20,25,40,50]);
+      const got=k*p, own=k*K.lo, buy=k*K.hi;
+      return {t:'calc',text:`${K.intro} ${K.nm[s]} spezialisiert sich auf ${K.g[0]} und verkauft ${k} ${K.g[0]} zum Preis 1 ${K.g[0]} = ${q(p)} ${K.g[1]} an ${K.nm[1-s]}.`,
+        fields:[[`${K.g[1]}, die ${K.nm[s]} erhält`,r(got)],[`Handelsgewinn von ${K.nm[s]} (in ${K.g[1]})`,r(got-own)],[`Ersparnis von ${K.nm[1-s]} (in ${K.g[1]})`,r(buy-got)]],
+        ex:`${k} · ${q(p)} = ${q(got)}. ${K.nm[s]} hätte selbst ${k} · ${q(K.lo)} = ${q(own)} herstellen können: Gewinn ${q(got-own)}. ${K.nm[1-s]} hätte für ${k} ${K.g[0]} selbst ${k} · ${q(K.hi)} = ${q(buy)} ${K.g[1]} aufgeben müssen: Ersparnis ${q(buy-got)}.`,fig:K.fig}; },
+    neu:R=>{ const K=tc(R), P=K.per, f=pickV(R,[2,3,4]); const d2=P.d*f, okB2=d2/P.c, r=x=>Math.round(x*100)/100;
+      return {t:'calc',text:`${K.intro} Eine Erfindung ${({2:'verdoppelt',3:'verdreifacht',4:'vervierfacht'})[f]} die Produktivität von ${K.nm[1]} bei ${K.g[1]}.`,fields:[[`${K.nm[1]}: neue max. ${K.g[1]}`,r(P.WB*d2)],[`${K.nm[1]}: neue OK 1 ${K.g[0]} (in ${K.g[1]})`,r(okB2)]],
+        ex:`${P.WB} · ${q(d2)} = ${q(P.WB*d2)}. Neue OK: ${q(d2)}/${q(P.c)} = ${q(okB2)}. Vergleiche mit ${K.nm[0]} (${q(K.okXA)}): ${Math.abs(okB2-K.okXA)<0.005?'gleich, keine Handelsgewinne mehr':okB2<K.okXA?`jetzt hat ${K.nm[1]} den komparativen Vorteil bei ${K.g[0]}`:`jetzt hat ${K.nm[0]} den komparativen Vorteil bei ${K.g[0]}`}.`,fig:K.fig}; }
+  };
+  const tag=(m,f)=>R=>{ const t=f(R); t.m=m; return t; };
+  const pick=(R,arr,n)=>{ let o=[]; while(o.length<n) o=o.concat(shufV(R,arr)); return o.slice(0,n); };
+  const PL={1:{k:['max','half','slope','point','max','half','point'],n:8},2:{k:['okX','okY','absX','compX','compY','spec','okX','compX'],n:9},3:{k:['intv','gain','who','gain','intv','spec'],n:8},
+    5:{t:['ok','adv','intv','max','ok'],n:6},6:{t:['gain','gain','intv','ok'],n:5},7:{t:['max','ok','adv','intv','gain','neu'],n:6}};
+  LV17.forEach((L,l)=>{ const p=PL[l]; if(!p) return;
+    L.gen=seed=>{ const R=rngV(seed); const keys=pick(R,p.k||p.t,p.n); const T=keys.map(k=>p.k?tag('k',kT[k])(R):tag('t',tT[k])(R));
+      if(l===7){ T.splice(3,0,tag('k',kT.intv)(R),tag('k',kT.compX)(R)); }
+      return T; }; });
+})();
+function initK17(){ if(!ST.k17Seeds) ST.k17Seeds={}; LV17.forEach((l,i)=>{ if(l.gen&&ST.k17Seeds[i]!=null) l.T=l.gen(ST.k17Seeds[i]); }); }
+function newNumbers17(l){ if(!LV17[l].gen) return; ST.k17Seeds[l]=Math.floor(Math.random()*1e9); LV17[l].T=LV17[l].gen(ST.k17Seeds[l]); RES[l]=LV17[l].T.map(()=>null); cur={l,i:0}; save(); renderLevels(); renderTask(); }
+
+// ---------------- Labor ----------------
+const lab17={xA:32,yA:8,xB:48,yB:24,p:0.35};
+function renderLab17(){
+  animId++; dragCb=null; areaCb=null; levelsEl.hidden=true; minibox.hidden=true;
+  const sl=(id,lab,v,mx)=>`<div class="sl2"><div class="top"><span>${lab}</span><span id="v${id}">${fmt(v)}</span></div><input type="range" id="r${id}" min="1" max="${mx}" step="1" value="${v}" aria-label="${lab}"></div>`;
+  panel.innerHTML=`<div class="lab"><h2>Komparative Vorteile ausprobieren</h2><p>Stell ein, wie viel jeder pro Tag höchstens herstellen kann (X waagerecht, Y senkrecht), und wähle einen Tauschpreis. Die gestrichelten Linien zeigen, was jeder bei voller Spezialisierung mit Handel konsumieren könnte.</p>
+   <div class="presets" style="margin-bottom:12px"><button class="pre" data-p="av">Acker- und Viehbauer</button><button class="pre" data-p="hw">Hemden/Waschmaschinen</button><button class="pre" data-p="par">Parallele PMK</button></div>
+   ${sl('xA','A: max. X',lab17.xA,60)}${sl('yA','A: max. Y',lab17.yA,60)}${sl('xB','B: max. X',lab17.xB,60)}${sl('yB','B: max. Y',lab17.yB,60)}
+   <div class="sl2"><div class="top"><span style="color:var(--rev)">Preis für 1 X (in Y)</span><span id="vp"></span></div><input type="range" id="rp" min="0.05" max="3" step="0.05" value="${lab17.p}" aria-label="Preis"></div>
+   <div class="readout" id="ro17"></div><div class="note" id="n17"></div></div>`;
+  const PRE={av:{xA:32,yA:8,xB:48,yB:24,p:0.33},hw:{xA:10,yA:1,xB:5,yB:2,p:0.25},par:{xA:20,yA:10,xB:40,yB:20,p:0.5}};
+  const upd=()=>{ const L=lab17, okA=L.yA/L.xA, okB=L.yB/L.xB, lo=Math.min(okA,okB), hi=Math.max(okA,okB), p=L.p;
+    ['xA','yA','xB','yB'].forEach(k=>{document.getElementById('r'+k).value=L[k];document.getElementById('v'+k).textContent=fmt(L[k]);});
+    document.getElementById('rp').value=p; document.getElementById('vp').textContent=fmt(p);
+    const eq=Math.abs(okA-okB)<1e-9, cA=okA<okB; // A hat komparativen Vorteil bei X?
+    const tr=eq?[]:[cA?{a:L.xA,b:-1/p}:{a:L.yA/p,b:-1/p},cA?{a:L.yB/p,b:-1/p}:{a:L.xB,b:-1/p}];
+    const xm=Math.max(L.xA,L.xB), ym=Math.max(L.yA,L.yB);
+    drawScene(ppfScene({L:[{n:'A',x:L.xA,y:L.yA},{n:'B',x:L.xB,y:L.yB}],xl:'Gut X',yl:'Gut Y',trade:tr,Qmax:xm*1.5,Pmax:ym*1.5}));
+    const ok=!eq&&p>lo+1e-9&&p<hi-1e-9;
+    document.getElementById('ro17').innerHTML=rd([['A: OK 1 X',fmt(okA)+' Y'],['B: OK 1 X',fmt(okB)+' Y'],['A: OK 1 Y',fmt(1/okA)+' X'],['B: OK 1 Y',fmt(1/okB)+' X'],['Absoluter Vorteil X',L.xA===L.xB?'keiner':(L.xA>L.xB?'A':'B')],['Absoluter Vorteil Y',L.yA===L.yB?'keiner':(L.yA>L.yB?'A':'B')],['Komparativer Vorteil X',eq?'keiner':(cA?'A':'B')],['Komparativer Vorteil Y',eq?'keiner':(cA?'B':'A')],['Preisintervall für 1 X',eq?'keines':fmt(lo)+' bis '+fmt(hi)+' Y']]);
+    document.getElementById('n17').innerHTML=eq?'<b>Gleiche Opportunitätskosten.</b> Die PMK verlaufen parallel, kein Preis stellt beide besser. Handel bringt nichts.':(ok?`<b>Beide gewinnen.</b> Der Preis liegt zwischen den Opportunitätskosten. Beide Tauschgeraden liegen außerhalb der eigenen PMK.`:`<b>Einer verliert.</b> Der Preis liegt außerhalb von ${fmt(lo)} bis ${fmt(hi)}. Für eine Seite ist Eigenproduktion billiger.`); };
+  ['xA','yA','xB','yB'].forEach(k=>document.getElementById('r'+k).oninput=e=>{lab17[k]=+e.target.value;upd();});
+  document.getElementById('rp').oninput=e=>{lab17.p=+e.target.value;upd();};
+  panel.querySelectorAll('.pre').forEach(b=>b.onclick=()=>{Object.assign(lab17,PRE[b.dataset.p]);upd();});
+  upd();
+}
+// ---------------- Formeln ----------------
+function renderForm17(){
+  animId++; dragCb=null; areaCb=null; levelsEl.hidden=true; minibox.hidden=true; drawScene(G17.av(1));
+  const rows=[
+   ['Max. Menge = verfügbare Zeit / Zeit je Einheit','Achsenabschnitte der PMK aus Arbeitszeiten (480 Minuten am Tag).','Wer seine ganze Zeit in ein Gut steckt, schafft genau so viele Einheiten.'],
+   ['Max. Menge = Arbeiter · Produktivität','Achsenabschnitte aus Produktivitäten (Klausur a).','Alle Arbeiter produzieren nur dieses eine Gut.'],
+   ['OK 1 X (in Y) = max. Y / max. X = Zeit für X / Zeit für Y','Opportunitätskosten (Klausur b).','Für eine Einheit X gibt man so viel Y auf. Das ist der Betrag der Steigung der PMK (X waagerecht).'],
+   ['OK 1 Y (in X) = 1 / OK 1 X','Kontrolle der zweiten Opportunitätskosten.','Die beiden Opportunitätskosten eines Produzenten sind Kehrwerte.'],
+   ['Absoluter Vorteil: mehr Output je Input','Klausur c (absolut).','Produktivität. PMK liegt weiter außen. Bestimmt das Lohnniveau.'],
+   ['Komparativer Vorteil: geringere OK','Klausur c, d (komparativ, Spezialisierung).','Grundlage von Spezialisierung und Handel. Niemand hat bei beiden Gütern den komparativen Vorteil (bei unterschiedlichen OK).'],
+   ['OK<sub>niedrig</sub> < Preis < OK<sub>hoch</sub>','Preisintervall (Klausur e).','Nur dann bekommt jeder mehr als bei Eigenproduktion.'],
+   ['Handelsgewinn = Menge · (Preis − eigene OK)','Gewinn des Verkäufers in Einheiten des anderen Guts.','Durch Tausch erhält er mehr, als er selbst hätte herstellen können.'],
+   ['Gleiche OK ⇒ parallele PMK ⇒ keine Handelsgewinne','Klausur f bis h.','Absolute Vorteile allein begründen keinen Handel.']];
+  panel.innerHTML=`<div class="lab"><h2>Formeln in Kapitel 17</h2><p class="fintro">Wofür du welche Formel brauchst und warum. Diagramm: PMK von Ackerbauer und Viehbauer mit den Autarkiepunkten A und B.</p><div class="fgroup"><h3><span>1</span>Regeln</h3>${rows.map(r=>`<div class="frow"><div class="fm">${r[0]}</div><div class="fw"><b>Wofür:</b> ${r[1]}</div><div class="fy"><b>Warum:</b> ${r[2]}</div></div>`).join('')}</div>
+  <div class="fgroup"><h3><span>2</span>Rezept für die Klausuraufgabe</h3><ol class="recipe"><li>Achsenabschnitte berechnen und PMK als Geraden zeichnen.</li><li>Opportunitätskosten beider Güter in eine Tabelle (Kehrwerte prüfen).</li><li>Absolut: wer mehr schafft. Komparativ: wer geringere OK hat.</li><li>Spezialisierung auf das Gut mit komparativem Vorteil.</li><li>Preisintervall zwischen den beiden OK desselben Guts.</li><li>Änderung der Produktivität: neue OK berechnen und vergleichen. Gleiche OK heißt keine Handelsgewinne.</li></ol></div></div>`;
+}
 // ================= Abfrage (je Kapitel getrennt) =================
 const CH={k3:{LV:LV3,tag:'Kap. 3.2',eb:'Einführung in die VWL · Kapitel 3 Teil 2',h1:'<span class="e">Elastizität</span> und ihre <span class="u">Anwendungen</span>'},
           k5:{LV:LV5,tag:'Kap. 5',eb:'Einführung in die VWL · Kapitel 5',h1:'Unternehmen in <span class="s">Wettbewerbs</span><span class="d">märkten</span>',form:()=>renderForm5()},
           k7:{LV:LV7,tag:'Kap. 7',eb:'Einführung in die VWL · Kapitel 7 (Teil 1 und 2)',h1:'<span class="u">Preiskontrollen</span> und <span class="s">Steuern</span>',form:()=>renderForm7()},
           k8:{LV:LV8,tag:'Kap. 8 · 9',eb:'Einführung in die VWL · Kapitel 8 und 9 · Ineffizienz von Märkten',h1:'Öffentliche Güter und <span class="d">Externalitäten</span>',form:()=>renderForm8()},
           kv:{LV:LVV,tag:'Vertiefung',eb:'Einführung in die VWL · Kapitel 9 · Vertiefung mit Zufallszahlen',h1:'<span class="s">Vermeidungs</span>training',form:()=>renderFormV()},
-          k11:{LV:LV11,tag:'Kap. 11',eb:'Einführung in die VWL · Kapitel 11',h1:'Das <span class="s">Monopol</span>',form:()=>renderForm11()}};
+          k11:{LV:LV11,tag:'Kap. 11',eb:'Einführung in die VWL · Kapitel 11',h1:'Das <span class="s">Monopol</span>',form:()=>renderForm11()},
+          k17:{LV:LV17,tag:'Kap. 17',eb:'Einführung in die VWL · Kapitel 17 Teil 1',h1:'Interdependenz und <span class="s">Handelsvorteile</span>',form:()=>renderForm17()}};
 const KEY='vwllab-v2';
 let ST=null; try{ST=JSON.parse(localStorage.getItem(KEY)||'null');}catch(e){}
 if(!ST||typeof ST!=='object'){ ST={ch:'k3'}; try{const o=JSON.parse(localStorage.getItem('elastlab-v1')||'null'); if(o&&o.res) ST.k3=o;}catch(e){} }
@@ -2425,6 +2676,7 @@ let chKey='k3', LV=LV3, RES=[], cur={l:0,i:0}, mode='quiz';
 initKV();
 if(ST.k11&&!ST.k11mc){ delete ST.k11; } ST.k11mc=1;
 initK11();
+initK17();
 function loadCh(k){
   chKey=CH[k]?k:'k3'; LV=CH[chKey].LV; const st=ST[chKey]||{};
   RES=LV.map((l,i)=>l.T.map((_,j)=>(st.res&&st.res[i]&&st.res[i][j]!==undefined)?st.res[i][j]:null));
@@ -2451,7 +2703,7 @@ function renderTask(){
   animId++; dragCb=null; areaCb=null; minibox.hidden=true;
   const L=LV[cur.l], t=L.T[cur.i]; let checked=false;
   let h=`<p class="ldesc"><span class="chtag">${CH[chKey].tag}</span><b>Stufe ${cur.l+1} · ${L.n}.</b> ${L.d}</p>`+navHtml();
-  h+=`<div class="meta"><span class="chip">${TYPE[t.t]}</span><span class="score">${scoreTxt()}</span></div>`;
+  h+=`<div class="meta"><span style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip">${TYPE[t.t]}</span>${t.m?`<span class="chip mode-${t.m}">${({k:'Kopfrechnen',t:'Taschenrechner',v:'Verständnis'})[t.m]}</span>`:''}</span><span class="score">${scoreTxt()}</span></div>`;
   h+=`<div class="qtext">${t.text}</div>`;
   if(t.formula) h+=`<div class="formula">${t.formula.map(f=>`<span>${f}</span>`).join('')}</div>`;
   const cats=it=>it[2]||t.cats;
@@ -2464,7 +2716,7 @@ function renderTask(){
   if(t.t==='shape') h+=`<div class="step"><h3>${t.kind==='S'?'Angebotselastizität ε<sub>S</sub>':'Betrag der Nachfrageelastizität |ε|'}</h3><input type="range" id="es" min="0" max="${EL.length-1}" step="1" value="3" aria-label="Elastizität"><div class="readout" id="ro"></div></div>`;
   h+=`<div class="actions"><button class="btn" id="chk">Prüfen</button><button class="btn ghost" id="prev" ${cur.i===0&&cur.l===0?'disabled':''}>Zurück</button><button class="btn ghost" id="next">${cur.i===L.T.length-1?(cur.l===LV.length-1?'Von vorn':'Nächste Stufe'):'Weiter'}</button>${L.gen?'<button class="btn ghost" id="newn">Neue Zahlen</button>':''}</div><div id="fb"></div>`;
   panel.innerHTML=h;
-  const nb=document.getElementById('newn'); if(nb) nb.onclick=()=>(chKey==='k11'?newNumbers11(cur.l):newNumbersV(cur.l));
+  const nb=document.getElementById('newn'); if(nb) nb.onclick=()=>(chKey==='k11'?newNumbers11(cur.l):chKey==='k17'?newNumbers17(cur.l):newNumbersV(cur.l));
   const fig=t.fig||L.fig; if(t.t!=='point'&&t.t!=='shape'&&t.t!=='pick'&&t.t!=='area') drawScene(fig(0));
 
   // MC
@@ -2555,6 +2807,7 @@ function renderLab(){
   if(chKey==='k8') return renderLab8();
   if(chKey==='kv') return renderLabV();
   if(chKey==='k11') return renderLab11();
+  if(chKey==='k17') return renderLab17();
   animId++; dragCb=null; levelsEl.hidden=true; minibox.hidden=true;
   let h=`<div class="lab"><div class="seg" style="margin-bottom:14px"><button id="mA" class="${lab.m==='A'?'on':''}">Nachfrage &amp; Ausgaben</button><button id="mB" class="${lab.m==='B'?'on':''}">Schocks &amp; Elastizität</button></div>`;
   if(lab.m==='A'){
