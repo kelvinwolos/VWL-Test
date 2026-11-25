@@ -58,6 +58,7 @@ h1 .e{color:var(--el)} h1 .u{color:var(--un)}
 .tabs{display:flex;gap:4px;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:4px}
 .tabs button{font:inherit;font-weight:600;border:0;background:none;color:var(--muted);padding:8px 14px;border-radius:7px;cursor:pointer}
 .tabs button[aria-selected="true"]{background:var(--ink);color:var(--paper)}
+.lgrp{flex:none;flex-direction:column;align-self:stretch;min-width:150px;border-radius:10px;position:sticky;left:0;z-index:2;background:var(--paper);box-shadow:6px 0 10px -6px rgba(0,0,0,.25)}@media (max-width:640px){.lgrp{min-width:124px}.lgrp button{font-size:12px;padding:6px 8px}}.lgrp button{border-right:0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;padding:7px 12px;font-weight:600}.lgrp button:last-child{border-bottom:0}.lgrp small{font-family:var(--mono);font-weight:400;opacity:.75}
 .levels{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;margin-bottom:10px;scrollbar-width:thin}
 .lvl{flex:0 0 auto;display:grid;grid-template-columns:26px minmax(0,1fr);column-gap:9px;row-gap:6px;align-items:center;text-align:left;min-width:150px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);cursor:pointer;font:inherit}
 .lvl .ln{grid-row:1/3;font-family:var(--mono);font-size:12px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line)}
@@ -2609,12 +2610,27 @@ const LV17=[
   };
   const tag=(m,f)=>R=>{ const t=f(R); t.m=m; return t; };
   const pick=(R,arr,n)=>{ let o=[]; while(o.length<n) o=o.concat(shufV(R,arr)); return o.slice(0,n); };
-  const PL={1:{k:['max','half','slope','point','max','half','point'],n:8},2:{k:['okX','okY','absX','compX','compY','spec','okX','compX'],n:9},3:{k:['intv','gain','who','gain','intv','spec'],n:8},
-    5:{t:['ok','adv','intv','max','ok'],n:6},6:{t:['gain','gain','intv','ok'],n:5},7:{t:['max','ok','adv','intv','gain','neu'],n:6}};
-  LV17.forEach((L,l)=>{ const p=PL[l]; if(!p) return;
-    L.gen=seed=>{ const R=rngV(seed); const keys=pick(R,p.k||p.t,p.n); const T=keys.map(k=>p.k?tag('k',kT[k])(R):tag('t',tT[k])(R));
-      if(l===7){ T.splice(3,0,tag('k',kT.intv)(R),tag('k',kT.compX)(R)); }
-      return T; }; });
+  const r2=x=>Math.round(x*100)/100, MIN=[25,35,40,45,50,55,65,70,75,80,90,95];
+  const minCase=R=>{ for(let k=0;k<200;k++){ const nm=pickV(R,NAMES.filter(x=>x[0]!=='Anna')), g=pickV(R,GOODS), a=pickV(R,MIN),b=pickV(R,MIN),c=pickV(R,MIN),d=pickV(R,MIN); if(a===b||c===d||Math.abs(a/b-c/d)<0.1) continue;
+    return {nm,g,a,b,c,d,intro:`${nm[0]} braucht ${a} Minuten für 1 ${g[0]} und ${b} Minuten für 1 ${g[1]}, ${nm[1]} ${c} bzw. ${d} Minuten. Je Tag stehen 8 Stunden zur Verfügung.`,fig:k=>ppfScene({L:[{n:nm[0],x:480/a,y:480/b},{n:nm[1],x:480/c,y:480/d}],xl:g[0],yl:g[1]})}; } };
+  tT.min=R=>{ const C=minCase(R); return {t:'calc',text:C.intro,formula:['Max. Menge = 480 / Minuten je Einheit'],fields:[[`${C.nm[0]}: max. ${C.g[0]}`,r2(480/C.a)],[`${C.nm[0]}: max. ${C.g[1]}`,r2(480/C.b)],[`${C.nm[1]}: max. ${C.g[0]}`,r2(480/C.c)],[`${C.nm[1]}: max. ${C.g[1]}`,r2(480/C.d)]],ex:`480/${C.a} = ${q(480/C.a)} · 480/${C.b} = ${q(480/C.b)} · 480/${C.c} = ${q(480/C.c)} · 480/${C.d} = ${q(480/C.d)}.`,fig:C.fig}; };
+  tT.okmin=R=>{ const C=minCase(R); return {t:'calc',text:`${C.intro} Berechne die Opportunitätskosten (zwei Nachkommastellen).`,formula:['OK 1 X (in Y) = Minuten für X / Minuten für Y'],fields:[[`${C.nm[0]}: OK 1 ${C.g[0]} (in ${C.g[1]})`,r2(C.a/C.b)],[`${C.nm[0]}: OK 1 ${C.g[1]} (in ${C.g[0]})`,r2(C.b/C.a)],[`${C.nm[1]}: OK 1 ${C.g[0]} (in ${C.g[1]})`,r2(C.c/C.d)],[`${C.nm[1]}: OK 1 ${C.g[1]} (in ${C.g[0]})`,r2(C.d/C.c)]],ex:`Die Zeit für ein ${C.g[0]} reicht für ${C.a}/${C.b} = ${q(C.a/C.b)} ${C.g[1]} (${C.nm[0]}) bzw. ${C.c}/${C.d} = ${q(C.c/C.d)} (${C.nm[1]}). Die OK des anderen Guts sind die Kehrwerte.`,fig:C.fig}; };
+  const G=(m,keys,n)=>seed=>{ const R=rngV(seed); return pick(R,keys,n).map(k=>m==='k'?tag('k',kT[k])(R):tag('t',tT[k])(R)); };
+  const o=LV17.slice(), T5=o[5].T;
+  const NEW=[
+   {...o[0],grp:'k'},
+   {...o[1],n:'PMK',grp:'k',d:'Produktionsmöglichkeitenkurven aus Arbeitszeiten, Steigung, machbare Punkte.',gen:G('k',['max','half','slope','point','max','half','point'],8)},
+   {...o[2],n:'Vorteile',grp:'k',gen:G('k',['okX','okY','absX','compX','compY','spec','okX','compX'],9)},
+   {...o[3],n:'Handel',grp:'k',gen:G('k',['intv','gain','who','gain','intv','spec'],8)},
+   {...o[4],grp:'k'},
+   {...o[7],n:'Klausur',grp:'k',d:'Alte Klausuraufgabe Hemden und Waschmaschinen a) bis h). „Neue Zahlen“ liefert gemischte Kopfrechenfälle.',gen:G('k',['okX','okY','absX','compX','compY','spec','intv','gain','who'],9)},
+   {n:'PMK',grp:'t',d:'Achsenabschnitte aus krummen Arbeitszeiten und Produktivitäten.',fig:o[5].fig,T:[T5[0],T5[4]],gen:G('t',['max','min','max','min'],4)},
+   {n:'Vorteile',grp:'t',d:'Opportunitätskosten, absolute und komparative Vorteile, Preisintervall mit Dezimalzahlen.',fig:o[5].fig,T:[T5[1],T5[2],T5[3],T5[5]],gen:G('t',['ok','okmin','adv','intv','ok','adv'],6)},
+   {...o[6],n:'Handel',grp:'t',gen:G('t',['gain','gain','intv','gain'],5)},
+   {n:'Klausur',grp:'t',d:'Klausurähnliche Fälle: Maximum, Opportunitätskosten, Vorteile, Preisintervall, Handelsgewinn und Produktivitätsänderung.',fig:o[5].fig,gen:G('t',['max','ok','adv','intv','gain','neu'],6)}
+  ];
+  NEW[9].T=NEW[9].gen(20261125);
+  LV17.length=0; NEW.forEach(x=>LV17.push(x));
 })();
 function initK17(){ if(!ST.k17Seeds) ST.k17Seeds={}; LV17.forEach((l,i)=>{ if(l.gen&&ST.k17Seeds[i]!=null) l.T=l.gen(ST.k17Seeds[i]); }); }
 function newNumbers17(l){ if(!LV17[l].gen) return; ST.k17Seeds[l]=Math.floor(Math.random()*1e9); LV17[l].T=LV17[l].gen(ST.k17Seeds[l]); RES[l]=LV17[l].T.map(()=>null); cur={l,i:0}; save(); renderLevels(); renderTask(); }
@@ -2676,6 +2692,7 @@ let chKey='k3', LV=LV3, RES=[], cur={l:0,i:0}, mode='quiz';
 initKV();
 if(ST.k11&&!ST.k11mc){ delete ST.k11; } ST.k11mc=1;
 initK11();
+if(!ST.k17v2){ delete ST.k17; delete ST.k17Seeds; ST.k17v2=1; }
 initK17();
 function loadCh(k){
   chKey=CH[k]?k:'k3'; LV=CH[chKey].LV; const st=ST[chKey]||{};
@@ -2690,11 +2707,16 @@ function save(){ST[chKey]={res:RES,cur};ST.ch=chKey;try{localStorage.setItem(KEY
 
 const levelsEl=document.getElementById('levels'), panel=document.getElementById('panel'), minibox=document.getElementById('minibox');
 const TYPE={mc:'Multiple Choice',calc:'Rechnen',sort:'Zuordnen',point:'Im Diagramm',pick:'Im Diagramm',shape:'Kurve formen',area:'Fläche wählen'};
+const GRPN={k:'Kopfrechnen',t:'Taschenrechner'};
+function lvNum(i){ const g=LV[i].grp; if(!g) return i+1; let n=0; for(let j=0;j<=i;j++) if(LV[j].grp===g) n++; return n; }
 function renderLevels(){
-  levelsEl.innerHTML=LV.map((l,i)=>{const r=RES[i],ok=r.filter(x=>x===true).length,no=r.filter(x=>x===false).length;
-    return `<button class="lvl ${i===cur.l?'cur':''}" data-l="${i}"><span class="ln">${i+1}</span><span class="lt">${l.n}<small>${ok}/${r.length}</small></span><span class="lbar"><i style="width:${(ok+no)/r.length*100}%"></i><b style="width:${ok/r.length*100}%"></b></span></button>`;}).join('');
-  const cl=levelsEl.querySelector('.lvl.cur'); if(cl&&levelsEl.scrollWidth>levelsEl.clientWidth) levelsEl.scrollLeft=Math.max(0,cl.offsetLeft-levelsEl.offsetLeft-16);
+  const g=LV[cur.l].grp;
+  const gh=g?`<div class="seg lgrp">${Object.keys(GRPN).map(k=>{const ix=LV.map((l,i)=>l.grp===k?i:-1).filter(i=>i>=0); let ok=0,n=0; ix.forEach(i=>RES[i].forEach(x=>{n++; if(x===true) ok++;})); return `<button class="${k===g?'on':''}" data-g="${k}">${GRPN[k]}<small>${ok}/${n}</small></button>`;}).join('')}</div>`:'';
+  levelsEl.innerHTML=gh+LV.map((l,i)=>{ if(g&&l.grp!==g) return '';const r=RES[i],ok=r.filter(x=>x===true).length,no=r.filter(x=>x===false).length;
+    return `<button class="lvl ${i===cur.l?'cur':''}" data-l="${i}"><span class="ln">${lvNum(i)}</span><span class="lt">${l.n}<small>${ok}/${r.length}</small></span><span class="lbar"><i style="width:${(ok+no)/r.length*100}%"></i><b style="width:${ok/r.length*100}%"></b></span></button>`;}).join('');
+  const cl=levelsEl.querySelector('.lvl.cur'), lg=levelsEl.querySelector('.lgrp'); if(cl&&levelsEl.scrollWidth>levelsEl.clientWidth) levelsEl.scrollLeft=Math.max(0,cl.offsetLeft-levelsEl.offsetLeft-16-(lg?lg.offsetWidth+8:0));
   levelsEl.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{cur={l:+b.dataset.l,i:0};save();renderLevels();renderTask();});
+  levelsEl.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{ if(b.dataset.g===g) return; cur={l:LV.findIndex(l=>l.grp===b.dataset.g),i:0}; save(); renderLevels(); renderTask(); });
 }
 function navHtml(){const r=RES[cur.l];return `<div class="qnav">${r.map((x,i)=>`<button data-go="${i}" class="${i===cur.i?'cur':''} ${x===true?'ok':x===false?'no':''}" aria-label="Aufgabe ${i+1}">${i+1}</button>`).join('')}</div>`;}
 function scoreTxt(){let ok=0,n=0;RES.forEach(r=>r.forEach(x=>{if(x===true)ok++;n++;}));return `gesamt ${ok} von ${n}`;}
@@ -2702,7 +2724,7 @@ function scoreTxt(){let ok=0,n=0;RES.forEach(r=>r.forEach(x=>{if(x===true)ok++;n
 function renderTask(){
   animId++; dragCb=null; areaCb=null; minibox.hidden=true;
   const L=LV[cur.l], t=L.T[cur.i]; let checked=false;
-  let h=`<p class="ldesc"><span class="chtag">${CH[chKey].tag}</span><b>Stufe ${cur.l+1} · ${L.n}.</b> ${L.d}</p>`+navHtml();
+  let h=`<p class="ldesc"><span class="chtag">${CH[chKey].tag}</span><b>${L.grp?GRPN[L.grp]+' · ':''}Stufe ${lvNum(cur.l)} · ${L.n}.</b> ${L.d}</p>`+navHtml();
   h+=`<div class="meta"><span style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip">${TYPE[t.t]}</span>${t.m?`<span class="chip mode-${t.m}">${({k:'Kopfrechnen',t:'Taschenrechner',v:'Verständnis'})[t.m]}</span>`:''}</span><span class="score">${scoreTxt()}</span></div>`;
   h+=`<div class="qtext">${t.text}</div>`;
   if(t.formula) h+=`<div class="formula">${t.formula.map(f=>`<span>${f}</span>`).join('')}</div>`;
