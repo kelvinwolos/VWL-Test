@@ -1,7 +1,7 @@
 // Service Worker: macht die App offline nutzbar.
 // Bei jeder neuen Version die Nummer erhöhen, damit Handys das Update laden.
-const VERSION = 'vwl-labor-v1';
-const DATEIEN = ['./', 'index.html', 'manifest.json', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
+const VERSION = 'vwl-labor-v2';
+const DATEIEN = ['./', 'index.html', 'manifest.json', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(DATEIEN)).then(() => self.skipWaiting()));
