@@ -1,0 +1,16 @@
+VWL-Trainingslabor als App (PWA)
+
+Inhalt:
+  index.html      – die App selbst
+  manifest.json   – Name, Icon und Farben der App
+  sw.js           – macht die App offline nutzbar
+  icons/          – App-Icons
+
+Online stellen: alle Dateien unverändert in ein GitHub-Repository laden
+und GitHub Pages aktivieren (Anleitung im Chat).
+
+Update später: index.html ersetzen und in sw.js die VERSION erhöhen,
+z. B. 'vwl-labor-v2'. Dann laden die installierten Apps die neue Version.
+
+Lokal testen in VS Code: Erweiterung "Live Server" installieren,
+Rechtsklick auf index.html -> "Open with Live Server".

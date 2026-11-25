@@ -1,0 +1,17 @@
+{
+  "name": "VWL-Trainingslabor",
+  "short_name": "VWL-Labor",
+  "description": "Interaktives Training für Einführung in die VWL: Elastizität, Unternehmen, Steuern, Externalitäten, Monopol",
+  "lang": "de",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#151d2b",
+  "theme_color": "#151d2b",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
