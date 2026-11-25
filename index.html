@@ -89,6 +89,7 @@ svg.ch{width:100%;height:auto;display:block;user-select:none;-webkit-user-select
 .qnav button.no{background:var(--bad);border-color:var(--bad);color:#fff}
 .meta{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:13px;color:var(--muted);margin-bottom:6px}
 .chip.mode-k{border-color:var(--ok);color:var(--ok)}.chip.mode-t{border-color:var(--rev);color:var(--rev)}.chip.mode-v{border-color:var(--dem);color:var(--dem)}
+.frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.9em;line-height:1.15;margin:0 .12em}.frac>span{padding:0 .2em;white-space:nowrap}.frac>span:first-child{border-bottom:1.3px solid currentColor;padding-bottom:1px}.frac>span:last-child{padding-top:1px}.frac .frac{font-size:.92em}
 .chip{font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);padding:2px 8px;border-radius:99px}
 .score{font-family:var(--mono);font-size:13px}
 .qtext{font-size:17px;font-weight:500;margin:6px 0 16px;text-wrap:pretty}
@@ -187,6 +188,20 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--rev);outline-of
 </div>
 
 <script>
+// Brüche mathematisch setzen: a/b → gestapelter Bruch (nur im Aufgabenbereich)
+const SUBS='(?:<su[bp]>[^<]{1,12}</su[bp]>)*';
+const NUM='\\d+(?:[.,]\\d+)*';
+const VAR='(?:\\|?(?:[A-ZΔ][A-Za-z]{0,2}|d[A-Z]|[a-zεπ])[₀-₉]*'+SUBS+'[²³]?\\|?)';
+const PAR='\\([^()<>]{1,80}(?:<su[bp]>[^<]{1,12}</su[bp]>[^()<>]{0,40})*\\)';
+const TOK='(?:'+PAR+'|'+NUM+'(?:'+VAR+')?|'+VAR+')';
+const RE=new RegExp('(^|[\\s>(=·+−\\-:;,„"])('+TOK+')\\s?/\\s?('+TOK+')(?![\\w/])','g');
+function fx(s){ return s.replace(RE,(m,pre,a,b)=>{ const st=x=>x[0]==='('&&x[x.length-1]===')'?x.slice(1,-1):x; return `${pre}<span class="frac"><span>${st(a)}</span><span>${st(b)}</span></span>`; }); }
+
+
+(function(){ const d=Object.getOwnPropertyDescriptor(Element.prototype,'innerHTML');
+  Object.defineProperty(Element.prototype,'innerHTML',{configurable:true,get(){return d.get.call(this);},
+    set(v){ if(typeof v==='string'&&v.indexOf('/')>=0&&!(this instanceof SVGElement)&&(this.id==='panel'||(this.closest&&this.closest('#panel')))) v=fx(fx(v)); d.set.call(this,v); }}); })();
+
 // ================= Hilfsfunktionen =================
 const fmt=(n,d=2)=>{ if(n===Infinity) return '∞'; if(n===-Infinity) return '−∞'; if(n==null||isNaN(n)) return '–'; return n.toLocaleString('de-DE',{maximumFractionDigits:d}).replace('-','−'); };
 const f2=n=>(!isFinite(n))?fmt(n):n.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2}).replace('-','−');
@@ -370,7 +385,7 @@ const LV3=[
 {n:'Grundlagen',d:'Definition, Vorzeichen-Konvention der Vorlesung, Einordnung und Bestimmungsgründe.',fig:F.zone30,T:[
  {t:'mc',text:'Was misst die Preiselastizität der Nachfrage?',
   opts:['Die Steigung der Nachfragekurve, also ΔQ/ΔP.','Um wie viel Prozent sich die nachgefragte Menge ändert, wenn der Preis um ein Prozent steigt.','Um wie viel Euro sich die Ausgaben ändern, wenn der Preis um einen Euro steigt.','Wie stark sich die Nachfragekurve bei einer Einkommensänderung verschiebt.'],c:1,
-  ex:'Preiselastizität = prozentuale Mengenänderung / prozentuale Preisänderung. Sie hat keine Einheit, deshalb kann man Märkte vergleichen, egal ob in Kugeln, Litern oder Euro gemessen wird. Die Steigung ΔQ/ΔP hängt dagegen von den Einheiten ab.'},
+  ex:'Preiselastizität = (prozentuale Mengenänderung)/(prozentuale Preisänderung). Sie hat keine Einheit, deshalb kann man Märkte vergleichen, egal ob in Kugeln, Litern oder Euro gemessen wird. Die Steigung ΔQ/ΔP hängt dagegen von den Einheiten ab.'},
  {t:'mc',text:'In der Vorlesung wird die Preiselastizität der Nachfrage anders angegeben als im Lehrbuch. Was gilt hier?',
   opts:['Sie wird als Betrag angegeben und ist immer positiv.','Sie wird mit Vorzeichen angegeben und ist bei normal verlaufender Nachfrage negativ, z. B. −2.','Sie liegt immer zwischen −1 und 1.','Sie ist positiv, weil Preis und Menge in dieselbe Richtung gehen.'],c:1,
   ex:'Das Buch verwendet den Betrag, die Vorlesung nicht. Deshalb steht dort z. B. ε = −2. Für die Einordnung (elastisch oder unelastisch) zählt trotzdem der Betrag: |−2| = 2 > 1, also elastisch.'},
@@ -1320,7 +1335,7 @@ const FS7=[
  {h:'Subvention',rows:[
   ['P<sup>S</sup> = P<sup>D</sup> + s,  Ausgaben = s · Q<sub>s</sub>,  NWL = s · (Q<sub>s</sub> − Q<sub>1</sub>) / 2','Subvention wie eine negative Steuer rechnen.','Die Menge steigt über das Gleichgewicht. Die Ausgaben sind größer als der Zugewinn an Renten.']]},
  {h:'Steuersystem',rows:[
-  ['Durchschnittssteuersatz = Steuerbetrag / Einkommen','Proportional, regressiv oder progressiv?','Bleibt er mit steigendem Einkommen gleich: proportional. Sinkt er: regressiv. Steigt er: progressiv.'],
+  ['Durchschnittssteuersatz = (Steuerbetrag)/(Einkommen)','Proportional, regressiv oder progressiv?','Bleibt er mit steigendem Einkommen gleich: proportional. Sinkt er: regressiv. Steigt er: progressiv.'],
   ['Äquivalenzprinzip   ·   Leistungsfähigkeitsprinzip (vertikal, horizontal)','Aussagen zur Steuergerechtigkeit einordnen.','Zahlen nach empfangenem Vorteil oder nach Leistungsfähigkeit. Vertikal: mehr Leistungsfähigkeit, mehr Steuer. Horizontal: gleiche Leistungsfähigkeit, gleiche Steuer.']]}
 ];
 function renderForm7(){
@@ -2491,7 +2506,7 @@ const LV17=[
   scene:(v)=>ppfScene({...AVS,trade:[{a:32,b:-v},{a:24*v,b:-v}],Qmax:Math.max(76,24*v*1.05)}),
   read:v=>{const a=v<4?'gewinnt':'gewinnt nicht', b=v>2?'gewinnt':'gewinnt nicht';return rd([['1 kg Fleisch kostet',fmt(v)+' kg Kartoffeln'],['Ackerbauer (OK 4)',a],['Viehbauer (OK 2)',b]]);},
   ex:'Für den Ackerbauern lohnt sich Fleisch kaufen, solange es weniger als 4 kg Kartoffeln kostet. Für den Viehbauern lohnt sich verkaufen, solange er mehr als 2 kg bekommt. Bei genau 2 oder 4 gewinnt eine Seite nichts.'},
- k17({t:'mc',text:'Wie steigt die Gesamtproduktion durch die Spezialisierung (Ackerbauer 0 F / 32 K, Viehbauer 18 F / 12 K statt 4/16 und 12/24)?',opts:['Fleisch +2 kg, Kartoffeln +4 kg','Fleisch +6 kg, Kartoffeln +8 kg','Sie bleibt gleich','Fleisch +2 kg, Kartoffeln −4 kg'],c:0,ex:'Fleisch: 0 + 18 = 18 statt 16. Kartoffeln: 32 + 12 = 44 statt 40. Genau diese Mehrproduktion teilen die beiden über den Handel auf.',fig:G17.avT},'k')
+ k17({t:'mc',text:'Wie steigt die Gesamtproduktion durch die Spezialisierung (Ackerbauer 0 kg F und 32 kg K, Viehbauer 18 kg F und 12 kg K statt 4 und 16 bzw. 12 und 24)?',opts:['Fleisch +2 kg, Kartoffeln +4 kg','Fleisch +6 kg, Kartoffeln +8 kg','Sie bleibt gleich','Fleisch +2 kg, Kartoffeln −4 kg'],c:0,ex:'Fleisch: 0 + 18 = 18 statt 16. Kartoffeln: 32 + 12 = 44 statt 40. Genau diese Mehrproduktion teilen die beiden über den Handel auf.',fig:G17.avT},'k')
 ]},
 {n:'Außenhandel',d:'Komparativer Vorteil zwischen Ländern, Preismechanismus und Lohnniveau.',fig:G17.dc,T:[
  {t:'mc',text:'Deutschland hat in beiden Gütern einen absoluten Vorteil gegenüber China. Was exportiert Deutschland?',opts:['Maschinen, weil es dort den komparativen Vorteil hat.','Beide Güter.','Nichts, China kann gegen Deutschland nicht konkurrieren.','E-Autos.'],c:0,ex:'Deutschland exportiert Maschinen und importiert E-Autos. Entscheidend ist der komparative Vorteil.',fig:G17.dc},
@@ -2503,10 +2518,10 @@ const LV17=[
 ]},
 {n:'Vorteile · Taschenrechner',d:'Opportunitätskosten und Vorteile mit krummen Zahlen. Ergebnisse auf zwei Nachkommastellen.',fig:()=>ppfScene({L:[{n:'Land X',x:10.67,y:6.4},{n:'Land Y',x:12,y:9.6}],xl:'Tuch',yl:'Wein'}),T:[
  k17({t:'calc',text:'Land X braucht 75 Minuten für eine Einheit Wein und 45 Minuten für eine Einheit Tuch, Land Y 50 Minuten für Wein und 40 Minuten für Tuch. Je Tag stehen 8 Stunden zur Verfügung.',
-  formula:['Max. Menge = 480 / Minuten je Einheit'],
+  formula:['Max. Menge = 480/(Minuten je Einheit)'],
   fields:[['Land X: max. Wein',6.4],['Land X: max. Tuch',10.67],['Land Y: max. Wein',9.6],['Land Y: max. Tuch',12]],
   ex:'480/75 = 6,4 · 480/45 = 10,67 · 480/50 = 9,6 · 480/40 = 12.',fig:()=>ppfScene({L:[{n:'Land X',x:480/45,y:6.4},{n:'Land Y',x:12,y:9.6}],xl:'Tuch',yl:'Wein'})},'t'),
- k17({t:'calc',text:'Gleiche Länder. Berechne die Opportunitätskosten.',formula:['OK Wein (in Tuch) = Minuten Wein / Minuten Tuch'],
+ k17({t:'calc',text:'Gleiche Länder. Berechne die Opportunitätskosten.',formula:['OK Wein (in Tuch) = (Minuten Wein)/(Minuten Tuch)'],
   fields:[['Land X: OK 1 Wein (in Tuch)',1.67],['Land X: OK 1 Tuch (in Wein)',0.6],['Land Y: OK 1 Wein (in Tuch)',1.25],['Land Y: OK 1 Tuch (in Wein)',0.8]],
   ex:'X: 75/45 = 1,67 und 45/75 = 0,6. Y: 50/40 = 1,25 und 40/50 = 0,8. Kontrolle: Die beiden Werte je Land sind Kehrwerte.'},'t'),
  k17({t:'sort',text:'Land X (OK Wein 1,67, OK Tuch 0,6) und Land Y (OK Wein 1,25, OK Tuch 0,8). Y braucht für beide Güter weniger Zeit.',items:[['Absoluter Vorteil bei Wein',1,['Land X','Land Y']],['Absoluter Vorteil bei Tuch',1,['Land X','Land Y']],['Komparativer Vorteil bei Wein',1,['Land X','Land Y']],['Komparativer Vorteil bei Tuch',0,['Land X','Land Y']]],ex:'Y ist in beidem schneller. Komparativ: Wein ist für Y billiger (1,25 < 1,67), Tuch für X (0,6 < 0,8).'},'t'),
@@ -2528,7 +2543,7 @@ const LV17=[
  k17({t:'calc',text:'Konsum von D nach dem Handel (produziert 630 Kaffee, verkauft 200 für 400 Zucker).',
   fields:[['Konsum von D: Kaffee',430],['Konsum von D: Zucker',400],['Max. Zucker von D ohne Handel bei 430 Kaffee',300]],
   ex:'630 − 200 = 430 Kaffee, 400 Zucker. Ohne Handel: Zucker = 945 − 1,5 · 430 = 300. Mit Handel konsumiert D außerhalb seiner PMK.'},'t'),
- k17({t:'calc',text:'Ackerbauer und Viehbauer, Tausch 1 kg Fleisch = 3 kg Kartoffeln. Ohne Handel: 4 F / 16 K und 12 F / 24 K. Mit Handel produzieren sie 0 F / 32 K und 18 F / 12 K.',
+ k17({t:'calc',text:'Ackerbauer und Viehbauer, Tausch 1 kg Fleisch = 3 kg Kartoffeln. Ohne Handel: 4 F und 16 K bzw. 12 F und 24 K. Mit Handel produzieren sie 0 F und 32 K bzw. 18 F und 12 K.',
   fields:[['Gesamtproduktion Fleisch ohne Handel',16],['Gesamtproduktion Fleisch mit Spezialisierung',18],['Gesamtproduktion Kartoffeln ohne Handel',40],['Gesamtproduktion Kartoffeln mit Spezialisierung',44]],
   ex:'4 + 12 = 16, 0 + 18 = 18. 16 + 24 = 40, 32 + 12 = 44. Die Spezialisierung erhöht die Gesamtproduktion, der Handel verteilt sie.',fig:G17.avT},'t'),
  k17({t:'calc',text:'Land X (OK Wein 1,67 Tuch) und Land Y (OK Wein 1,25 Tuch). Preis: 1 Wein = 1,4 Tuch. Y verkauft 5 Wein an X.',
@@ -2613,8 +2628,8 @@ const LV17=[
   const r2=x=>Math.round(x*100)/100, MIN=[25,35,40,45,50,55,65,70,75,80,90,95];
   const minCase=R=>{ for(let k=0;k<200;k++){ const nm=pickV(R,NAMES.filter(x=>x[0]!=='Anna')), g=pickV(R,GOODS), a=pickV(R,MIN),b=pickV(R,MIN),c=pickV(R,MIN),d=pickV(R,MIN); if(a===b||c===d||Math.abs(a/b-c/d)<0.1) continue;
     return {nm,g,a,b,c,d,intro:`${nm[0]} braucht ${a} Minuten für 1 ${g[0]} und ${b} Minuten für 1 ${g[1]}, ${nm[1]} ${c} bzw. ${d} Minuten. Je Tag stehen 8 Stunden zur Verfügung.`,fig:k=>ppfScene({L:[{n:nm[0],x:480/a,y:480/b},{n:nm[1],x:480/c,y:480/d}],xl:g[0],yl:g[1]})}; } };
-  tT.min=R=>{ const C=minCase(R); return {t:'calc',text:C.intro,formula:['Max. Menge = 480 / Minuten je Einheit'],fields:[[`${C.nm[0]}: max. ${C.g[0]}`,r2(480/C.a)],[`${C.nm[0]}: max. ${C.g[1]}`,r2(480/C.b)],[`${C.nm[1]}: max. ${C.g[0]}`,r2(480/C.c)],[`${C.nm[1]}: max. ${C.g[1]}`,r2(480/C.d)]],ex:`480/${C.a} = ${q(480/C.a)} · 480/${C.b} = ${q(480/C.b)} · 480/${C.c} = ${q(480/C.c)} · 480/${C.d} = ${q(480/C.d)}.`,fig:C.fig}; };
-  tT.okmin=R=>{ const C=minCase(R); return {t:'calc',text:`${C.intro} Berechne die Opportunitätskosten (zwei Nachkommastellen).`,formula:['OK 1 X (in Y) = Minuten für X / Minuten für Y'],fields:[[`${C.nm[0]}: OK 1 ${C.g[0]} (in ${C.g[1]})`,r2(C.a/C.b)],[`${C.nm[0]}: OK 1 ${C.g[1]} (in ${C.g[0]})`,r2(C.b/C.a)],[`${C.nm[1]}: OK 1 ${C.g[0]} (in ${C.g[1]})`,r2(C.c/C.d)],[`${C.nm[1]}: OK 1 ${C.g[1]} (in ${C.g[0]})`,r2(C.d/C.c)]],ex:`Die Zeit für ein ${C.g[0]} reicht für ${C.a}/${C.b} = ${q(C.a/C.b)} ${C.g[1]} (${C.nm[0]}) bzw. ${C.c}/${C.d} = ${q(C.c/C.d)} (${C.nm[1]}). Die OK des anderen Guts sind die Kehrwerte.`,fig:C.fig}; };
+  tT.min=R=>{ const C=minCase(R); return {t:'calc',text:C.intro,formula:['Max. Menge = 480/(Minuten je Einheit)'],fields:[[`${C.nm[0]}: max. ${C.g[0]}`,r2(480/C.a)],[`${C.nm[0]}: max. ${C.g[1]}`,r2(480/C.b)],[`${C.nm[1]}: max. ${C.g[0]}`,r2(480/C.c)],[`${C.nm[1]}: max. ${C.g[1]}`,r2(480/C.d)]],ex:`480/${C.a} = ${q(480/C.a)} · 480/${C.b} = ${q(480/C.b)} · 480/${C.c} = ${q(480/C.c)} · 480/${C.d} = ${q(480/C.d)}.`,fig:C.fig}; };
+  tT.okmin=R=>{ const C=minCase(R); return {t:'calc',text:`${C.intro} Berechne die Opportunitätskosten (zwei Nachkommastellen).`,formula:['OK 1 X (in Y) = (Minuten für X)/(Minuten für Y)'],fields:[[`${C.nm[0]}: OK 1 ${C.g[0]} (in ${C.g[1]})`,r2(C.a/C.b)],[`${C.nm[0]}: OK 1 ${C.g[1]} (in ${C.g[0]})`,r2(C.b/C.a)],[`${C.nm[1]}: OK 1 ${C.g[0]} (in ${C.g[1]})`,r2(C.c/C.d)],[`${C.nm[1]}: OK 1 ${C.g[1]} (in ${C.g[0]})`,r2(C.d/C.c)]],ex:`Die Zeit für ein ${C.g[0]} reicht für ${C.a}/${C.b} = ${q(C.a/C.b)} ${C.g[1]} (${C.nm[0]}) bzw. ${C.c}/${C.d} = ${q(C.c/C.d)} (${C.nm[1]}). Die OK des anderen Guts sind die Kehrwerte.`,fig:C.fig}; };
   const G=(m,keys,n)=>seed=>{ const R=rngV(seed); return pick(R,keys,n).map(k=>m==='k'?tag('k',kT[k])(R):tag('t',tT[k])(R)); };
   const o=LV17.slice(), T5=o[5].T;
   const NEW=[
@@ -2665,10 +2680,10 @@ function renderLab17(){
 function renderForm17(){
   animId++; dragCb=null; areaCb=null; levelsEl.hidden=true; minibox.hidden=true; drawScene(G17.av(1));
   const rows=[
-   ['Max. Menge = verfügbare Zeit / Zeit je Einheit','Achsenabschnitte der PMK aus Arbeitszeiten (480 Minuten am Tag).','Wer seine ganze Zeit in ein Gut steckt, schafft genau so viele Einheiten.'],
+   ['Max. Menge = (verfügbare Zeit)/(Zeit je Einheit)','Achsenabschnitte der PMK aus Arbeitszeiten (480 Minuten am Tag).','Wer seine ganze Zeit in ein Gut steckt, schafft genau so viele Einheiten.'],
    ['Max. Menge = Arbeiter · Produktivität','Achsenabschnitte aus Produktivitäten (Klausur a).','Alle Arbeiter produzieren nur dieses eine Gut.'],
-   ['OK 1 X (in Y) = max. Y / max. X = Zeit für X / Zeit für Y','Opportunitätskosten (Klausur b).','Für eine Einheit X gibt man so viel Y auf. Das ist der Betrag der Steigung der PMK (X waagerecht).'],
-   ['OK 1 Y (in X) = 1 / OK 1 X','Kontrolle der zweiten Opportunitätskosten.','Die beiden Opportunitätskosten eines Produzenten sind Kehrwerte.'],
+   ['OK 1 X (in Y) = (max. Y)/(max. X) = (Zeit für X)/(Zeit für Y)','Opportunitätskosten (Klausur b).','Für eine Einheit X gibt man so viel Y auf. Das ist der Betrag der Steigung der PMK (X waagerecht).'],
+   ['OK 1 Y (in X) = 1/(OK 1 X)','Kontrolle der zweiten Opportunitätskosten.','Die beiden Opportunitätskosten eines Produzenten sind Kehrwerte.'],
    ['Absoluter Vorteil: mehr Output je Input','Klausur c (absolut).','Produktivität. PMK liegt weiter außen. Bestimmt das Lohnniveau.'],
    ['Komparativer Vorteil: geringere OK','Klausur c, d (komparativ, Spezialisierung).','Grundlage von Spezialisierung und Handel. Niemand hat bei beiden Gütern den komparativen Vorteil (bei unterschiedlichen OK).'],
    ['OK<sub>niedrig</sub> < Preis < OK<sub>hoch</sub>','Preisintervall (Klausur e).','Nur dann bekommt jeder mehr als bei Eigenproduktion.'],
