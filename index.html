@@ -164,7 +164,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--rev);outline-of
     <button data-ch="k8"><span class="cn">8·9</span><span><b>Öffent&shy;liche Güter und Exter&shy;nali&shy;täten</b><small>Kapitel 8 und 9</small></span></button>
     <button data-ch="kv"><span class="cn">9+</span><span><b>Vermei&shy;dungs&shy;training</b><small>Kapitel 9 · Vertiefung</small></span></button>
     <button data-ch="k11"><span class="cn">11</span><span><b>Monopol</b><small>Kapitel 11</small></span></button>
-    <button data-ch="k17"><span class="cn">17</span><span><b>Handels&shy;vorteile</b><small>Kapitel 17</small></span></button>
+    <button data-ch="k17"><span class="cn">17</span><span><b>Handel &amp; Außen&shy;handel</b><small>Kapitel 17 · V1 + V2</small></span></button>
   </nav>
   <header>
     <div>
@@ -2652,6 +2652,118 @@ const LV17=[
   NEW[9].T=NEW[9].gen(20261125);
   LV17.length=0; NEW.forEach(x=>LV17.push(x));
 })();
+// ================= Kapitel 17 Teil 2 (V2): Außenhandel, Zölle und Quoten =================
+// Linearer Markt: Nachfrage Q = a − b·P, Angebot Q = c + d·P. Kleines Land, Weltmarktpreis Pw gegeben.
+const TM={a:100,b:1,c:0,d:1};                       // Gleichgewicht ohne Handel: P* = 50, Q* = 50
+const KR17=(m,P)=>0.5*(m.a/m.b-P)*Math.max(0,m.a-m.b*P);
+const PR17=(m,P)=>{ const q=Math.max(0,m.c+m.d*P); if(m.c>=0) return (m.c+q)/2*P; const P0=-m.c/m.d; return P>P0?0.5*(P-P0)*q:0; };
+function tradeScene(o){
+  const m=o.m||TM, S={Pmax:o.Pmax||100,Qmax:o.Qmax||100,x:'Menge',y:'Preis (€)',curves:[],points:[],rects:[],lines:[],polys:[],extra:'',legend:[LG.D,LG.S]};
+  SC=S;
+  const e=inter([m.a,-m.b],[m.c,m.d]);
+  S.curves.push({type:'lin',a:m.a,b:-m.b,kind:'D',label:'D'},{type:'lin',a:m.c,b:m.d,kind:'S',label:'S'});
+  if(o.Pw!=null){
+    const t=o.t||0, Pd=o.Pw+t, qd=m.a-m.b*Pd, qs=m.c+m.d*Pd, qd0=m.a-m.b*o.Pw, qs0=m.c+m.d*o.Pw, P0=Math.max(0,-m.c/m.d);
+    if(o.areas){
+      S.polys.push({pts:[[0,Pd],[qd,Pd],[0,m.a/m.b]],kind:'cs',label:'KR'});
+      S.polys.push({pts:m.c>=0?[[0,0],[m.c,0],[qs,Pd],[0,Pd]]:[[0,P0],[qs,Pd],[0,Pd]],kind:'ps',label:'PR'});
+      if(t){ S.polys.push({pts:[[qs,o.Pw],[qd,o.Pw],[qd,Pd],[qs,Pd]],kind:'tax',label:o.quota?'Quotenrente':'Zoll'});
+        S.polys.push({pts:[[qs0,o.Pw],[qs,o.Pw],[qs,Pd]],kind:'nwl'},{pts:[[qd,Pd],[qd,o.Pw],[qd0,o.Pw]],kind:'nwl'}); }
+    }
+    S.curves.push({type:'hor',p:o.Pw,col:'var(--rev)',w:2.5,dash:1});
+    if(t) S.curves.push({type:'hor',p:Pd,col:'var(--bad)',w:2,dash:1});
+    S.extra+=text(ML+W-6,sy(o.Pw)+(t?16:-8),'P<tspan font-size="10">W</tspan> = '+fmt(o.Pw),'var(--rev)','end');
+    if(t) S.extra+=text(ML+W-6,sy(Pd)-8,(o.quota?'Inlandspreis mit Quote = ':'P<tspan font-size="10">W</tspan> + Zoll = ')+fmt(Pd),'var(--bad)','end');
+    if(o.k!==0){ S.points.push({P:Pd,Q:qd,guides:1,tags:1,noP:1,col:'var(--dem)'},{P:Pd,Q:qs,guides:1,tags:1,noP:1,col:'var(--sup)'}); }
+    S.legend.push(['','var(--rev)','Weltmarktpreis']); if(t) S.legend.push(['','var(--bad)',o.quota?'Inlandspreis mit Quote':'Weltmarktpreis + Zoll']);
+    if(o.areas){ S.legend.push(LG7.cs,LG7.ps); if(t) S.legend.push([LG7.tax[0],LG7.tax[1],o.quota?'Quotenrente':'Zolleinnahmen'],LG7.nwl); }
+  }
+  if(e) S.points.push({...e,hollow:1,col:'var(--muted)',guides:o.Pw==null,tags:o.Pw==null,label:'ohne Handel'});
+  return S;
+}
+const G17b={
+  base:()=>tradeScene({}),
+  ex:k=>tradeScene({Pw:70,areas:k>0,k:1}),
+  im:k=>tradeScene({Pw:30,areas:k>0,k:1}),
+  tz:k=>tradeScene({Pw:30,t:10,areas:k>0,k:1}),
+  qu:k=>tradeScene({Pw:30,t:10,quota:1,areas:k>0,k:1})
+};
+const V2=(t,m)=>(t.m=m,t);
+const LV17b=[
+{n:'V2 · Grundlagen',teil:'V2',grp:'k',d:'Teil 2 · Weltmarktpreis, Export- und Importland, Gewinner und Verlierer, Zölle und Quoten. Verständnisfragen.',fig:G17b.base,T:[
+ {t:'mc',text:'Ohne Außenhandel kostet Stahl im Inland 50 €. Der Weltmarktpreis liegt bei 70 €. Was passiert, wenn das Land den Handel öffnet?',opts:['Das Land wird Exporteur: Der Inlandspreis steigt auf 70 €.','Das Land wird Importeur: Der Inlandspreis sinkt.','Der Inlandspreis bleibt bei 50 €.','Das Land handelt nicht, weil es teurer ist.'],c:0,ex:'Liegt der Weltmarktpreis über dem inländischen Gleichgewichtspreis, hat das Land einen komparativen Vorteil. Die Inländer verkaufen zum höheren Weltmarktpreis ins Ausland.',fig:G17b.ex},
+ {t:'mc',text:'Wann wird ein kleines Land bei Freihandel zum Importeur eines Guts?',opts:['Wenn der Weltmarktpreis unter dem inländischen Gleichgewichtspreis liegt.','Wenn der Weltmarktpreis über dem inländischen Gleichgewichtspreis liegt.','Wenn es einen absoluten Vorteil hat.','Wenn die Nachfrage elastisch ist.'],c:0,ex:'Dann haben andere Länder einen komparativen Vorteil. Die inländische Nachfrage übersteigt das inländische Angebot, die Lücke wird importiert.',fig:G17b.im},
+ {t:'mc',text:'Was bedeutet es, dass ein kleines Land „Preisnehmer“ auf dem Weltmarkt ist?',opts:['Es kann den Weltmarktpreis nicht beeinflussen und nimmt ihn als gegeben hin.','Es setzt den Weltmarktpreis selbst.','Es darf keine Zölle erheben.','Es handelt nur zum inländischen Gleichgewichtspreis.'],c:0,ex:'Das Land ist zu klein, um den Weltmarktpreis zu verändern. Im Diagramm ist der Weltmarktpreis deshalb eine waagerechte Linie.'},
+ {t:'sort',text:'Exportland: Wer gewinnt, wer verliert durch Freihandel?',cats:['gewinnt','verliert'],items:[['Inländische Produzenten',0],['Inländische Konsumenten',1],['Das Land insgesamt',0]],ex:'Der Preis steigt auf den Weltmarktpreis: Die Produzentenrente wächst, die Konsumentenrente sinkt. Der Gewinn der Produzenten ist größer als der Verlust der Konsumenten.',fig:G17b.ex},
+ {t:'sort',text:'Importland: Wer gewinnt, wer verliert durch Freihandel?',cats:['gewinnt','verliert'],items:[['Inländische Produzenten',1],['Inländische Konsumenten',0],['Das Land insgesamt',0]],ex:'Der Preis sinkt auf den Weltmarktpreis: Die Konsumentenrente wächst, die Produzentenrente sinkt. Insgesamt steigt die Wohlfahrt.',fig:G17b.im},
+ {t:'mc',text:'Was gilt laut Vorlesung für die Gesamtwohlfahrt eines Landes, das den Handel öffnet?',opts:['Sie steigt – im Export- wie im Importland. Die Gewinner könnten die Verlierer entschädigen und stünden immer noch besser da.','Sie steigt nur im Exportland.','Sie steigt nur im Importland.','Sie bleibt gleich, es wird nur umverteilt.'],c:0,ex:'Handel steigert die wirtschaftliche Wohlfahrt jedes Landes. Er verteilt aber um: Es gibt Gewinner und Verlierer.'},
+ {t:'mc',text:'Was ist ein Zoll?',opts:['Eine Steuer auf importierte Güter.','Eine Höchstmenge für Importe.','Eine Subvention für Exporteure.','Ein Verbot von Exporten.'],c:0,ex:'Der Zoll erhöht den Inlandspreis des Importguts über den Weltmarktpreis um den Zollbetrag.',fig:G17b.tz},
+ {t:'sort',text:'Wirkung eines Zolls im Importland: richtig oder falsch?',cats:['richtig','falsch'],items:[['Der Inlandspreis steigt um den Zoll.',0],['Die inländische Produktion steigt.',0],['Die Importmenge steigt.',1],['Die Konsumentenrente sinkt.',0],['Der Staat nimmt Zoll ein.',0],['Der Zoll erhöht die Gesamtwohlfahrt.',1]],ex:'Der Zoll nähert den Markt dem Gleichgewicht ohne Handel an. Er verursacht einen Nettowohlfahrtsverlust aus zwei Dreiecken: Überproduktion im Inland und Unterkonsum.',fig:G17b.tz},
+ {t:'mc',text:'Worin unterscheiden sich ein Zoll und eine Importquote, die zur gleichen Importmenge führen?',opts:['Der Preis- und Mengeneffekt ist gleich. Beim Zoll bekommt der Staat die Einnahmen, bei der Quote die Inhaber der Importlizenzen (Quotenrente).','Die Quote verursacht keinen Wohlfahrtsverlust.','Der Zoll senkt den Inlandspreis, die Quote erhöht ihn.','Es gibt keinen Unterschied.'],c:0,ex:'Beide verteuern das Gut im Inland gleich stark. Nur wer das Rechteck zwischen Weltmarkt- und Inlandspreis erhält, ist verschieden – außer der Staat versteigert die Lizenzen.',fig:G17b.qu},
+ {t:'mc',text:'Warum gibt es Zölle, obwohl Freihandel die Wohlfahrt erhöht?',opts:['Die Verlierer (inländische Produzenten, ihre Beschäftigten) sind konzentriert und organisiert; Argumente wie Arbeitsplätze, nationale Sicherheit, junge Industrien oder Verhandlungsdruck werden angeführt.','Weil Zölle die Gesamtwohlfahrt erhöhen.','Weil Konsumenten von Zöllen profitieren.','Weil kleine Länder den Weltmarktpreis senken wollen.'],c:0,ex:'Ökonomisch überwiegen bei Zöllen meist die Kosten. Politisch setzen sich aber oft die wenigen, stark Betroffenen durch, während der Schaden auf viele Konsumenten verteilt ist.'}
+]},
+{n:'V2 · Exportland',teil:'V2',grp:'k',d:'Teil 2 · Nachfrage Q = 100 − P, Angebot Q = P, Weltmarktpreis 70 €. Mengen, Renten und Wohlfahrtsgewinn im Kopf.',fig:G17b.ex,T:[
+ V2({t:'mc',text:'Nachfrage Q = 100 − P, Angebot Q = P. Wie hoch sind Preis und Menge ohne Außenhandel?',opts:['P = 50 €, Q = 50','P = 100 €, Q = 0','P = 70 €, Q = 30','P = 50 €, Q = 100'],c:0,ex:'100 − P = P ⇒ P = 50, Q = 50.',fig:G17b.base},'k'),
+ V2({t:'mc',text:'Der Weltmarktpreis beträgt 70 €. Wie viel wird im Inland nachgefragt, wie viel angeboten?',opts:['Nachfrage 30, Angebot 70','Nachfrage 70, Angebot 30','Nachfrage 50, Angebot 50','Nachfrage 30, Angebot 50'],c:0,ex:'Q_D = 100 − 70 = 30, Q_S = 70.',fig:G17b.ex},'k'),
+ V2({t:'mc',text:'Wie viel exportiert das Land beim Weltmarktpreis von 70 €?',opts:['40','70','30','20'],c:0,ex:'Export = Angebot − Nachfrage = 70 − 30 = 40.',fig:G17b.ex},'k'),
+ V2({t:'mc',text:'Um wie viel ändert sich die Konsumentenrente durch den Handel?',opts:['−800 €','+800 €','−400 €','−1.250 €'],c:0,ex:'Vorher ½ · (100 − 50) · 50 = 1.250 €, nachher ½ · (100 − 70) · 30 = 450 €. Änderung −800 €.',fig:G17b.ex},'k'),
+ V2({t:'mc',text:'Um wie viel ändert sich die Produzentenrente?',opts:['+1.200 €','+800 €','+400 €','+2.450 €'],c:0,ex:'Vorher ½ · 50 · 50 = 1.250 €, nachher ½ · 70 · 70 = 2.450 €. Änderung +1.200 €.',fig:G17b.ex},'k'),
+ V2({t:'mc',text:'Wie stark steigt die Gesamtwohlfahrt durch den Export?',opts:['+400 €','+1.200 €','−400 €','0 €'],c:0,ex:'−800 + 1.200 = +400 €. Das ist das Dreieck ½ · (70 − 50) · 40 zwischen Weltmarktpreis und den Kurven.',fig:G17b.ex},'k')
+]},
+{n:'V2 · Importland',teil:'V2',grp:'k',d:'Teil 2 · Gleicher Markt, Weltmarktpreis 30 €. Import, Renten und Wohlfahrtsgewinn.',fig:G17b.im,T:[
+ V2({t:'mc',text:'Nachfrage Q = 100 − P, Angebot Q = P, Weltmarktpreis 30 €. Wie viel wird importiert?',opts:['40','30','70','20'],c:0,ex:'Q_D = 70, Q_S = 30, Import = 70 − 30 = 40.',fig:G17b.im},'k'),
+ V2({t:'mc',text:'Wie verändert sich die Konsumentenrente gegenüber dem Zustand ohne Handel (1.250 €)?',opts:['+1.200 € auf 2.450 €','+800 € auf 2.050 €','−800 € auf 450 €','Sie bleibt gleich'],c:0,ex:'Nachher ½ · (100 − 30) · 70 = 2.450 €.',fig:G17b.im},'k'),
+ V2({t:'mc',text:'Wie verändert sich die Produzentenrente (vorher 1.250 €)?',opts:['−800 € auf 450 €','+800 €','−1.200 €','Sie bleibt gleich'],c:0,ex:'Nachher ½ · 30 · 30 = 450 €.',fig:G17b.im},'k'),
+ V2({t:'mc',text:'Wohlfahrtsgewinn des Importlandes?',opts:['+400 €','+1.200 €','−800 €','0 €'],c:0,ex:'+1.200 − 800 = +400 € = ½ · (50 − 30) · 40.',fig:G17b.im},'k'),
+ V2({t:'mc',text:'Was passiert mit den Beschäftigten der inländischen Stahlindustrie, wenn Stahl billig importiert wird?',opts:['Die inländische Produktion sinkt von 50 auf 30 – dort fallen eher Arbeitsplätze weg.','Die inländische Produktion steigt.','Nichts, Importe betreffen nur Konsumenten.','Sie profitieren von der höheren Konsumentenrente.'],c:0,ex:'Genau diese konzentrierten Verluste erklären den politischen Druck für Zölle.',fig:G17b.im},'k')
+]},
+{n:'V2 · Zoll & Quote',teil:'V2',grp:'k',d:'Teil 2 · Weltmarktpreis 30 €, Zoll 10 € je Einheit oder gleichwertige Quote. Einnahmen, Rentenänderungen, Nettowohlfahrtsverlust.',fig:G17b.tz,T:[
+ V2({t:'mc',text:'Weltmarktpreis 30 €, Zoll 10 €. Wie hoch ist der Inlandspreis?',opts:['40 €','30 €','20 €','50 €'],c:0,ex:'Inlandspreis = Weltmarktpreis + Zoll = 40 €.',fig:G17b.tz},'k'),
+ V2({t:'mc',text:'Wie viel wird mit Zoll importiert (Nachfrage Q = 100 − P, Angebot Q = P)?',opts:['20','40','60','10'],c:0,ex:'Q_D = 60, Q_S = 40, Import = 20 (vorher 40).',fig:G17b.tz},'k'),
+ V2({t:'mc',text:'Wie hoch sind die Zolleinnahmen des Staates?',opts:['200 €','400 €','100 €','600 €'],c:0,ex:'Zoll · Importmenge = 10 · 20 = 200 €.',fig:G17b.tz},'k'),
+ V2({t:'mc',text:'Wie ändern sich Konsumenten- und Produzentenrente gegenüber Freihandel?',opts:['KR −650 €, PR +350 €','KR −200 €, PR +200 €','KR +650 €, PR −350 €','KR −400 €, PR +400 €'],c:0,ex:'KR: 2.450 → ½ · 60 · 60 = 1.800 (−650). PR: 450 → ½ · 40 · 40 = 800 (+350).',fig:G17b.tz},'k'),
+ V2({t:'mc',text:'Wie groß ist der Nettowohlfahrtsverlust des Zolls?',opts:['100 €','200 €','50 €','650 €'],c:0,ex:'−650 + 350 + 200 = −100 €. Zwei Dreiecke je ½ · 10 · 10 = 50 €.',fig:G17b.tz},'k'),
+ V2({t:'mc',text:'Statt des Zolls wird eine Importquote von 20 Einheiten eingeführt. Was gilt?',opts:['Inlandspreis 40 €, gleicher Nettowohlfahrtsverlust; die 200 € gehen als Quotenrente an die Lizenzinhaber.','Inlandspreis 30 €, kein Verlust.','Inlandspreis 50 €.','Der Staat nimmt 200 € Zoll ein.'],c:0,ex:'Bei 20 Einheiten Import muss der Inlandspreis 40 € betragen (60 − 40 = 20). Preis- und Mengeneffekte sind dieselben wie beim Zoll.',fig:G17b.qu},'k')
+]}
+];
+// Taschenrechner und „Neue Zahlen“: zufällige lineare Märkte
+(function(){
+  const r2=x=>Math.round(x*100)/100;
+  const mk=R=>{ for(let k=0;k<300;k++){ const b=pickV(R,[0.5,1,1.5,2]), d=pickV(R,[0.5,1,2,3]), Ps=pickV(R,[20,24,30,36,40,45,50,60]), Qs=pickV(R,[40,48,60,72,80,90,120]);
+      const m={a:Qs+b*Ps,b,c:Qs-d*Ps,d}; if(m.c+d*0>Qs) continue; return {m,Ps,Qs}; } };
+  const sc=(m,Ps,Qs,o)=>k=>tradeScene({...o,m,areas:k>0,k:1,Pmax:Math.ceil(m.a/m.b*1.05),Qmax:Math.ceil(Math.max(Qs*1.6,(m.a-m.b*Ps*0.5)*1.1))});
+  const txt=m=>`Nachfrage Q = ${fmt(m.a)} − ${fmt(m.b)} · P, Angebot Q = ${m.c<0?'−'+fmt(-m.c):fmt(m.c)} + ${fmt(m.d)} · P.`;
+  const T={
+   ex:R=>{ const {m,Ps,Qs}=mk(R), Pw=Math.min(Ps*pickV(R,[1.2,1.25,1.3,1.4,1.5]),0.85*m.a/m.b), qd=m.a-m.b*Pw, qs=m.c+m.d*Pw;
+     return {t:'calc',text:`${txt(m)} Der Weltmarktpreis beträgt ${fmt(Pw)} €. Berechne (zwei Nachkommastellen).`,formula:['Export = Q_S − Q_D','KR = 1/2 · (P_max − P) · Q_D','ΔW = 1/2 · (P_W − P*) · Export'],
+      fields:[['Preis ohne Handel P*',r2(Ps)],['Exportmenge',r2(qs-qd)],['Änderung Konsumentenrente',r2(KR17(m,Pw)-KR17(m,Ps))],['Änderung Produzentenrente',r2(PR17(m,Pw)-PR17(m,Ps))],['Änderung Gesamtwohlfahrt',r2(KR17(m,Pw)+PR17(m,Pw)-KR17(m,Ps)-PR17(m,Ps))]],
+      ex:`P* = ${fmt(Ps)} €, Q* = ${fmt(Qs)}. Bei ${fmt(Pw)} €: Q_D = ${fmt(qd)}, Q_S = ${fmt(qs)}, Export ${fmt(qs-qd)}. Wohlfahrtsgewinn = ½ · ${fmt(Pw-Ps)} · ${fmt(qs-qd)} = ${fmt(0.5*(Pw-Ps)*(qs-qd))} €.`,fig:sc(m,Ps,Qs,{Pw})}; },
+   im:R=>{ const {m,Ps,Qs}=mk(R), Pw=Math.max(Ps*pickV(R,[0.6,0.65,0.7,0.75,0.8]),m.c<0?-m.c/m.d*1.1:0), qd=m.a-m.b*Pw, qs=Math.max(0,m.c+m.d*Pw);
+     return {t:'calc',text:`${txt(m)} Der Weltmarktpreis beträgt ${fmt(Pw)} €. Berechne (zwei Nachkommastellen).`,formula:['Import = Q_D − Q_S','PR = 1/2 · (P − P_min) · Q_S'],
+      fields:[['Importmenge',r2(qd-qs)],['Änderung Konsumentenrente',r2(KR17(m,Pw)-KR17(m,Ps))],['Änderung Produzentenrente',r2(PR17(m,Pw)-PR17(m,Ps))],['Änderung Gesamtwohlfahrt',r2(KR17(m,Pw)+PR17(m,Pw)-KR17(m,Ps)-PR17(m,Ps))]],
+      ex:`Q_D = ${fmt(qd)}, Q_S = ${fmt(qs)}, Import ${fmt(qd-qs)}. Konsumenten gewinnen mehr, als Produzenten verlieren.`,fig:sc(m,Ps,Qs,{Pw})}; },
+   zoll:R=>{ const {m,Ps,Qs}=mk(R), Pw=Math.max(Ps*pickV(R,[0.5,0.55,0.6,0.65]),m.c<0?-m.c/m.d*1.1:0), t=r2((Ps-Pw)*pickV(R,[0.4,0.5,0.6])), Pd=Pw+t;
+     const qd0=m.a-m.b*Pw, qs0=Math.max(0,m.c+m.d*Pw), qd=m.a-m.b*Pd, qs=Math.max(0,m.c+m.d*Pd);
+     return {t:'calc',text:`${txt(m)} Weltmarktpreis ${fmt(Pw)} €, Zoll ${fmt(t)} € je Einheit. Berechne gegenüber Freihandel (zwei Nachkommastellen).`,formula:['Zolleinnahmen = t · Import mit Zoll','NWL = 1/2 · t · (Import ohne Zoll − Import mit Zoll)'],
+      fields:[['Import mit Zoll',r2(qd-qs)],['Zolleinnahmen',r2(t*(qd-qs))],['Änderung Konsumentenrente',r2(KR17(m,Pd)-KR17(m,Pw))],['Änderung Produzentenrente',r2(PR17(m,Pd)-PR17(m,Pw))],['Nettowohlfahrtsverlust',r2(0.5*t*((qd0-qs0)-(qd-qs)))]],
+      ex:`Inlandspreis ${fmt(Pd)} €. Import ${fmt(qd0-qs0)} → ${fmt(qd-qs)}. NWL = ½ · ${fmt(t)} · ${fmt((qd0-qs0)-(qd-qs))} = ${fmt(0.5*t*((qd0-qs0)-(qd-qs)))} €.`,fig:sc(m,Ps,Qs,{Pw,t})}; }
+  };
+  const G=keys=>seed=>{ const R=rngV(seed); return keys.map(k=>{ const x=T[k](R); x.m='t'; return x; }); };
+  LV17b.push({n:'V2 · Rechnen',teil:'V2',grp:'t',d:'Teil 2 · Export, Import und Zoll mit krummen Zahlen. „Neue Zahlen“ erzeugt neue Märkte.',fig:G17b.base,gen:G(['ex','im','zoll','ex','im','zoll'])});
+  LV17b[LV17b.length-1].T=LV17b[LV17b.length-1].gen(20261126);
+  // Kennzeichnung Teil 1 und gemischte Stufe V1 + V2
+  LV17.forEach(l=>{ if(!l.teil){ l.teil='V1'; l.n='V1 · '+l.n; } });
+  const v1k=LV17.find(l=>l.grp==='k'&&/Klausur/.test(l.n)&&l.gen), v1t=LV17.find(l=>l.grp==='t'&&/Klausur/.test(l.n)&&l.gen);
+  const v2k=LV17b.slice(1,4).flatMap(l=>l.T);
+  LV17b.push({n:'V1 + V2 · Klausur',grp:'k',d:'Teil 1 und 2 gemischt: komparative Vorteile, Handelsgewinne, Export, Import und Zoll.',fig:G17b.tz,
+    gen:seed=>{ const R=rngV(seed); return shufV(R,(v1k?v1k.gen(seed).slice(0,5):[]).concat(shufV(R,v2k).slice(0,5))); }});
+  LV17b.push({n:'V1 + V2 · Klausur',grp:'t',d:'Teil 1 und 2 gemischt mit Taschenrechner.',fig:G17b.tz,
+    gen:seed=>{ const R=rngV(seed); return shufV(R,(v1t?v1t.gen(seed).slice(0,3):[]).concat(G(['ex','im','zoll'])(seed))); }});
+  LV17b.slice(-2).forEach(l=>l.T=l.gen(20261126));
+  // Reihenfolge: Kopfrechnen V1, V2, gemischt; Taschenrechner V1, V2, gemischt
+  const all=LV17.concat(LV17b), ord=g=>all.filter(l=>l.grp===g&&l.teil==='V1').concat(all.filter(l=>l.grp===g&&l.teil==='V2'),all.filter(l=>l.grp===g&&!l.teil));
+  const NEW=ord('k').concat(ord('t')); LV17.length=0; NEW.forEach(x=>LV17.push(x));
+})();
 function initK17(){ if(!ST.k17Seeds) ST.k17Seeds={}; LV17.forEach((l,i)=>{ if(l.gen&&ST.k17Seeds[i]!=null) l.T=l.gen(ST.k17Seeds[i]); }); }
 function newNumbers17(l){ if(!LV17[l].gen) return; ST.k17Seeds[l]=Math.floor(Math.random()*1e9); LV17[l].T=LV17[l].gen(ST.k17Seeds[l]); RES[l]=LV17[l].T.map(()=>null); cur={l,i:0}; save(); renderLevels(); renderTask(); }
 
@@ -2694,9 +2806,22 @@ function renderForm17(){
    ['OK<sub>niedrig</sub> < Preis < OK<sub>hoch</sub>','Preisintervall (Klausur e).','Nur dann bekommt jeder mehr als bei Eigenproduktion.'],
    ['Handelsgewinn = Menge · (Preis − eigene OK)','Gewinn des Verkäufers in Einheiten des anderen Guts.','Durch Tausch erhält er mehr, als er selbst hätte herstellen können.'],
    ['Gleiche OK ⇒ parallele PMK ⇒ keine Handelsgewinne','Klausur f bis h.','Absolute Vorteile allein begründen keinen Handel.']];
-  panel.innerHTML=`<div class="lab"><h2>Formeln in Kapitel 17</h2><p class="fintro">Wofür du welche Formel brauchst und warum. Diagramm: PMK von Ackerbauer und Viehbauer mit den Autarkiepunkten A und B.</p><div class="fgroup"><h3><span>1</span>Regeln</h3>${rows.map(r=>`<div class="frow"><div class="fm">${r[0]}</div><div class="fw"><b>Wofür:</b> ${r[1]}</div><div class="fy"><b>Warum:</b> ${r[2]}</div></div>`).join('')}</div>
-  <div class="fgroup"><h3><span>2</span>Rezept für die Klausuraufgabe</h3><ol class="recipe"><li>Achsenabschnitte berechnen und PMK als Geraden zeichnen.</li><li>Opportunitätskosten beider Güter in eine Tabelle (Kehrwerte prüfen).</li><li>Absolut: wer mehr schafft. Komparativ: wer geringere OK hat.</li><li>Spezialisierung auf das Gut mit komparativem Vorteil.</li><li>Preisintervall zwischen den beiden OK desselben Guts.</li><li>Änderung der Produktivität: neue OK berechnen und vergleichen. Gleiche OK heißt keine Handelsgewinne.</li></ol></div></div>`;
+  panel.innerHTML=`<div class="lab"><h2>Formeln in Kapitel 17</h2><p class="fintro">Wofür du welche Formel brauchst und warum. Diagramm: PMK von Ackerbauer und Viehbauer mit den Autarkiepunkten A und B.</p><div class="fgroup"><h3><span>1</span>Vorlesung 1 · Komparative Vorteile</h3>${rows.map(r=>`<div class="frow"><div class="fm">${r[0]}</div><div class="fw"><b>Wofür:</b> ${r[1]}</div><div class="fy"><b>Warum:</b> ${r[2]}</div></div>`).join('')}</div>
+  ${F17V2()}<div class="fgroup"><h3><span>3</span>Rezept für die Klausuraufgabe (V1)</h3><ol class="recipe"><li>Achsenabschnitte berechnen und PMK als Geraden zeichnen.</li><li>Opportunitätskosten beider Güter in eine Tabelle (Kehrwerte prüfen).</li><li>Absolut: wer mehr schafft. Komparativ: wer geringere OK hat.</li><li>Spezialisierung auf das Gut mit komparativem Vorteil.</li><li>Preisintervall zwischen den beiden OK desselben Guts.</li><li>Änderung der Produktivität: neue OK berechnen und vergleichen. Gleiche OK heißt keine Handelsgewinne.</li></ol></div></div>`;
 }
+function F17V2(){ const fr=(a,b)=>`<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+  const rows=[
+   ['P<sub>W</sub> &gt; P* ⇒ Export, &nbsp; P<sub>W</sub> &lt; P* ⇒ Import','Ob das Land exportiert oder importiert.','Kleines Land ist Preisnehmer: Im Inland gilt nach Öffnung der Weltmarktpreis P<sub>W</sub>.'],
+   ['Export = Q<sub>S</sub>(P<sub>W</sub>) − Q<sub>D</sub>(P<sub>W</sub>)','Exportmenge im Exportland.','Was die Inländer mehr anbieten als nachfragen, geht ins Ausland.'],
+   ['Import = Q<sub>D</sub>(P<sub>W</sub>) − Q<sub>S</sub>(P<sub>W</sub>)','Importmenge im Importland.','Die Lücke zwischen Nachfrage und inländischem Angebot.'],
+   ['KR = '+fr('1','2')+' · (P<sub>max</sub> − P) · Q<sub>D</sub>','Konsumentenrente bei linearer Nachfrage.','Dreieck unter der Nachfrage, über dem Preis.'],
+   ['PR = '+fr('1','2')+' · (P − P<sub>min</sub>) · Q<sub>S</sub>','Produzentenrente (Angebot durch den Ursprung: P<sub>min</sub> = 0).','Fläche über dem Angebot, unter dem Preis.'],
+   ['ΔW = '+fr('1','2')+' · |P<sub>W</sub> − P*| · Handelsmenge','Wohlfahrtsgewinn durch Handel (Export- wie Importland).','Gewinner gewinnen mehr, als Verlierer verlieren.'],
+   ['P<sub>Inland</sub> = P<sub>W</sub> + t','Inlandspreis mit Zoll t.','Importeure geben den Zoll an die Käufer weiter.'],
+   ['Zolleinnahmen = t · Import<sub>mit Zoll</sub>','Einnahmen des Staates (bei einer Quote: Quotenrente der Lizenzinhaber).','Rechteck zwischen P<sub>W</sub> und P<sub>W</sub> + t über der Importmenge.'],
+   ['NWL = '+fr('1','2')+' · t · (Import<sub>ohne</sub> − Import<sub>mit</sub>)','Nettowohlfahrtsverlust des Zolls bzw. der Quote.','Zwei Dreiecke: Überproduktion im Inland und Unterkonsum.']];
+  return `<div class="fgroup"><h3><span>2</span>Vorlesung 2 · Außenhandel, Zölle, Quoten</h3>${rows.map(r=>`<div class="frow"><div class="fm">${r[0]}</div><div class="fw"><b>Wofür:</b> ${r[1]}</div><div class="fy"><b>Warum:</b> ${r[2]}</div></div>`).join('')}</div>`; }
+function lvTeil(L){ if(L.teil) return L.teil; const s=(L.n||'')+' '+(L.d||''); if(/Teil 1 und 2|V1 \+ V2/.test(s)) return ''; if(/Teil 2/.test(s)) return 'V2'; if(/Teil 1/.test(s)) return 'V1'; return ''; }
 // ================= Abfrage (je Kapitel getrennt) =================
 const CH={k3:{LV:LV3,tag:'Kap. 3.2',eb:'Einführung in die VWL · Kapitel 3 Teil 2',h1:'<span class="e">Elastizität</span> und ihre <span class="u">Anwendungen</span>'},
           k5:{LV:LV5,tag:'Kap. 5',eb:'Einführung in die VWL · Kapitel 5',h1:'Unternehmen in <span class="s">Wettbewerbs</span><span class="d">märkten</span>',form:()=>renderForm5()},
@@ -2704,7 +2829,7 @@ const CH={k3:{LV:LV3,tag:'Kap. 3.2',eb:'Einführung in die VWL · Kapitel 3 Teil
           k8:{LV:LV8,tag:'Kap. 8 · 9',eb:'Einführung in die VWL · Kapitel 8 und 9 · Ineffizienz von Märkten',h1:'Öffentliche Güter und <span class="d">Externalitäten</span>',form:()=>renderForm8()},
           kv:{LV:LVV,tag:'Vertiefung',eb:'Einführung in die VWL · Kapitel 9 · Vertiefung mit Zufallszahlen',h1:'<span class="s">Vermeidungs</span>training',form:()=>renderFormV()},
           k11:{LV:LV11,tag:'Kap. 11',eb:'Einführung in die VWL · Kapitel 11',h1:'Das <span class="s">Monopol</span>',form:()=>renderForm11()},
-          k17:{LV:LV17,tag:'Kap. 17',eb:'Einführung in die VWL · Kapitel 17 Teil 1',h1:'Interdependenz und <span class="s">Handelsvorteile</span>',form:()=>renderForm17()}};
+          k17:{LV:LV17,tag:'Kap. 17',eb:'Einführung in die VWL · Kapitel 17 Teil 1 und 2',h1:'Handelsvorteile und <span class="s">Außenhandel</span>',form:()=>renderForm17()}};
 // ================= Überreiter Kopfrechnen / Taschenrechner für alle Kapitel =================
 function hardNum(x){ if(!isFinite(x)) return false; const a=Math.abs(x);
   if(Number.isInteger(x)) return a<=100?false:(a<1000?(a%10!==0&&a%25!==0):a%100!==0);
@@ -2751,6 +2876,9 @@ initKV();
 if(ST.k11&&!ST.k11mc){ delete ST.k11; } ST.k11mc=1;
 initK11();
 if(!ST.k17v2){ delete ST.k17; delete ST.k17Seeds; ST.k17v2=1; }
+(function(){ if(ST.k17t2) return; ST.k17t2=1; const M={0:0,1:1,2:2,3:3,4:4,5:5,6:11,7:12,8:13,9:14};
+  if(ST.k17&&ST.k17.res){ const r=[]; Object.keys(M).forEach(o=>{ if(ST.k17.res[o]) r[M[o]]=ST.k17.res[o]; }); ST.k17.res=r; if(ST.k17.cur) ST.k17.cur={l:M[ST.k17.cur.l]??0,i:ST.k17.cur.i}; }
+  if(ST.k17Seeds){ const n={}; Object.keys(M).forEach(o=>{ if(ST.k17Seeds[o]!=null) n[M[o]]=ST.k17Seeds[o]; }); ST.k17Seeds=n; } })();
 initK17();
 function loadCh(k){
   chKey=CH[k]?k:'k3'; LV=CH[chKey].LV; const st=ST[chKey]||{};
@@ -2970,15 +3098,15 @@ function labB(){
 }
 
 // ================= Testmodus (Probeklausur über alle Kapitel) =================
-const CHN={k3:'Elastizität (Kap. 3.2)',k5:'Unternehmen im Wettbewerb (Kap. 5)',k7:'Preiskontrollen und Steuern (Kap. 7)',k8:'Öffentliche Güter und Externalitäten (Kap. 8 und 9)',kv:'Vermeidungstraining (Kap. 9+)',k11:'Monopol (Kap. 11)',k17:'Handelsvorteile (Kap. 17)'};
+const CHN={k3:'Elastizität (Kap. 3.2)',k5:'Unternehmen im Wettbewerb (Kap. 5)',k7:'Preiskontrollen und Steuern (Kap. 7)',k8:'Öffentliche Güter und Externalitäten (Kap. 8 und 9)',kv:'Vermeidungstraining (Kap. 9+)',k11:'Monopol (Kap. 11)',k17:'Handelsvorteile und Außenhandel (Kap. 17)'};
 const XKEY='vwltest-v1';
-let XS=null; try{XS=JSON.parse(localStorage.getItem(XKEY)||'null');}catch(e){} if(!XS) XS={ch:Object.keys(CHN),art:'mix',n:20,min:0,hist:[]};
+let XS=null; try{XS=JSON.parse(localStorage.getItem(XKEY)||'null');}catch(e){} if(!XS) XS={ch:Object.keys(CHN),art:'mix',n:20,min:0,hist:[]}; if(!XS.vl) XS.vl='alle';
 const xsave=()=>{try{localStorage.setItem(XKEY,JSON.stringify(XS));}catch(e){}};
 let EX=null, exTimer=null;
 function examPool(){
   const pool=[];
   XS.ch.forEach(k=>{ const A=CH[k]; if(!A) return;
-    A.LV.forEach(L=>{ let T=L.T; if(L.gen){ try{ T=T.concat(L.gen(Math.floor(Math.random()*1e9))); }catch(e){} }
+    A.LV.forEach(L=>{ if(XS.vl!=='alle'&&lvTeil(L)!==XS.vl) return; let T=L.T; if(L.gen){ try{ T=T.concat(L.gen(Math.floor(Math.random()*1e9))); }catch(e){} }
       T.forEach(t=>{ if(!['mc','calc','sort'].includes(t.t)) return; const m=t.m||classifyTask(t);
         if(XS.art==='k'&&m==='t') return; if(XS.art==='t'&&m!=='t') return; if(XS.art==='v'&&m!=='v') return;
         pool.push({t,ch:k,lv:L.n,fig:t.fig||L.fig,m}); }); }); });
@@ -2993,6 +3121,7 @@ function renderExam(){
   panel.innerHTML=`<div class="lab"><h2>Test zusammenstellen</h2><p>Zufällige Aufgaben aus den gewählten Kapiteln, ohne Rückmeldung während des Tests. Am Ende siehst du Punktzahl, Auswertung je Kapitel und alle Lösungswege.</p>
    <div class="xh">Kapitel</div><div class="xchk">${Object.keys(CHN).filter(k=>CH[k]).map(k=>`<label><input type="checkbox" value="${k}" ${XS.ch.includes(k)?'checked':''}> ${CHN[k]}</label>`).join('')}</div>
    <div class="xh">Art der Aufgaben</div><div class="seg" id="xart">${[['mix','Gemischt'],['v','Verständnis'],['k','Kopfrechnen'],['t','Taschenrechner']].map(a=>`<button data-v="${a[0]}" class="${XS.art===a[0]?'on':''}">${a[1]}</button>`).join('')}</div>
+   <div class="xh">Vorlesung</div><div class="seg" id="xvl">${[['alle','Alle'],['V1','nur V1'],['V2','nur V2']].map(a=>`<button data-v="${a[0]}" class="${XS.vl===a[0]?'on':''}">${a[1]}</button>`).join('')}</div><p class="hint">V1/V2 gilt für Kapitel mit zwei Vorlesungen (Kap. 7 und 17). Andere Kapitel zählen bei „nur V1/V2“ nicht mit.</p>
    <div class="xh">Anzahl Aufgaben</div><div class="seg" id="xn">${[10,20,30,40].map(n=>`<button data-v="${n}" class="${XS.n===n?'on':''}">${n}</button>`).join('')}</div>
    <div class="xh">Zeitlimit</div><div class="seg" id="xmin">${[[0,'ohne'],[20,'20 min'],[45,'45 min'],[90,'90 min']].map(a=>`<button data-v="${a[0]}" class="${XS.min===a[0]?'on':''}">${a[1]}</button>`).join('')}</div>
    <p class="hint" id="xpool"></p>
@@ -3000,7 +3129,7 @@ function renderExam(){
    ${hist.length?`<div class="xh">Letzte Tests</div><div class="tblwrap"><table class="tbl"><tr><th>Datum</th><th>Art</th><th>Aufgaben</th><th>Ergebnis</th></tr>${hist.map(h=>`<tr><td>${h.d}</td><td>${h.a}</td><td>${h.n}</td><td>${fmt(h.p,0)} %</td></tr>`).join('')}</table></div>`:''}</div>`;
   const upd=()=>{ const n=examPool().length; document.getElementById('xpool').textContent=`Verfügbar: ${n} Aufgaben${n<XS.n?' (weniger als gewählt, der Test wird kürzer)':''}.`; };
   panel.querySelectorAll('.xchk input').forEach(c=>c.onchange=()=>{ XS.ch=[...panel.querySelectorAll('.xchk input:checked')].map(x=>x.value); xsave(); upd(); });
-  [['xart','art',v=>v],['xn','n',v=>+v],['xmin','min',v=>+v]].forEach(([id,key,f])=>panel.querySelectorAll('#'+id+' button').forEach(b=>b.onclick=()=>{ XS[key]=f(b.dataset.v); xsave(); panel.querySelectorAll('#'+id+' button').forEach(x=>x.classList.toggle('on',x===b)); upd(); }));
+  [['xvl','vl',v=>v],['xart','art',v=>v],['xn','n',v=>+v],['xmin','min',v=>+v]].forEach(([id,key,f])=>panel.querySelectorAll('#'+id+' button').forEach(b=>b.onclick=()=>{ XS[key]=f(b.dataset.v); xsave(); panel.querySelectorAll('#'+id+' button').forEach(x=>x.classList.toggle('on',x===b)); upd(); }));
   document.getElementById('xgo').onclick=()=>{ const P=examPool(); if(!P.length){ document.getElementById('xpool').textContent='Bitte mindestens ein Kapitel mit passenden Aufgaben wählen.'; return; }
     const R=rngV(Math.floor(Math.random()*1e9)); const Q=shufV(R,P).slice(0,XS.n);
     EX={Q,A:Q.map(()=>null),i:0,t0:Date.now(),lim:XS.min*60000,done:false}; renderExQ(); };
