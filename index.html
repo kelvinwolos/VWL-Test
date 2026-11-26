@@ -58,7 +58,7 @@ h1 .e{color:var(--el)} h1 .u{color:var(--un)}
 .tabs{display:flex;gap:4px;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:4px}
 .tabs button{font:inherit;font-weight:600;border:0;background:none;color:var(--muted);padding:8px 14px;border-radius:7px;cursor:pointer}
 .tabs button[aria-selected="true"]{background:var(--ink);color:var(--paper)}
-.lgrp{flex:none;flex-direction:column;align-self:stretch;min-width:150px;border-radius:10px;position:sticky;left:0;z-index:2;background:var(--paper);box-shadow:6px 0 10px -6px rgba(0,0,0,.25)}@media (max-width:640px){.lgrp{min-width:124px}.lgrp button{font-size:12px;padding:6px 8px}}.lgrp button{border-right:0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;padding:7px 12px;font-weight:600}.lgrp button:last-child{border-bottom:0}.lgrp small{font-family:var(--mono);font-weight:400;opacity:.75}
+.levels.wrap{display:block;overflow:visible;padding:0;margin-bottom:10px}.lvhead{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}.lvhead .seg{background:var(--paper)}.lgrp{flex:1 1 260px;max-width:420px}.lteil{flex:1 1 200px;max-width:340px}.lvhead button{display:flex;justify-content:center;align-items:baseline;gap:6px;font-weight:600;padding:8px 10px}.lvhead small{font-family:var(--mono);font-weight:400;font-size:11px;opacity:.7}.lvrow{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;scrollbar-width:thin}@media (max-width:640px){.lvhead{gap:6px}.lgrp,.lteil{flex:1 1 100%;max-width:none}.lvhead button{font-size:12.5px;padding:7px 6px}}
 .levels{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;margin-bottom:10px;scrollbar-width:thin}
 .lvl{flex:0 0 auto;display:grid;grid-template-columns:26px minmax(0,1fr);column-gap:9px;row-gap:6px;align-items:center;text-align:left;min-width:150px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);cursor:pointer;font:inherit}
 .lvl .ln{grid-row:1/3;font-family:var(--mono);font-size:12px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line)}
@@ -2704,14 +2704,14 @@ const LV17b=[
 ]},
 {n:'V2 · Exportland',teil:'V2',grp:'k',d:'Teil 2 · Nachfrage Q = 100 − P, Angebot Q = P, Weltmarktpreis 70 €. Mengen, Renten und Wohlfahrtsgewinn im Kopf.',fig:G17b.ex,T:[
  V2({t:'mc',text:'Nachfrage Q = 100 − P, Angebot Q = P. Wie hoch sind Preis und Menge ohne Außenhandel?',opts:['P = 50 €, Q = 50','P = 100 €, Q = 0','P = 70 €, Q = 30','P = 50 €, Q = 100'],c:0,ex:'100 − P = P ⇒ P = 50, Q = 50.',fig:G17b.base},'k'),
- V2({t:'mc',text:'Der Weltmarktpreis beträgt 70 €. Wie viel wird im Inland nachgefragt, wie viel angeboten?',opts:['Nachfrage 30, Angebot 70','Nachfrage 70, Angebot 30','Nachfrage 50, Angebot 50','Nachfrage 30, Angebot 50'],c:0,ex:'Q_D = 100 − 70 = 30, Q_S = 70.',fig:G17b.ex},'k'),
+ V2({t:'mc',text:'Der Weltmarktpreis beträgt 70 €. Wie viel wird im Inland nachgefragt, wie viel angeboten?',opts:['Nachfrage 30, Angebot 70','Nachfrage 70, Angebot 30','Nachfrage 50, Angebot 50','Nachfrage 30, Angebot 50'],c:0,ex:'Q<sub>D</sub> = 100 − 70 = 30, Q<sub>S</sub> = 70.',fig:G17b.ex},'k'),
  V2({t:'mc',text:'Wie viel exportiert das Land beim Weltmarktpreis von 70 €?',opts:['40','70','30','20'],c:0,ex:'Export = Angebot − Nachfrage = 70 − 30 = 40.',fig:G17b.ex},'k'),
  V2({t:'mc',text:'Um wie viel ändert sich die Konsumentenrente durch den Handel?',opts:['−800 €','+800 €','−400 €','−1.250 €'],c:0,ex:'Vorher ½ · (100 − 50) · 50 = 1.250 €, nachher ½ · (100 − 70) · 30 = 450 €. Änderung −800 €.',fig:G17b.ex},'k'),
  V2({t:'mc',text:'Um wie viel ändert sich die Produzentenrente?',opts:['+1.200 €','+800 €','+400 €','+2.450 €'],c:0,ex:'Vorher ½ · 50 · 50 = 1.250 €, nachher ½ · 70 · 70 = 2.450 €. Änderung +1.200 €.',fig:G17b.ex},'k'),
  V2({t:'mc',text:'Wie stark steigt die Gesamtwohlfahrt durch den Export?',opts:['+400 €','+1.200 €','−400 €','0 €'],c:0,ex:'−800 + 1.200 = +400 €. Das ist das Dreieck ½ · (70 − 50) · 40 zwischen Weltmarktpreis und den Kurven.',fig:G17b.ex},'k')
 ]},
 {n:'V2 · Importland',teil:'V2',grp:'k',d:'Teil 2 · Gleicher Markt, Weltmarktpreis 30 €. Import, Renten und Wohlfahrtsgewinn.',fig:G17b.im,T:[
- V2({t:'mc',text:'Nachfrage Q = 100 − P, Angebot Q = P, Weltmarktpreis 30 €. Wie viel wird importiert?',opts:['40','30','70','20'],c:0,ex:'Q_D = 70, Q_S = 30, Import = 70 − 30 = 40.',fig:G17b.im},'k'),
+ V2({t:'mc',text:'Nachfrage Q = 100 − P, Angebot Q = P, Weltmarktpreis 30 €. Wie viel wird importiert?',opts:['40','30','70','20'],c:0,ex:'Q<sub>D</sub> = 70, Q<sub>S</sub> = 30, Import = 70 − 30 = 40.',fig:G17b.im},'k'),
  V2({t:'mc',text:'Wie verändert sich die Konsumentenrente gegenüber dem Zustand ohne Handel (1.250 €)?',opts:['+1.200 € auf 2.450 €','+800 € auf 2.050 €','−800 € auf 450 €','Sie bleibt gleich'],c:0,ex:'Nachher ½ · (100 − 30) · 70 = 2.450 €.',fig:G17b.im},'k'),
  V2({t:'mc',text:'Wie verändert sich die Produzentenrente (vorher 1.250 €)?',opts:['−800 € auf 450 €','+800 €','−1.200 €','Sie bleibt gleich'],c:0,ex:'Nachher ½ · 30 · 30 = 450 €.',fig:G17b.im},'k'),
  V2({t:'mc',text:'Wohlfahrtsgewinn des Importlandes?',opts:['+400 €','+1.200 €','−800 €','0 €'],c:0,ex:'+1.200 − 800 = +400 € = ½ · (50 − 30) · 40.',fig:G17b.im},'k'),
@@ -2719,7 +2719,7 @@ const LV17b=[
 ]},
 {n:'V2 · Zoll & Quote',teil:'V2',grp:'k',d:'Teil 2 · Weltmarktpreis 30 €, Zoll 10 € je Einheit oder gleichwertige Quote. Einnahmen, Rentenänderungen, Nettowohlfahrtsverlust.',fig:G17b.tz,T:[
  V2({t:'mc',text:'Weltmarktpreis 30 €, Zoll 10 €. Wie hoch ist der Inlandspreis?',opts:['40 €','30 €','20 €','50 €'],c:0,ex:'Inlandspreis = Weltmarktpreis + Zoll = 40 €.',fig:G17b.tz},'k'),
- V2({t:'mc',text:'Wie viel wird mit Zoll importiert (Nachfrage Q = 100 − P, Angebot Q = P)?',opts:['20','40','60','10'],c:0,ex:'Q_D = 60, Q_S = 40, Import = 20 (vorher 40).',fig:G17b.tz},'k'),
+ V2({t:'mc',text:'Wie viel wird mit Zoll importiert (Nachfrage Q = 100 − P, Angebot Q = P)?',opts:['20','40','60','10'],c:0,ex:'Q<sub>D</sub> = 60, Q<sub>S</sub> = 40, Import = 20 (vorher 40).',fig:G17b.tz},'k'),
  V2({t:'mc',text:'Wie hoch sind die Zolleinnahmen des Staates?',opts:['200 €','400 €','100 €','600 €'],c:0,ex:'Zoll · Importmenge = 10 · 20 = 200 €.',fig:G17b.tz},'k'),
  V2({t:'mc',text:'Wie ändern sich Konsumenten- und Produzentenrente gegenüber Freihandel?',opts:['KR −650 €, PR +350 €','KR −200 €, PR +200 €','KR +650 €, PR −350 €','KR −400 €, PR +400 €'],c:0,ex:'KR: 2.450 → ½ · 60 · 60 = 1.800 (−650). PR: 450 → ½ · 40 · 40 = 800 (+350).',fig:G17b.tz},'k'),
  V2({t:'mc',text:'Wie groß ist der Nettowohlfahrtsverlust des Zolls?',opts:['100 €','200 €','50 €','650 €'],c:0,ex:'−650 + 350 + 200 = −100 €. Zwei Dreiecke je ½ · 10 · 10 = 50 €.',fig:G17b.tz},'k'),
@@ -2735,13 +2735,13 @@ const LV17b=[
   const txt=m=>`Nachfrage Q = ${fmt(m.a)} − ${fmt(m.b)} · P, Angebot Q = ${m.c<0?'−'+fmt(-m.c):fmt(m.c)} + ${fmt(m.d)} · P.`;
   const T={
    ex:R=>{ const {m,Ps,Qs}=mk(R), Pw=Math.min(Ps*pickV(R,[1.2,1.25,1.3,1.4,1.5]),0.85*m.a/m.b), qd=m.a-m.b*Pw, qs=m.c+m.d*Pw;
-     return {t:'calc',text:`${txt(m)} Der Weltmarktpreis beträgt ${fmt(Pw)} €. Berechne (zwei Nachkommastellen).`,formula:['Export = Q_S − Q_D','KR = 1/2 · (P_max − P) · Q_D','ΔW = 1/2 · (P_W − P*) · Export'],
+     return {t:'calc',text:`${txt(m)} Der Weltmarktpreis beträgt ${fmt(Pw)} €. Berechne (zwei Nachkommastellen).`,formula:['Export = Q<sub>S</sub> − Q<sub>D</sub>','KR = 1/2 · (P<sub>max</sub> − P) · Q<sub>D</sub>','ΔW = 1/2 · (P<sub>W</sub> − P*) · Export'],
       fields:[['Preis ohne Handel P*',r2(Ps)],['Exportmenge',r2(qs-qd)],['Änderung Konsumentenrente',r2(KR17(m,Pw)-KR17(m,Ps))],['Änderung Produzentenrente',r2(PR17(m,Pw)-PR17(m,Ps))],['Änderung Gesamtwohlfahrt',r2(KR17(m,Pw)+PR17(m,Pw)-KR17(m,Ps)-PR17(m,Ps))]],
-      ex:`P* = ${fmt(Ps)} €, Q* = ${fmt(Qs)}. Bei ${fmt(Pw)} €: Q_D = ${fmt(qd)}, Q_S = ${fmt(qs)}, Export ${fmt(qs-qd)}. Wohlfahrtsgewinn = ½ · ${fmt(Pw-Ps)} · ${fmt(qs-qd)} = ${fmt(0.5*(Pw-Ps)*(qs-qd))} €.`,fig:sc(m,Ps,Qs,{Pw})}; },
+      ex:`P* = ${fmt(Ps)} €, Q* = ${fmt(Qs)}. Bei ${fmt(Pw)} €: Q<sub>D</sub> = ${fmt(qd)}, Q<sub>S</sub> = ${fmt(qs)}, Export ${fmt(qs-qd)}. Wohlfahrtsgewinn = ½ · ${fmt(Pw-Ps)} · ${fmt(qs-qd)} = ${fmt(0.5*(Pw-Ps)*(qs-qd))} €.`,fig:sc(m,Ps,Qs,{Pw})}; },
    im:R=>{ const {m,Ps,Qs}=mk(R), Pw=Math.max(Ps*pickV(R,[0.6,0.65,0.7,0.75,0.8]),m.c<0?-m.c/m.d*1.1:0), qd=m.a-m.b*Pw, qs=Math.max(0,m.c+m.d*Pw);
-     return {t:'calc',text:`${txt(m)} Der Weltmarktpreis beträgt ${fmt(Pw)} €. Berechne (zwei Nachkommastellen).`,formula:['Import = Q_D − Q_S','PR = 1/2 · (P − P_min) · Q_S'],
+     return {t:'calc',text:`${txt(m)} Der Weltmarktpreis beträgt ${fmt(Pw)} €. Berechne (zwei Nachkommastellen).`,formula:['Import = Q<sub>D</sub> − Q<sub>S</sub>','PR = 1/2 · (P − P<sub>min</sub>) · Q<sub>S</sub>'],
       fields:[['Importmenge',r2(qd-qs)],['Änderung Konsumentenrente',r2(KR17(m,Pw)-KR17(m,Ps))],['Änderung Produzentenrente',r2(PR17(m,Pw)-PR17(m,Ps))],['Änderung Gesamtwohlfahrt',r2(KR17(m,Pw)+PR17(m,Pw)-KR17(m,Ps)-PR17(m,Ps))]],
-      ex:`Q_D = ${fmt(qd)}, Q_S = ${fmt(qs)}, Import ${fmt(qd-qs)}. Konsumenten gewinnen mehr, als Produzenten verlieren.`,fig:sc(m,Ps,Qs,{Pw})}; },
+      ex:`Q<sub>D</sub> = ${fmt(qd)}, Q<sub>S</sub> = ${fmt(qs)}, Import ${fmt(qd-qs)}. Konsumenten gewinnen mehr, als Produzenten verlieren.`,fig:sc(m,Ps,Qs,{Pw})}; },
    zoll:R=>{ const {m,Ps,Qs}=mk(R), Pw=Math.max(Ps*pickV(R,[0.5,0.55,0.6,0.65]),m.c<0?-m.c/m.d*1.1:0), t=r2((Ps-Pw)*pickV(R,[0.4,0.5,0.6])), Pd=Pw+t;
      const qd0=m.a-m.b*Pw, qs0=Math.max(0,m.c+m.d*Pw), qd=m.a-m.b*Pd, qs=Math.max(0,m.c+m.d*Pd);
      return {t:'calc',text:`${txt(m)} Weltmarktpreis ${fmt(Pw)} €, Zoll ${fmt(t)} € je Einheit. Berechne gegenüber Freihandel (zwei Nachkommastellen).`,formula:['Zolleinnahmen = t · Import mit Zoll','NWL = 1/2 · t · (Import ohne Zoll − Import mit Zoll)'],
@@ -2894,15 +2894,25 @@ function save(){ST[chKey]={res:RES,cur};ST.ch=chKey;try{localStorage.setItem(KEY
 const levelsEl=document.getElementById('levels'), panel=document.getElementById('panel'), minibox=document.getElementById('minibox');
 const TYPE={mc:'Multiple Choice',calc:'Rechnen',sort:'Zuordnen',point:'Im Diagramm',pick:'Im Diagramm',shape:'Kurve formen',area:'Fläche wählen'};
 const GRPN={k:'Kopfrechnen',t:'Taschenrechner'};
-function lvNum(i){ const g=LV[i].grp; if(!g) return i+1; let n=0; for(let j=0;j<=i;j++) if(LV[j].grp===g) n++; return n; }
+function lvKey(l){ return (l.grp||'')+'|'+lvTeil(l); }
+function lvShowTeil(g){ const s=new Set(LV.filter(l=>(l.grp||'')===(g||'')).map(lvTeil)); return s.has('V1')&&s.has('V2'); }
+function lvNum(i){ const L=LV[i], tl=lvShowTeil(L.grp), k=tl?lvKey(L):(L.grp||''); let n=0; for(let j=0;j<=i;j++) if((tl?lvKey(LV[j]):(LV[j].grp||''))===k) n++; return n; }
+function lvName(l){ return l.n.replace(/^(V1 \+ V2|V[12]) · /,''); }
+function grpStat(f){ let ok=0,n=0; LV.forEach((l,i)=>{ if(f(l)) RES[i].forEach(x=>{n++; if(x===true) ok++;}); }); return `${ok}/${n}`; }
 function renderLevels(){
-  const g=LV[cur.l].grp;
-  const gh=g?`<div class="seg lgrp">${Object.keys(GRPN).filter(k=>LV.some(l=>l.grp===k)).map(k=>{const ix=LV.map((l,i)=>l.grp===k?i:-1).filter(i=>i>=0); let ok=0,n=0; ix.forEach(i=>RES[i].forEach(x=>{n++; if(x===true) ok++;})); return `<button class="${k===g?'on':''}" data-g="${k}">${GRPN[k]}<small>${ok}/${n}</small></button>`;}).join('')}</div>`:'';
-  levelsEl.innerHTML=gh+LV.map((l,i)=>{ if(g&&l.grp!==g) return '';const r=RES[i],ok=r.filter(x=>x===true).length,no=r.filter(x=>x===false).length;
-    return `<button class="lvl ${i===cur.l?'cur':''}" data-l="${i}"><span class="ln">${lvNum(i)}</span><span class="lt">${l.n}<small>${ok}/${r.length}</small></span><span class="lbar"><i style="width:${(ok+no)/r.length*100}%"></i><b style="width:${ok/r.length*100}%"></b></span></button>`;}).join('');
-  const cl=levelsEl.querySelector('.lvl.cur'), lg=levelsEl.querySelector('.lgrp'); if(cl&&levelsEl.scrollWidth>levelsEl.clientWidth) levelsEl.scrollLeft=Math.max(0,cl.offsetLeft-levelsEl.offsetLeft-16-(lg?lg.offsetWidth+8:0));
+  const L0=LV[cur.l], g=L0.grp, tl=lvShowTeil(g), te=lvTeil(L0);
+  levelsEl.classList.add('wrap');
+  let head='';
+  if(g) head+=`<div class="seg lgrp">${Object.keys(GRPN).filter(k=>LV.some(l=>l.grp===k)).map(k=>`<button class="${k===g?'on':''}" data-g="${k}">${GRPN[k]}<small>${grpStat(l=>l.grp===k)}</small></button>`).join('')}</div>`;
+  if(tl){ const TN={V1:'V1',V2:'V2','':'V1 + V2'}; head+=`<div class="seg lteil">${['V1','V2',''].filter(t=>LV.some(l=>(l.grp||'')===(g||'')&&lvTeil(l)===t)).map(t=>`<button class="${t===te?'on':''}" data-t="${t}">${TN[t]}<small>${grpStat(l=>(l.grp||'')===(g||'')&&lvTeil(l)===t)}</small></button>`).join('')}</div>`; }
+  const vis=(l)=>(l.grp||'')===(g||'')&&(!tl||lvTeil(l)===te);
+  const row=LV.map((l,i)=>{ if(!vis(l)) return ''; const r=RES[i],ok=r.filter(x=>x===true).length,no=r.filter(x=>x===false).length;
+    return `<button class="lvl ${i===cur.l?'cur':''}" data-l="${i}"><span class="ln">${lvNum(i)}</span><span class="lt">${tl?lvName(l):l.n}<small>${ok}/${r.length}</small></span><span class="lbar"><i style="width:${(ok+no)/r.length*100}%"></i><b style="width:${ok/r.length*100}%"></b></span></button>`;}).join('');
+  levelsEl.innerHTML=(head?`<div class="lvhead">${head}</div>`:'')+`<div class="lvrow">${row}</div>`;
+  const rw=levelsEl.querySelector('.lvrow'), cl=rw.querySelector('.lvl.cur'); if(cl&&rw.scrollWidth>rw.clientWidth) rw.scrollLeft=Math.max(0,cl.offsetLeft-rw.offsetLeft-16);
   levelsEl.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{cur={l:+b.dataset.l,i:0};save();renderLevels();renderTask();});
-  levelsEl.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{ if(b.dataset.g===g) return; cur={l:LV.findIndex(l=>l.grp===b.dataset.g),i:0}; save(); renderLevels(); renderTask(); });
+  levelsEl.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{ if(b.dataset.g===g) return; const ng=b.dataset.g, ntl=lvShowTeil(ng); let i=ntl?LV.findIndex(l=>l.grp===ng&&lvTeil(l)===te):-1; if(i<0) i=LV.findIndex(l=>l.grp===ng); cur={l:i,i:0}; save(); renderLevels(); renderTask(); });
+  levelsEl.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{ if(b.dataset.t===te) return; cur={l:LV.findIndex(l=>(l.grp||'')===(g||'')&&lvTeil(l)===b.dataset.t),i:0}; save(); renderLevels(); renderTask(); });
 }
 function navHtml(){const r=RES[cur.l];return `<div class="qnav">${r.map((x,i)=>`<button data-go="${i}" class="${i===cur.i?'cur':''} ${x===true?'ok':x===false?'no':''}" aria-label="Aufgabe ${i+1}">${i+1}</button>`).join('')}</div>`;}
 function scoreTxt(){let ok=0,n=0;RES.forEach(r=>r.forEach(x=>{if(x===true)ok++;n++;}));return `gesamt ${ok} von ${n}`;}
@@ -2910,7 +2920,7 @@ function scoreTxt(){let ok=0,n=0;RES.forEach(r=>r.forEach(x=>{if(x===true)ok++;n
 function renderTask(){
   animId++; dragCb=null; areaCb=null; minibox.hidden=true;
   const L=LV[cur.l], t=L.T[cur.i]; let checked=false;
-  let h=`<p class="ldesc"><span class="chtag">${CH[chKey].tag}</span><b>${L.grp?GRPN[L.grp]+' · ':''}Stufe ${lvNum(cur.l)} · ${L.n}.</b> ${L.d}</p>`+navHtml();
+  let h=`<p class="ldesc"><span class="chtag">${CH[chKey].tag}</span><b>${L.grp?GRPN[L.grp]+' · ':''}${lvShowTeil(L.grp)?({V1:'V1',V2:'V2','':'V1 + V2'})[lvTeil(L)]+' · ':''}Stufe ${lvNum(cur.l)} · ${lvShowTeil(L.grp)?lvName(L):L.n}.</b> ${L.d}</p>`+navHtml();
   h+=`<div class="meta"><span style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip">${TYPE[t.t]}</span>${t.m?`<span class="chip mode-${t.m}">${({k:'Kopfrechnen',t:'Taschenrechner',v:'Verständnis'})[t.m]}</span>`:''}</span><span class="score">${scoreTxt()}</span></div>`;
   h+=`<div class="qtext">${t.text}</div>`;
   if(t.formula) h+=`<div class="formula">${t.formula.map(f=>`<span>${f}</span>`).join('')}</div>`;
