@@ -1839,9 +1839,10 @@ function caseV(R,o={}){
   K.vors=v*sum; K.cost=E*c.slice(0,m).reduce((s,x)=>s+x,0); K.rev=(n-m)*E*T; K.save=K.vors-K.cost;
   K.allow=E-v; K.list=c.map((x,i)=>`${NM[i]} ${x} €`).join(', ');
   K.intro=`${n} Fabriken stoßen je ${E} t aus. Vermeidungskosten je Tonne: ${K.list}.`;
-  if(VTR){ const f=pickV(R,[1.15,1.35,1.45,1.7,2.3]), r2=x=>Math.round(x*100)/100;
-    K.c=c.map(x=>r2(x*f+R()*0.9)); K.E=pickV(R,[7.5,12.5,17.5,22.5,36,45]);
-    K.T=r2((K.c[m-1]+K.c[m])/2+(R()-0.5)*0.4); const s2=K.c.reduce((s,x)=>s+x,0); K.v=m*K.E/n; K.target=m*K.E;
+  if(VTR){ const f=pickV(R,[1.3,1.7,2.4,3.1,3.7]), r2=x=>Math.round(x*100)/100;
+    K.c=c.map(x=>Math.round(x*f)+Math.floor(R()*3)); for(let i=1;i<n;i++) if(K.c[i]-K.c[i-1]<3) K.c[i]=K.c[i-1]+3;
+    K.E=n*pickV(R,[7,9,11,13,17,19,23]);
+    { const lo=K.c[m-1]+1, hi=K.c[m]-1; K.T=lo+Math.floor(R()*(hi-lo+1)); } const s2=K.c.reduce((s,x)=>s+x,0); K.v=m*K.E/n; K.target=m*K.E;
     K.vors=r2(K.v*s2); K.cost=r2(K.E*K.c.slice(0,m).reduce((s,x)=>s+x,0)); K.rev=r2((n-m)*K.E*K.T); K.save=r2(K.vors-K.cost); K.allow=K.E-K.v;
     K.list=K.c.map((x,i)=>`${NM[i]} ${deV(x)} €`).join(', '); K.intro=`${n} Fabriken stoßen je ${deV(K.E)} t aus. Vermeidungskosten je Tonne: ${K.list}.`; }
   return K;
@@ -2885,7 +2886,7 @@ function migrateGroups(){
   const calcF=TV.mix.filter(fn=>{ try{ return fn(rngV(11)).t==='calc'; }catch(e){ return false; } });
   TV.tr=calcF.map(fn=>R=>{ VTR=true; let t; try{ t=fn(R); } finally{ VTR=false; }
     t.m='t'; t.text=dz(t.text); t.ex=dz(t.ex); t.fields=t.fields.map(f=>[dz(f[0]),Math.round(f[1]*100)/100,f[2]]); return t; });
-  LVV.push({n:'Rechnen',grp:'t',d:'Krumme Kosten und Mengen: Steuer, Vorschrift, Zertifikate und Nettonutzen mit dem Taschenrechner.',fig:figV,gen:genV('tr',8),T:[]},
+  LVV.push({n:'Rechnen',grp:'t',d:'Größere ganze Zahlen: Steuer, Vorschrift, Zertifikate und Nettonutzen mit dem Taschenrechner.',fig:figV,gen:genV('tr',8),T:[]},
            {n:'Klausur',grp:'t',d:'Gemischte Rechenaufgaben auf Klausurniveau. Mit „Neue Zahlen“ beliebig oft.',fig:figV,gen:genV('tr',10),T:[]});
 })();
 const KEY='vwllab-v2';
