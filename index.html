@@ -55,10 +55,13 @@ h1 .s{color:var(--sup)} h1 .d{color:var(--dem)}
 #introPg h2{font-size:20px;margin:10px 0 8px}
 #introPg .ip{font-size:15px;line-height:1.6;margin:0}
 #introPg sub{line-height:0}
+#introPg .itop{display:flex;justify-content:space-between;align-items:center;gap:10px}
+#introPg .isw{display:flex;min-width:110px}
+#introPg .isw button{flex:1;padding:5px 12px}
 #introPg svg{width:100%;height:auto;margin:12px 0 4px}
 #introPg .icap{font-size:12px;color:var(--muted);margin:0 0 10px}
 #introPg .ili{display:flex;gap:10px;font-size:14px;line-height:1.45;padding:7px 0;border-top:1px solid var(--grid)}
-#introPg .ili b{min-width:118px;font-weight:600}
+#introPg .ili b{flex:0 0 120px;font-weight:600;hyphens:manual;overflow-wrap:break-word}
 #introPg .ikl{font-size:14px;line-height:1.5;margin:14px 0 0;padding:10px 12px;border-radius:8px;border-left:3px solid var(--chap);background:var(--grid)}
 .chtag{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--paper);background:var(--chap);border-radius:4px;padding:1px 7px;margin-right:6px;vertical-align:1px}
 [hidden]{display:none!important}
@@ -1142,7 +1145,7 @@ const LV7=[
   items:[['Mengensteuer bei den Verkäufern',0,['Angebot nach oben','Nachfrage nach unten','Angebot nach unten']],['Mengensteuer bei den Käufern',1,['Angebot nach oben','Nachfrage nach unten','Angebot nach unten']],['Subvention an die Verkäufer',2,['Angebot nach oben','Nachfrage nach unten','Angebot nach unten']]],
   ex:'Steuer bei den Verkäufern: Sie verlangen für jede Menge T mehr, die Angebotskurve wandert um T nach oben. Steuer bei den Käufern: Ihre Zahlungsbereitschaft an die Verkäufer sinkt um T, die Nachfragekurve wandert nach unten. Subvention: Die Kosten sinken, die Angebotskurve wandert um den Subventionsbetrag nach unten.'},
  {t:'calc',text:'Eismarkt: Q<sup>D</sup> = 250 − 50P<sup>D</sup>, Q<sup>S</sup> = 50P<sup>S</sup> − 50. Der Staat erhebt eine Mengensteuer von T = 1 € je Kugel.',fig:G7.tax1,
-  formula:['P<sup>D</sup> = P<sup>S</sup> + T','Q<sup>D</sup>(P<sup>D</sup>) = Q<sup>S</sup>(P<sup>S</sup>)'],fields:[['Preis, den die Käufer zahlen P<sup>D</sup>',3.5],['Preis, den die Verkäufer erhalten P<sup>S</sup>',2.5],['Gehandelte Menge Q<sub>T</sub>',75],['Steueraufkommen',75]],
+  formula:['P<sup>D</sup> = P<sup>S</sup> + T','Q<sup>D</sup>(P<sup>D</sup>) = Q<sup>S</sup>(P<sup>S</sup>)'],fields:[['Preis, den die Käufer zahlen P<sup>D</sup>',3.5],['Preis, den die Verkäufer erhalten P<sup>S</sup>',2.5],['Gehandelte Menge Q<sub>T</sub>',75],['Steuer&shy;aufkommen',75]],
   ex:'Setze P<sup>D</sup> = P<sup>S</sup> + 1 ein: 250 − 50(P<sup>S</sup> + 1) = 50P<sup>S</sup> − 50 ⇒ 250 = 100P<sup>S</sup> ⇒ P<sup>S</sup> = 2,50, P<sup>D</sup> = 3,50. Q<sub>T</sub> = 250 − 175 = 75. Aufkommen: 1 · 75 = 75 €. Beide Seiten tragen je 0,50 €, weil beide Kurven gleich steil sind.'},
  {t:'pick',axis:'T',lab:'Steuer je Kugel einstellen',text:'Gleicher Eismarkt. Stell die Mengensteuer so ein, dass die gehandelte Menge auf 50 Kugeln sinkt.',
   min:0,max:3.8,step:0.1,v0:0.5,target:2,tol:0.051,tl:'eine Steuer von 2,00 €',
@@ -1184,7 +1187,7 @@ const LV7=[
  {t:'area',text:'Welche Flächen verlieren die Konsumenten durch die Steuer?',opts:['A','B','C','D','E','F'],c:['B','C'],scene:taxLetters,
   ex:'Vorher gehörten A, B und C zur Konsumentenrente, nachher nur noch A. B geht als Steuer an den Staat, C geht ganz verloren. Bei den Produzenten ist es spiegelbildlich: Sie verlieren D (an den Staat) und E (verloren).'},
  {t:'calc',text:'Berechne die Wohlfahrtswirkung der Steuer von 1 € auf dem Eismarkt (P<sup>D</sup> = 3,50, P<sup>S</sup> = 2,50, Q<sub>T</sub> = 75, vorher Q<sub>1</sub> = 100).',fig:G7.tax1,
-  formula:['NWL = T · (Q<sub>1</sub> − Q<sub>T</sub>) / 2'],fields:[['Konsumentenrente nachher',56.25],['Produzentenrente nachher',56.25],['Steueraufkommen',75],['Nettowohlfahrtsverlust',12.5]],
+  formula:['NWL = T · (Q<sub>1</sub> − Q<sub>T</sub>) / 2'],fields:[['Konsumentenrente nachher',56.25],['Produzentenrente nachher',56.25],['Steuer&shy;aufkommen',75],['Nettowohlfahrtsverlust',12.5]],
   ex:'CS: ½ · 75 · (5 − 3,5) = 56,25. PS: ½ · 75 · (2,5 − 1) = 56,25. Steuer: 75. Summe 187,50 statt 200 vorher, also NWL = 12,50. Kontrolle: 1 · (100 − 75)/2 = 12,50. Die Verluste an Konsumenten- und Produzentenrente (87,50) übersteigen das Steueraufkommen (75).'},
  {t:'mc',text:'Warum entsteht durch eine Steuer überhaupt ein Nettowohlfahrtsverlust?',
   opts:['Weil Tauschgeschäfte unterbleiben, bei denen der Wert für die Käufer über den Kosten der Verkäufer liegt.','Weil der Staat das Steuergeld verschwendet.','Weil die Verkäufer die Steuer hinterziehen.','Weil die Preise für alle steigen.'],c:0,
@@ -1240,7 +1243,7 @@ const LV7=[
  {t:'area',text:'Eismarkt mit Steuer. Welche Flächen bilden zusammen die Gesamtwohlfahrt nach Einführung der Steuer?',opts:['A','B','C','D','E','F'],c:['A','B','D','F'],scene:taxLetters,
   ex:'Die Gesamtwohlfahrt besteht aus Konsumentenrente (A), Produzentenrente (F) und Steueraufkommen (B + D). Das Steueraufkommen zählt mit, weil der Staat es wieder ausgeben kann. Nur C und E gehen verloren.'},
  {t:'calc',text:'Neuer Fall: Q<sup>D</sup> = 120 − 2P<sup>D</sup> und Q<sup>S</sup> = 4P<sup>S</sup> − 60. Der Staat erhebt eine Mengensteuer von T = 15.',fig:G7.c120,
-  fields:[['Gleichgewichtspreis ohne Steuer',30],['Käufer zahlen P<sup>D</sup>',40],['Verkäufer erhalten P<sup>S</sup>',25],['Gehandelte Menge',40],['Steueraufkommen',600],['Nettowohlfahrtsverlust',150],['Anteil der Käufer an der Steuerlast (%)',66.67]],
+  fields:[['Gleichgewichtspreis ohne Steuer',30],['Käufer zahlen P<sup>D</sup>',40],['Verkäufer erhalten P<sup>S</sup>',25],['Gehandelte Menge',40],['Steuer&shy;aufkommen',600],['Nettowohlfahrtsverlust',150],['Anteil der Käufer an der Steuerlast (%)',66.67]],
   ex:'Ohne Steuer: 120 − 2P = 4P − 60 ⇒ P = 30, Q = 60. Mit Steuer: 120 − 2P<sup>D</sup> = 4(P<sup>D</sup> − 15) − 60 ⇒ 240 = 6P<sup>D</sup> ⇒ P<sup>D</sup> = 40, P<sup>S</sup> = 25, Q = 40. Aufkommen 15 · 40 = 600. NWL = 15 · 20/2 = 150. Käufer tragen 10 von 15, also 66,7 %: Ihre Nachfrage ist unelastischer (flachere Reaktion: 2 gegenüber 4).'},
  {t:'calc',text:'Gleicher Markt (Q<sup>D</sup> = 120 − 2P, Q<sup>S</sup> = 4P − 60), aber statt der Steuer gilt ein Höchstpreis von 24.',fig:G7.c120c,
   fields:[['Gehandelte Menge',36],['Nachfrageüberschuss',36],['Produzentenrente neu',162],['Konsumentenrente neu',972],['Nettowohlfahrtsverlust',216]],
@@ -1631,7 +1634,7 @@ const LV8=[
   ex:'Markt: 120 − 2P = 3P − 30 ⇒ 150 = 5P ⇒ P = 30, Q = 60. Elastizität: −2 · 30/60 = −1. Volkswirtschaftliche Kosten: Die Anbieter bräuchten für jede Menge 10 € mehr, also Q = 3(P − 10) − 30 = 3P − 60. Optimum: 120 − 2P = 3P − 60 ⇒ 180 = 5P ⇒ P = 36, Q = 48. NWL = ½ · 10 · (60 − 48) = 60.'},
  {t:'calc',text:'<b>Fall Aluminium II.</b> Gleicher Markt. Der Staat erhebt eine Pigou-Steuer von 10 € je Tonne.',fig:G8.raT,
   formula:['P<sup>D</sup> = P<sup>S</sup> + T'],
-  fields:[['Preis, den die Käufer zahlen',36],['Preis, den die Werke behalten',26],['Gehandelte Menge',48],['Steueraufkommen',480],['Anteil der Käufer an der Steuerlast (%)',60]],
+  fields:[['Preis, den die Käufer zahlen',36],['Preis, den die Werke behalten',26],['Gehandelte Menge',48],['Steuer&shy;aufkommen',480],['Anteil der Käufer an der Steuerlast (%)',60]],
   ex:'120 − 2(P<sup>S</sup> + 10) = 3P<sup>S</sup> − 30 ⇒ 130 = 5P<sup>S</sup> ⇒ P<sup>S</sup> = 26, P<sup>D</sup> = 36, Q = 48. Das ist genau das Optimum. Aufkommen: 10 · 48 = 480. Die Käufer zahlen 6 € mehr als vorher (36 statt 30), also 6 von 10 = 60 %. Kontrolle über die Elastizitäten im Marktgleichgewicht: ε<sub>S</sub> = 3 · 30/60 = 1,5 und |ε<sub>D</sub>| = 1, Käuferanteil = 1,5 / 2,5 = 60 %.'},
  {t:'calc',text:'<b>Fall Aluminium III.</b> Wohlfahrt vor und nach der Pigou-Steuer. Die Nachfrage endet bei P = 60, das Angebot beginnt bei P = 10. Wohlfahrt = Konsumentenrente + Produzentenrente + Steueraufkommen − gesamte externe Kosten.',fig:G8.raT,
   formula:['W = CS + PS + R − externe Kosten'],
@@ -1664,14 +1667,14 @@ const LV8=[
   ex:'Markt: 90 − 3P = 2P − 10 ⇒ 100 = 5P ⇒ P = 20, Q = 30. Elastizität: −3 · 20/30 = −2. Volkswirtschaftliche Kosten: Q = 2(P − 5) − 10 = 2P − 20. Optimum: 90 − 3P = 2P − 20 ⇒ 110 = 5P ⇒ P = 22, Q = 24. NWL = ½ · 5 · (30 − 24) = 15.'},
  {t:'calc',text:'<b>Fall Zement II.</b> Gleicher Markt, Pigou-Steuer von 5 € je Tonne.',fig:G8.zcT,
   formula:['P<sup>D</sup> = P<sup>S</sup> + T'],
-  fields:[['Preis, den die Käufer zahlen',22],['Preis, den die Hersteller behalten',17],['Steueraufkommen',120],['Anteil der Käufer an der Steuerlast (%)',40]],
+  fields:[['Preis, den die Käufer zahlen',22],['Preis, den die Hersteller behalten',17],['Steuer&shy;aufkommen',120],['Anteil der Käufer an der Steuerlast (%)',40]],
   ex:'90 − 3(P<sup>S</sup> + 5) = 2P<sup>S</sup> − 10 ⇒ 85 = 5P<sup>S</sup> ⇒ P<sup>S</sup> = 17, P<sup>D</sup> = 22, Q = 24. Aufkommen: 5 · 24 = 120. Die Käufer zahlen 2 € mehr (22 statt 20), also 2 von 5 = 40 %. Diesmal tragen die Hersteller mehr, weil die Nachfrage elastischer ist: ε<sub>S</sub> = 2 · 20/30 = 4/3, |ε<sub>D</sub>| = 2, Käuferanteil = (4/3) / (4/3 + 2) = 40 %.'},
  {t:'calc',text:'<b>Fall Zement III.</b> Wohlfahrt vor und nach der Pigou-Steuer. Die Nachfrage endet bei P = 30, das Angebot beginnt bei P = 5.',fig:G8.zcT,
   formula:['W = CS + PS + R − externe Kosten'],
   fields:[['Konsumentenrente vorher',150],['Produzentenrente vorher',225],['Externe Kosten vorher',150],['Wohlfahrt vorher',225],['Konsumentenrente nachher',96],['Produzentenrente nachher',144],['Wohlfahrt nachher',240]],
   ex:'Vorher (Q = 30, P = 20): CS = ½ · 30 · 10 = 150, PS = ½ · 30 · 15 = 225, externe Kosten 5 · 30 = 150, W = 150 + 225 − 150 = 225. Nachher (Q = 24, Käufer 22, Hersteller 17): CS = ½ · 24 · 8 = 96, PS = ½ · 24 · 12 = 144, Aufkommen 120, externe Kosten 5 · 24 = 120, W = 96 + 144 + 120 − 120 = 240. Plus 15, genau der vorherige Wohlfahrtsverlust.'},
  {t:'calc',text:'<b>Zu hohe Steuer.</b> Gleicher Zementmarkt, aber der Staat übertreibt und verlangt 10 € je Tonne statt 5 €.',fig:G8.zc,
-  fields:[['Preis, den die Käufer zahlen',24],['Preis, den die Hersteller behalten',14],['Gehandelte Menge',18],['Steueraufkommen',180],['Wohlfahrtsverlust gegenüber dem Optimum',15]],
+  fields:[['Preis, den die Käufer zahlen',24],['Preis, den die Hersteller behalten',14],['Gehandelte Menge',18],['Steuer&shy;aufkommen',180],['Wohlfahrtsverlust gegenüber dem Optimum',15]],
   ex:'90 − 3(P<sup>S</sup> + 10) = 2P<sup>S</sup> − 10 ⇒ 70 = 5P<sup>S</sup> ⇒ P<sup>S</sup> = 14, P<sup>D</sup> = 24, Q = 18. Aufkommen 10 · 18 = 180. Jetzt wird zu wenig produziert: 6 t unter dem Optimum. Bei Q = 18 sind die Käufer bereit, 24 zu zahlen, die volkswirtschaftlichen Kosten sind (18 + 20)/2 = 19. Dreieck: ½ · 5 · 6 = 15. Eine Pigou-Steuer korrigiert nur, wenn sie so hoch ist wie die externen Kosten.'},
  {t:'calc',text:'<b>Fall Solar.</b> Q<sup>D</sup> = 60 − 2P und Q<sup>S</sup> = 3P − 15. Jede Solaranlage hat für die Gesellschaft einen zusätzlichen Nutzen von 5 €.',fig:G8.sol,
   formula:['Volksw. Wert: Q = 60 − 2(P − 5)'],
@@ -1699,14 +1702,14 @@ const LV8=[
   ex:'Dann rechnet der Produzent für jede Einheit genau die Kosten mit, die er Dritten verursacht. Seine Angebotskurve fällt auf die Kurve der volkswirtschaftlichen Kosten, und der Markt landet im Optimum. Ist die Steuer niedriger, wird noch zu viel produziert. Ist sie höher, zu wenig.'},
  {t:'calc',text:'<b>Papierfabrik I.</b> Q<sup>D</sup> = 150 − 5P und Q<sup>S</sup> = 5P − 50. Jede Einheit verursacht durch Abwasser externe Kosten von 4 €.',fig:G8.pfT,
   formula:['Volksw. Kosten: Q = 5(P − 4) − 50','P<sup>D</sup> = P<sup>S</sup> + T'],
-  fields:[['Marktmenge',50],['Sozial optimale Menge',40],['Wohlfahrtsverlust ohne Eingriff',20],['Nötige Pigou-Steuer je Einheit',4],['Käuferpreis mit Pigou-Steuer',22],['Verkäuferpreis mit Pigou-Steuer',18],['Steueraufkommen',160]],
+  fields:[['Marktmenge',50],['Sozial optimale Menge',40],['Wohlfahrtsverlust ohne Eingriff',20],['Nötige Pigou-Steuer je Einheit',4],['Käuferpreis mit Pigou-Steuer',22],['Verkäuferpreis mit Pigou-Steuer',18],['Steuer&shy;aufkommen',160]],
   ex:'Markt: 150 − 5P = 5P − 50 ⇒ P = 20, Q = 50. Volkswirtschaftliche Kosten: Q = 5P − 70. Optimum: 150 − 5P = 5P − 70 ⇒ 220 = 10P ⇒ P = 22, Q = 40. NWL = ½ · 4 · 10 = 20. Pigou-Steuer 4: 150 − 5(P<sup>S</sup> + 4) = 5P<sup>S</sup> − 50 ⇒ P<sup>S</sup> = 18, P<sup>D</sup> = 22, Q = 40. Aufkommen 4 · 40 = 160.'},
  {t:'calc',text:'<b>Papierfabrik II.</b> Wohlfahrt vor und nach der Pigou-Steuer. Die Nachfrage endet bei P = 30, das Angebot beginnt bei P = 10.',fig:G8.pfT,
   formula:['W = CS + PS + R − externe Kosten'],
   fields:[['Wohlfahrt vorher',300],['Konsumentenrente nachher',160],['Produzentenrente nachher',160],['Externe Kosten nachher',160],['Wohlfahrt nachher',320]],
   ex:'Vorher: CS = ½ · 50 · 10 = 250, PS = ½ · 50 · 10 = 250, externe Kosten 4 · 50 = 200, W = 300. Nachher: CS = ½ · 40 · (30 − 22) = 160, PS = ½ · 40 · (18 − 10) = 160, Aufkommen 160, externe Kosten 4 · 40 = 160, W = 160 + 160 + 160 − 160 = 320. Plus 20, genau der Wohlfahrtsverlust aus Teil I. Steueraufkommen und externe Kosten sind hier gleich groß: Der Staat nimmt genau den Schaden ein, den die Produktion noch verursacht.'},
  {t:'calc',text:'<b>Steuer zu niedrig.</b> Gleiche Papierfabrik, aber der Staat erhebt nur 2 € je Einheit.',fig:G8.pf,
-  fields:[['Gehandelte Menge',45],['Käuferpreis',21],['Verkäuferpreis',19],['Steueraufkommen',90],['Verbleibender Wohlfahrtsverlust',5]],
+  fields:[['Gehandelte Menge',45],['Käuferpreis',21],['Verkäuferpreis',19],['Steuer&shy;aufkommen',90],['Verbleibender Wohlfahrtsverlust',5]],
   ex:'150 − 5(P<sup>S</sup> + 2) = 5P<sup>S</sup> − 50 ⇒ 190 = 10P<sup>S</sup> ⇒ P<sup>S</sup> = 19, P<sup>D</sup> = 21, Q = 45. Aufkommen 2 · 45 = 90. Es wird noch 5 zu viel produziert. Bei Q = 45 sind die volkswirtschaftlichen Kosten (45 + 70)/5 = 23, die Zahlungsbereitschaft 21, Höhe 2. Verbleibender NWL: ½ · 2 · 5 = 5. Die halbe Steuer beseitigt also drei Viertel des Verlusts (von 20 auf 5).'},
  {t:'calc',text:'<b>Steuer rückwärts bestimmen.</b> Q<sup>D</sup> = 100 − P, privates Angebot Q<sup>S</sup> = P − 20, volkswirtschaftliche Kosten Q<sup>S</sup><sub>V</sub> = P − 40.',fig:G8.rv,
   fields:[['Nötige Pigou-Steuer je Einheit',20],['Marktmenge',40],['Sozial optimale Menge',30],['Käuferpreis mit Steuer',70],['Verkäuferpreis mit Steuer',50],['Wohlfahrtsverlust ohne Steuer',100]],
@@ -1912,7 +1915,7 @@ const TV={
     ex:`Die billigsten Fabriken vermeiden zuerst: ${K.nm.slice(0,K.m).join(', ')} mit je ${K.E} t. ${K.c.slice(0,K.m).map(c=>K.E+' · '+c).join(' + ')} = ${euV(K.cost)}. Die letzte Tonne vermeidet ${K.nm[K.m-1]} für ${K.c[K.m-1]} €.`};},
   R=>{const K=caseV(R);return mcV(R,`${K.intro} Vorschrift: jede Fabrik vermeidet ${deV(K.v)} t. Was kostet das insgesamt?`,K.vors,[K.cost,K.v*K.c[0]*K.n,K.E*K.c.reduce((s,x)=>s+x,0)],`${K.c.map(c=>deV(K.v)+' · '+c).join(' + ')} = ${euV(K.vors)}.`,k=>stairV(K));},
   R=>{const it=shufV(R,[['Einbau eines Filters',0],['Umbau der Produktionsanlage',0],['Zusätzliches Personal für die Abgasreinigung',0],['Steuerzahlung an den Staat',1],['Kauf von Zertifikaten bei einer anderen Fabrik',1],['Erlös aus dem Verkauf von Zertifikaten',1],['Teurerer, saubererer Brennstoff',0]]).slice(0,6);
-    return {t:'sort',text:'Ist das eine Vermeidungskost oder eine Zahlung (Umverteilung)?',cats:['Vermeidungskosten','Zahlung / Umverteilung'],items:it,ex:'Vermeidungskosten verbrauchen echte Ressourcen. Steuern und Zertifikatszahlungen schieben Geld nur zwischen Beteiligten hin und her.'};},
+    return {t:'sort',text:'Ist das eine Vermeidungskost oder eine Zahlung (Umverteilung)?',cats:['Vermeidungs&shy;kosten','Zahlung / Umverteilung'],items:it,ex:'Vermeidungskosten verbrauchen echte Ressourcen. Steuern und Zertifikatszahlungen schieben Geld nur zwischen Beteiligten hin und her.'};},
   R=>{const K=caseV(R),big=K.E*K.c[K.n-1],sm=K.E*K.c[0];return {t:'calc',text:`${K.intro} Es sollen ${K.E} t vermieden werden.`,fig:k=>stairV(K),
     fields:[[`Kosten, wenn ${K.nm[0]} alles vermeidet (€)`,sm],[`Kosten, wenn ${K.nm[K.n-1]} alles vermeidet (€)`,big],['Unterschied (€)',big-sm]],
     ex:`${K.E} · ${K.c[0]} = ${euV(sm)} gegen ${K.E} · ${K.c[K.n-1]} = ${euV(big)}. Dieselbe Umweltwirkung kostet ${euV(big-sm)} mehr, wenn die falsche Fabrik vermeidet.`};}
@@ -2237,7 +2240,7 @@ const LV11=[
 {n:'Preisdifferenzierung',d:'Gleiches Gut, unterschiedliche Preise. Elastizität und Preisaufschlag, perfekte Preisdiskriminierung.',fig:G11.pd,T:[
  {t:'mc',text:'Was ist Preisdifferenzierung (Preisdiskriminierung)?',opts:['Gleiche Güter an verschiedene Kunden zu unterschiedlichen Preisen zu verkaufen.','Verschiedene Güter zu verschiedenen Preisen zu verkaufen.','Die Preise über die Zeit zu erhöhen.','Den Preis an die Kosten anzupassen.'],c:0,
   ex:'Das Gut ist dasselbe, nur der Preis hängt vom Kunden ab, etwa nach Zahlungsbereitschaft.'},
- {t:'sort',text:'Welche Beispiele nennt die Vorlesung als Preisdifferenzierung?',cats:['Preisdifferenzierung','keine'],
+ {t:'sort',text:'Welche Beispiele nennt die Vorlesung als Preisdifferenzierung?',cats:['Preis&shy;differenzierung','keine'],
   items:[['Studierendenrabatt',0],['Flug- und Bahnkarten mit unterschiedlichen Preisen',0],['Coupons und Rabatte',0],['Black Friday',0],['Ein größeres Auto kostet mehr als ein kleines',1],['Andere Preise über Preisvergleichsseiten',0]],
   ex:'Beim Auto sind es verschiedene Güter mit verschiedenen Kosten. Bei den anderen Beispielen zahlen verschiedene Kunden für dasselbe Gut unterschiedlich viel.'},
  {t:'mc',text:'Laut Studie haben Coupon-Nutzer bei Katzenfutter eine Preiselastizität von 1,13 (Betrag), Nicht-Nutzer von 0,49. Was folgt daraus für den Hersteller?',opts:['Coupon-Nutzer reagieren stärker auf den Preis, also lohnt sich für sie ein niedrigerer Preis.','Coupon-Nutzer sollten mehr zahlen.','Beide Gruppen sollten gleich viel zahlen.','Nicht-Nutzer reagieren stärker auf den Preis.'],c:0,
@@ -3034,23 +3037,68 @@ function scoreTxt(){let ok=0,n=0;RES.forEach(r=>r.forEach(x=>{if(x===true)ok++;n
 
 
 // Kapitel-Einstieg (Test: Kap. 17 V2)
+const FR=(a,b)=>`<span class="frac"><span>${a}</span><span>${b}</span></span>`;
 const INTRO={
+ 'k3|':{h:'Elastizität',
+  p:'Die Elastizität misst, wie stark die Menge reagiert, wenn sich der Preis (oder das Einkommen) um 1&nbsp;% ändert. Ist die Reaktion stark, heißt die Nachfrage elastisch, ist sie schwach, unelastisch. Davon hängt ab, ob eine Preiserhöhung die Ausgaben der Käufer steigert oder senkt.',
+  fig:['k3',0,0], cap:'Lineare Nachfrage: oben elastisch, unten unelastisch, in der Mitte |ε| = 1.',
+  li:[['Preiselastizität',`ε = ${FR('%-Änderung Menge','%-Änderung Preis')}, bei normaler Nachfrage negativ`],['Mittelwert&shy;methode','Änderung durch den Mittelwert teilen, gleiches Ergebnis in beide Richtungen'],['|ε| > 1 / < 1','elastisch / unelastisch, bei |ε| = 1 einheitselastisch'],['Ausgaben P · Q','unelastisch: Preis rauf ⇒ Ausgaben rauf; elastisch: Ausgaben runter'],['Weitere','Einkommens-, Kreuzpreis- und Angebotselastizität']],
+  kl:'Typisch in der Klausur: Elastizität mit der Mittelwertmethode berechnen, einordnen und die Folge für die Ausgaben begründen.'},
+ 'k5|':{h:'Unternehmen im Wettbewerb',
+  p:'Bei vollständiger Konkurrenz ist jedes Unternehmen Preisnehmer: Es verkauft zum Marktpreis, so viel es will. Den Gewinn maximiert es dort, wo der Grenzerlös (= Preis) den Grenzkosten entspricht. Deshalb ist die Grenzkostenkurve die Angebotskurve des Unternehmens.',
+  fig:['k5',3,1], cap:'Gewinnmaximum bei P = MC, Gewinn = Rechteck (P − ATC) · Q.',
+  li:[['Kosten','explizit und implizit; fix und variabel'],['ATC, MC',`ATC = ${FR('TC','Q')}, MC = Kosten der letzten Einheit`],['Betriebs&shy;optimum','Minimum der ATC, dort schneidet die MC-Kurve'],['P = MR = MC','Regel für die gewinnmaximale Menge'],['Schließen','kurzfristig bei P < AVC, langfristig Austritt bei P < ATC']],
+  kl:'Typisch in der Klausur: Kostentabelle ausfüllen, gewinnmaximale Menge und Gewinn bestimmen, Schließungs- und Austrittsentscheidung begründen.'},
+ 'k7|V1':{h:'Preiskontrollen und Steuern',
+  p:'Ein Höchstpreis unter dem Gleichgewicht erzeugt einen Nachfrageüberschuss, ein Mindestpreis darüber einen Angebotsüberschuss. Eine Mengensteuer treibt einen Keil zwischen den Preis, den Käufer zahlen, und den Preis, den Verkäufer erhalten. Wer die Last trägt, hängt nur von den Elastizitäten ab, nicht davon, wer die Steuer abführt.',
+  fig:['k7',0,1], cap:'Bindender Höchstpreis: Die Nachfrage übersteigt das Angebot.',
+  li:[['Höchstpreis','nur bindend, wenn er unter dem Gleichgewichtspreis liegt'],['Mindestpreis','nur bindend, wenn er über dem Gleichgewichtspreis liegt'],['Steuerkeil','Käuferpreis − Verkäuferpreis = Steuer t'],['Inzidenz','die unelastischere Seite trägt den größeren Teil'],['Subvention','umgekehrter Keil, beide Seiten profitieren']],
+  kl:'Typisch in der Klausur: bindend oder nicht, Überschuss berechnen, Käufer- und Verkäuferpreis mit Steuer bestimmen und die Lastverteilung erklären.'},
+ 'k7|V2':{h:'Kosten der Besteuerung',
+  p:'Eine Steuer bringt dem Staat Einnahmen, verringert aber Konsumenten- und Produzentenrente um mehr als diese Einnahmen. Die Differenz ist der Nettowohlfahrtsverlust: Tauschgeschäfte, die sich gelohnt hätten, finden nicht mehr statt. Er ist umso größer, je elastischer Angebot und Nachfrage sind und je höher die Steuer.',
+  fig:['k7',4,1], cap:'Steueraufkommen = Rechteck, Nettowohlfahrtsverlust = Dreieck.',
+  li:[['Steuer&shy;aufkommen','t · Menge mit Steuer'],['NWL',`${FR('1','2')} · t · Mengenrückgang`],['Steuer verdoppeln','NWL vervierfacht sich'],['Laffer-Kurve','Aufkommen steigt erst, sinkt bei sehr hohen Sätzen'],['Steuer&shy;systeme','Effizienz gegen Gerechtigkeit']],
+  kl:'Typisch in der Klausur: Aufkommen und NWL berechnen, Flächen im Diagramm benennen und erklären, warum der NWL bei höherer Steuer überproportional wächst.'},
+ 'k8|':{h:'Öffentliche Güter und Externalitäten',
+  p:'Güter unterscheiden sich darin, ob man jemanden vom Konsum ausschließen kann und ob sie rivalisieren. Bei öffentlichen Gütern fahren viele Trittbrett, darum bietet der Markt zu wenig an. Bei Externalitäten trägt der Verursacher nicht alle Kosten oder erhält nicht den ganzen Nutzen, deshalb ist die Marktmenge zu groß oder zu klein.',
+  fig:['k8',3,1], cap:'Negative Externalität: Das Marktergebnis liegt rechts vom sozialen Optimum.',
+  li:[['Güterarten','privat, öffentlich, Allmende, Klubgut'],['Trittbrett&shy;fahrer','nutzt das Gut, ohne zu zahlen'],['Externalität','soziale Kosten = private Kosten + externe Kosten'],['Coase-Theorem','Verhandlung löst das Problem, wenn sie fast nichts kostet'],['Pigou-Steuer','Steuer in Höhe des externen Schadens, Gegenstück: Subvention']],
+  kl:'Typisch in der Klausur: Güter einordnen, privates und soziales Optimum im Diagramm bestimmen, Wohlfahrtsverlust und passende Steuer oder Subvention berechnen.'},
+ 'kv|':{h:'Vermeidungstraining',
+  p:'Verschiedene Fabriken können Emissionen unterschiedlich billig vermeiden. Eine Steuer oder handelbare Zertifikate sorgen dafür, dass dort vermieden wird, wo es am wenigsten kostet. Eine starre Vorschrift für alle erreicht dasselbe Ziel nur teurer.',
+  fig:['kv',2,0], cap:'Vermeidungskosten je Tonne, sortiert: Unter der Steuerlinie lohnt sich Vermeiden.',
+  li:[['Vermeidungs&shy;kosten','was eine Tonne weniger Emission kostet'],['Steuer','vermeiden, wenn Vermeidungskosten < Steuer, sonst zahlen'],['Vorschrift','alle vermeiden gleich viel, egal wie teuer'],['Zertifikate','billige Vermeider verkaufen, teure kaufen'],['Sichtweise','Fabrik zählt Zahlungen, Gesellschaft nur echte Kosten']],
+  kl:'Typisch in der Klausur: Wer vermeidet bei Steuer oder Zertifikaten, Gesamtkosten im Vergleich zur Vorschrift und die Ersparnis berechnen.'},
+ 'k11|':{h:'Monopol',
+  p:'Ein Monopolist ist der einzige Anbieter und kann den Preis selbst setzen. Er wählt die Menge mit Grenzerlös = Grenzkosten und verlangt den höchsten Preis, den die Nachfrage dafür hergibt. Weil diese Menge kleiner ist als die effiziente, entsteht ein Nettowohlfahrtsverlust.',
+  fig:['k11',3,1], cap:'Monopolmenge bei MR = MC, Preis auf der Nachfragekurve, NWL als Dreieck.',
+  li:[['Eintritts&shy;barrieren','Schlüsselressource, Staat, natürliches Monopol'],['Grenzerlös','liegt unter der Nachfrage, bei linearer Nachfrage doppelt so steil'],['MR = MC','gewinnmaximale Menge'],['Gewinn','(P − ATC) · Q'],['Preis&shy;differenzierung','gleiches Gut, verschiedene Preise je nach Zahlungsbereitschaft']],
+  kl:'Typisch in der Klausur (wie die Bratwurst-Aufgabe): Menge, Preis und Gewinn bestimmen, mit dem effizienten Ergebnis vergleichen und den NWL berechnen.'},
+ 'k17|V1':{h:'Handelsvorteile',
+  p:'Jeder sollte das herstellen, was er mit den geringsten Opportunitätskosten produziert. Das ist der komparative Vorteil, und er gilt auch für den, der alles schneller kann. Spezialisieren sich beide und tauschen zu einem Preis dazwischen, können beide mehr konsumieren.',
+  fig:['k17',1,1], cap:'Produktionsmöglichkeitenkurve aus den Arbeitszeiten.',
+  li:[['Absoluter Vorteil','weniger Zeit für dasselbe Gut'],['Opportunitäts&shy;kosten','worauf man für eine Einheit verzichtet'],['Komparativer Vorteil','geringere Opportunitätskosten'],['Tauschpreis','muss zwischen den beiden Opportunitätskosten liegen'],['Handelsgewinn','Konsum mit Handel minus Konsum ohne Handel']],
+  kl:'Typisch in der Klausur (wie Hemden und Waschmaschinen): PMK zeichnen, Opportunitätskosten und Vorteile bestimmen, Preisintervall und Handelsgewinne berechnen.'},
  'k17|V2':{h:'Außenhandel',
   p:'Ein kleines Land übernimmt nach der Öffnung den Weltmarktpreis P<sub>W</sub>. Liegt er über dem Inlandspreis, wird exportiert, liegt er darunter, wird importiert. Handel erhöht die Gesamtwohlfahrt, verteilt aber zwischen Käufern und Verkäufern um. Ein Zoll oder eine Quote nimmt einen Teil dieses Gewinns wieder weg.',
-  fig:()=>G17b.tz(1), cap:'Importland mit Zoll: Preis steigt von P<sub>W</sub> auf P<sub>W</sub> + t, die Importmenge schrumpft.',
+  fig:['k17',9,1], cap:'Importland mit Zoll: Preis steigt von P<sub>W</sub> auf P<sub>W</sub> + t, die Importmenge schrumpft.',
   li:[['Weltmarktpreis','waagerechte Linie, das kleine Land kann ihn nicht beeinflussen'],['Export / Import','Lücke zwischen Angebot und Nachfrage beim Weltmarktpreis'],['Zoll t','Inlandspreis = P<sub>W</sub> + t, der Staat kassiert t je importierter Einheit'],['Quote','Höchstmenge für Importe, wirkt wie ein Zoll'],['NWL','zwei Dreiecke, die durch Zoll oder Quote verloren gehen']],
   kl:'Typisch in der Klausur: Export- oder Importmenge bestimmen, Renten vor und nach dem Handel, Zolleinnahmen und Nettowohlfahrtsverlust berechnen.'}
 };
-function introKey(L){ const t=lvTeil(L)||(chKey==='k17'?'V2':''); return INTRO[chKey+'|'+t]?chKey+'|'+t:null; }
+let introSel=null;
+function introKey(L){ const t=lvTeil(L); if(INTRO[chKey+'|'+t]) return chKey+'|'+t; if(INTRO[chKey+'|V1']) return chKey+'|V1'; return INTRO[chKey+'|']?chKey+'|':null; }
+function introFig(f){ const L=CH[f[0]].LV[f[1]]; const fn=(L.T.find(t=>t.fig)||{}).fig||L.fig; return fn(f[2]); }
 function introBtn(L){ return introKey(L)?`<button type="button" class="ibk" data-intro="1" aria-label="Einstieg lesen">📖</button>`:''; }
-function openIntro(){ const k=introKey(LV[cur.l]); if(!k) return; const I=INTRO[k], pg=document.getElementById('introPg');
+function openIntro(key){ const k=key||introKey(LV[cur.l]); if(!k) return; const I=INTRO[k], pg=document.getElementById('introPg');
   const keepSC=SC, keepH=chart.innerHTML; let fig='';
-  try{ drawScene(I.fig()); fig=chart.innerHTML.replace(/id="cp"/g,'id="cpI"').replace(/#cp\)/g,'#cpI)').replace(/id="ar"/g,'id="arI"').replace(/#ar\)/g,'#arI)'); }catch(e){}
+  try{ drawScene(introFig(I.fig)); fig=chart.innerHTML.replace(/id="cp"/g,'id="cpI"').replace(/#cp\)/g,'#cpI)').replace(/id="ar"/g,'id="arI"').replace(/#ar\)/g,'#arI)'); }catch(e){}
   chart.innerHTML=keepH; SC=keepSC;
-  pg.querySelector('.iw').innerHTML=`<button type="button" class="iback" data-introclose="1">‹ Zurück zur Aufgabe</button><h2>${I.h}</h2><p class="ip">${I.p}</p>${fig?`<svg viewBox="0 0 560 420" aria-label="Diagramm">${fig}</svg><p class="icap">${I.cap}</p>`:''}${I.li.map(r=>`<div class="ili"><b>${r[0]}</b><span>${r[1]}</span></div>`).join('')}<p class="ikl">${I.kl}</p>`;
+  const ch=k.split('|')[0], two=INTRO[ch+'|V1']&&INTRO[ch+'|V2'];
+  const sw=two?`<div class="seg isw">${['V1','V2'].map(t=>`<button type="button" class="${k===ch+'|'+t?'on':''}" data-intro="${ch}|${t}">${t}</button>`).join('')}</div>`:'';
+  pg.querySelector('.iw').innerHTML=`<div class="itop"><button type="button" class="iback" data-introclose="1">‹ Zurück zur Aufgabe</button>${sw}</div><h2>${I.h}</h2><p class="ip">${I.p}</p>${fig?`<svg viewBox="0 0 560 420" aria-label="Diagramm">${fig}</svg><p class="icap">${I.cap}</p>`:''}${I.li.map(r=>`<div class="ili"><b>${r[0]}</b><span>${r[1]}</span></div>`).join('')}<p class="ikl">${I.kl}</p>`;
   pg.hidden=false; pg.scrollTop=0; document.body.style.overflow='hidden'; }
 function closeIntro(){ document.getElementById('introPg').hidden=true; document.body.style.overflow=''; }
-document.addEventListener('click',e=>{ if(e.target.closest('[data-intro]')){e.preventDefault();openIntro();} else if(e.target.closest('[data-introclose]')){e.preventDefault();closeIntro();} });
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-intro]'); if(b){e.preventDefault();openIntro(b.dataset.intro==='1'?null:b.dataset.intro);} else if(e.target.closest('[data-introclose]')){e.preventDefault();closeIntro();} });
 function renderTask(){
   animId++; dragCb=null; areaCb=null; minibox.hidden=true;
   const L=LV[cur.l], t=L.T[cur.i]; let checked=false;
