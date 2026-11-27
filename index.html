@@ -3311,7 +3311,7 @@ function renderAll(){ tq.setAttribute('aria-selected',mode==='quiz'); tl.setAttr
   if(mode==='quiz'){levelsEl.hidden=false;renderLevels();renderTask();} else renderLab(); }
 tq.onclick=()=>{mode='quiz';renderAll();};
 tl.onclick=()=>{mode='lab';renderAll();};
-document.querySelectorAll('#chapters button').forEach(b=>b.onclick=()=>{ if(b.dataset.ch===chKey) return; loadCh(b.dataset.ch); save(); renderAll(); window.scrollTo({top:0}); if(!PKT.rem) openModeModal(); });
+document.querySelectorAll('#chapters button').forEach(b=>b.onclick=()=>{ if(b.dataset.ch===chKey){ if(mode!=='exam'&&mode!=='lab') openModeModal(); return; } loadCh(b.dataset.ch); save(); renderAll(); window.scrollTo({top:0}); if(!PKT.rem) openModeModal(); });
 loadCh(ST.ch); if(window.EXAM_ONLY){ mode='exam'; document.querySelector('.tabs').hidden=true; document.title='VWL-Probeklausur'; } renderAll(); if(!window.EXAM_ONLY&&mode!=='exam'&&!PKT.rem&&!PKT.chm[chKey]) setTimeout(openModeModal,300);
 </script>
 
