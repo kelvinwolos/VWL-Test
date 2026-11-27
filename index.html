@@ -3247,5 +3247,5 @@ document.querySelectorAll('#chapters button').forEach(b=>b.onclick=()=>{ if(b.da
 loadCh(ST.ch); if(window.EXAM_ONLY){ mode='exam'; document.querySelector('.tabs').hidden=true; document.title='VWL-Probeklausur'; } renderAll();
 </script>
 
-<script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));}</script>
+<script>if("serviceWorker" in navigator){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(had&&!rl){rl=true;location.reload();}});addEventListener("load",()=>navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{}));}</script>
 </body></html>

@@ -1,6 +1,6 @@
 // Service Worker: macht die App offline nutzbar.
 // Bei jeder neuen Version die Nummer erhöhen, damit Handys das Update laden.
-const VERSION = 'vwl-labor-v10';
+const VERSION = 'vwl-labor-v11';
 const DATEIEN = ['./', 'index.html', 'manifest.json', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
@@ -16,7 +16,7 @@ self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   // Eigene Seite: zuerst online versuchen (Updates), sonst aus dem Speicher
   if (url.origin === location.origin) {
-    e.respondWith(fetch(e.request).then(r => { const k = r.clone(); caches.open(VERSION).then(c => c.put(e.request, k)); return r; })
+    e.respondWith(fetch(e.request, {cache: 'no-cache'}).then(r => { const k = r.clone(); caches.open(VERSION).then(c => c.put(e.request, k)); return r; })
       .catch(() => caches.match(e.request).then(r => r || caches.match('index.html'))));
     return;
   }
