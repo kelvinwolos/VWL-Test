@@ -115,6 +115,7 @@ details.xrev{border:1px solid var(--line);border-radius:10px;padding:10px 14px;m
 .opt.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
 .opt.right{border-color:var(--ok);background:var(--ok-soft)}
 .opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.fwrap{margin:8px 0}.ftog{all:unset;cursor:pointer;font-size:12.5px;color:var(--muted);text-decoration:underline;display:inline-block;margin-bottom:4px}.fwrap.off .formula{display:none}.fwrap.off .ftog{all:unset;cursor:pointer;font-size:13px;font-weight:600;padding:5px 10px;border:1px dashed var(--line);border-radius:8px;color:var(--ink)}
 .mmodal{position:fixed;inset:0;z-index:50;background:rgba(10,14,20,.45);display:flex;align-items:center;justify-content:center;padding:16px}.mcard{width:100%;max-width:420px;max-height:calc(100vh - 32px);overflow:auto;box-shadow:0 12px 40px rgba(0,0,0,.25)}body.mlock{overflow:hidden}
 .mstart{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--paper)}.mstart h3{margin:0 0 8px;font-size:16px}.mopt{all:unset;box-sizing:border-box;display:flex;gap:10px;align-items:flex-start;width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:8px;cursor:pointer}.mopt.on{border:2px solid var(--ink);padding:9px}.mopt b{display:block;font-size:14px}.mopt small{display:block;font-size:12px;color:var(--muted);margin-top:2px;line-height:1.35}.mic{font-size:18px;width:22px;text-align:center}.mfoot{display:flex;justify-content:space-between;align-items:center;margin:12px 0 4px;gap:8px}.mfoot label{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center}.mline{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--muted);border-bottom:1px solid var(--line);padding:2px 0 8px;margin-bottom:10px}.mchg{all:unset;cursor:pointer;color:var(--ink);text-decoration:underline;font-size:12.5px}.kgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}.kgrid div{background:var(--bg);border-radius:8px;padding:10px}.kgrid small{display:block;font-size:12px;color:var(--muted)}.kgrid b{font-size:20px}.klist{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}.kres{all:unset;box-sizing:border-box;display:flex;justify-content:space-between;border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:13px;cursor:pointer}.kres.r{border-color:var(--good,#2f8f5b)}.kres.h{border-color:#c99a2e}.kres.w{border-color:var(--bad)}.krev{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:10px 0;background:var(--bg)}
 .pktrow{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:0 0 10px;background:var(--bg)}.pkttog{all:unset;box-sizing:border-box;display:flex;width:100%;justify-content:space-between;align-items:center;cursor:pointer;font-size:14px;font-weight:600;color:var(--ink)}.sw{width:38px;height:22px;border-radius:999px;background:var(--line);position:relative;flex:0 0 auto;transition:background .15s}.sw i{position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s}.sw.on{background:var(--ink)}.sw.on i{left:19px}.pktsub{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:13px;color:var(--muted)}.seg.mini button{font-size:12px;padding:5px 10px;white-space:nowrap}.pktend{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
@@ -180,7 +181,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--rev);outline-of
       <button id="tabQuiz" role="tab" aria-selected="true">Abfrage</button>
       <button id="tabLab" role="tab" aria-selected="false">Freies Labor</button>
       <button id="tabF" role="tab" aria-selected="false" hidden>Formeln</button>
-      <button id="tabX" role="tab" aria-selected="false">Test</button>
+      <button id="tabX" role="tab" aria-selected="false">Klausur</button>
     </div>
   </header>
   <nav class="levels" id="levels" aria-label="Stufen"></nav>
@@ -2937,6 +2938,11 @@ function renderLevels(){
   levelsEl.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{ if(b.dataset.t===te) return; cur={l:LV.findIndex(l=>(l.grp||'')===(g||'')&&lvTeil(l)===b.dataset.t),i:0}; save(); renderLevels(); renderTask(); });
 }
 function navHtml(){const r=RES[cur.l];return `<div class="qnav">${r.map((x,i)=>`<button data-go="${i}" class="${i===cur.i?'cur':''} ${x===true?'ok':x===false?'no':''}" aria-label="Aufgabe ${i+1}">${i+1}</button>`).join('')}</div>`;}
+// ================= Formeln ein-/ausblenden =================
+let FML={task:true,exam:false}; try{ const s=JSON.parse(localStorage.getItem('vwllab-fml')||'null'); if(s) FML=Object.assign(FML,s); }catch(e){}
+function fmlBox(list,ctx){ const on=!!FML[ctx]; return `<div class="fwrap ${on?'':'off'}" data-ctx="${ctx}"><button type="button" class="ftog" data-fmltog="${ctx}" aria-expanded="${on}">${on?'Formeln ausblenden':'Formeln einblenden'}</button><div class="formula">${list.map(f=>`<span>${f}</span>`).join('')}</div></div>`; }
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-fmltog]'); if(!b) return; const ctx=b.dataset.fmltog; FML[ctx]=!FML[ctx]; try{localStorage.setItem('vwllab-fml',JSON.stringify(FML));}catch(_){}
+  document.querySelectorAll(`.fwrap[data-ctx="${ctx}"]`).forEach(w=>{ w.classList.toggle('off',!FML[ctx]); const t=w.querySelector('.ftog'); t.textContent=FML[ctx]?'Formeln ausblenden':'Formeln einblenden'; t.setAttribute('aria-expanded',FML[ctx]); }); });
 // ================= Bepunktung und Notenprojektion =================
 // Maßstäbe nach gängigen Uni-Notenschlüsseln: üblich linear ab 50 % (4,0), 5-%-Stufen; streng ab 60 %, 4-%-Stufen.
 const NSCH={'50':{n:'üblich (bestanden ab 50 %)',g:[[95,1.0],[90,1.3],[85,1.7],[80,2.0],[75,2.3],[70,2.7],[65,3.0],[60,3.3],[55,3.7],[50,4.0]]},
@@ -3023,7 +3029,7 @@ function renderTask(){
   h+=modeLine(t);
   h+=`<div class="meta"><span style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip">${TYPE[t.t]}</span>${t.m?`<span class="chip mode-${t.m}">${({k:'Kopfrechnen',t:'Taschenrechner',v:'Verständnis'})[t.m]}</span>`:''}</span><span class="score">${scoreTxt()}</span></div>`;
   h+=`<div class="qtext">${t.text}</div>`;
-  if(t.formula) h+=`<div class="formula">${t.formula.map(f=>`<span>${f}</span>`).join('')}</div>`;
+  if(t.formula) h+=fmlBox(t.formula,'task');
   const cats=it=>it[2]||t.cats;
   if(t.t==='mc') h+=`<div class="opts">${t.opts.map((o,k)=>`<button class="opt" data-o="${k}"><b>${String.fromCharCode(65+k)}</b><span>${o}</span></button>`).join('')}</div>`;
   if(t.t==='calc') h+=`<div class="step"><h3>Deine Ergebnisse</h3>${t.fields.map((f,k)=>`<div class="field"><label for="f${k}">${f[0]}</label><span class="numin"><button type="button" class="pm" data-for="f${k}" aria-label="Vorzeichen wechseln">±</button><input type="text" id="f${k}" inputmode="decimal" autocomplete="off"></span></div>`).join('')}<p class="hint">Dezimalzahlen mit Komma oder Punkt, Prozente ohne %-Zeichen. Negativ: Taste ± vor dem Feld. Rundung auf zwei Nachkommastellen reicht.</p></div>`;
@@ -3235,18 +3241,20 @@ function renderExam(){
   if(EX&&EX.done) return renderExRes();
   drawScene(G17?G17.av(1):dScene({a:100,b:10,Pmax:10,Qmax:100}));
   const hist=(XS.hist||[]).slice(-6).reverse();
-  panel.innerHTML=`<div class="lab"><h2>Test zusammenstellen</h2><p>Zufällige Aufgaben aus den gewählten Kapiteln, ohne Rückmeldung während des Tests. Am Ende siehst du Punktzahl, Auswertung je Kapitel und alle Lösungswege.</p>
+  panel.innerHTML=`<div class="lab"><h2>Klausur zusammenstellen</h2><p>Zufällige Aufgaben aus den gewählten Kapiteln, ohne Rückmeldung während der Klausur. Am Ende siehst du Punktzahl, Auswertung je Kapitel und alle Lösungswege.</p>
    <div class="xh">Kapitel</div><div class="xchk">${Object.keys(CHN).filter(k=>CH[k]).map(k=>`<label><input type="checkbox" value="${k}" ${XS.ch.includes(k)?'checked':''}> ${CHN[k]}</label>`).join('')}</div>
    <div class="xh">Art der Aufgaben</div><div class="seg" id="xart">${[['mix','Gemischt'],['v','Verständnis'],['k','Kopfrechnen'],['t','Taschenrechner']].map(a=>`<button data-v="${a[0]}" class="${XS.art===a[0]?'on':''}">${a[1]}</button>`).join('')}</div>
    <div class="xh">Vorlesung</div><div class="seg" id="xvl">${[['alle','Alle'],['V1','nur V1'],['V2','nur V2']].map(a=>`<button data-v="${a[0]}" class="${XS.vl===a[0]?'on':''}">${a[1]}</button>`).join('')}</div><p class="hint">V1/V2 gilt für Kapitel mit zwei Vorlesungen (Kap. 7 und 17). Andere Kapitel zählen bei „nur V1/V2“ nicht mit.</p>
    <div class="xh">Bepunktung</div><div class="seg" id="xpk">${[['aus','aus'],['50','üblich (ab 50 %)'],['60','streng (ab 60 %)']].map(a=>`<button data-v="${a[0]}" class="${(PKT.on?PKT.sc:'aus')===a[0]?'on':''}">${a[1]}</button>`).join('')}</div><p class="hint">Mit Bepunktung: Auswahlaufgabe 2 P, Rechenaufgabe 2 P je Feld, Zuordnung 1 P je Zeile. Am Ende gibt es eine Notenprojektion nach gängigen Uni-Notenschlüsseln.</p>
+   <div class="xh">Formeln in der Klausur</div><div class="seg" id="xfml">${[['0','ausblenden'],['1','anzeigen']].map(a=>`<button data-v="${a[0]}" class="${(FML.exam?'1':'0')===a[0]?'on':''}">${a[1]}</button>`).join('')}</div><p class="hint">Ausgeblendet wie in der echten Klausur. Während der Klausur kannst du sie bei Bedarf einblenden.</p>
    <div class="xh">Anzahl Aufgaben</div><div class="seg" id="xn">${[10,20,30,40].map(n=>`<button data-v="${n}" class="${XS.n===n?'on':''}">${n}</button>`).join('')}</div>
    <div class="xh">Zeitlimit</div><div class="seg" id="xmin">${[[0,'ohne'],[20,'20 min'],[45,'45 min'],[90,'90 min']].map(a=>`<button data-v="${a[0]}" class="${XS.min===a[0]?'on':''}">${a[1]}</button>`).join('')}</div>
    <p class="hint" id="xpool"></p>
-   <div class="actions"><button class="btn" id="xgo">Test starten</button></div>
-   ${hist.length?`<div class="xh">Letzte Tests</div><div class="tblwrap"><table class="tbl"><tr><th>Datum</th><th>Art</th><th>Aufgaben</th><th>Ergebnis</th></tr>${hist.map(h=>`<tr><td>${h.d}</td><td>${h.a}</td><td>${h.n}</td><td>${h.note?fmt(Math.floor(h.p*10)/10,1):fmt(h.p,0)} %${h.note?' · Note '+noteF(h.note):''}</td></tr>`).join('')}</table></div>`:''}</div>`;
-  const upd=()=>{ const n=examPool().length; document.getElementById('xpool').textContent=`Verfügbar: ${n} Aufgaben${n<XS.n?' (weniger als gewählt, der Test wird kürzer)':''}.`; };
+   <div class="actions"><button class="btn" id="xgo">Klausur starten</button></div>
+   ${hist.length?`<div class="xh">Letzte Klausuren</div><div class="tblwrap"><table class="tbl"><tr><th>Datum</th><th>Art</th><th>Aufgaben</th><th>Ergebnis</th></tr>${hist.map(h=>`<tr><td>${h.d}</td><td>${h.a}</td><td>${h.n}</td><td>${h.note?fmt(Math.floor(h.p*10)/10,1):fmt(h.p,0)} %${h.note?' · Note '+noteF(h.note):''}</td></tr>`).join('')}</table></div>`:''}</div>`;
+  const upd=()=>{ const n=examPool().length; document.getElementById('xpool').textContent=`Verfügbar: ${n} Aufgaben${n<XS.n?' (weniger als gewählt, die Klausur wird kürzer)':''}.`; };
   panel.querySelectorAll('.xchk input').forEach(c=>c.onchange=()=>{ XS.ch=[...panel.querySelectorAll('.xchk input:checked')].map(x=>x.value); xsave(); upd(); });
+  panel.querySelectorAll('#xfml button').forEach(b=>b.onclick=()=>{ FML.exam=b.dataset.v==='1'; try{localStorage.setItem('vwllab-fml',JSON.stringify(FML));}catch(_){} panel.querySelectorAll('#xfml button').forEach(x=>x.classList.toggle('on',x===b)); });
   panel.querySelectorAll('#xpk button').forEach(b=>b.onclick=()=>{ const v=b.dataset.v; PKT.on=v!=='aus'; if(PKT.on) PKT.sc=v; pktSave(); panel.querySelectorAll('#xpk button').forEach(x=>x.classList.toggle('on',x===b)); });
   [['xvl','vl',v=>v],['xart','art',v=>v],['xn','n',v=>+v],['xmin','min',v=>+v]].forEach(([id,key,f])=>panel.querySelectorAll('#'+id+' button').forEach(b=>b.onclick=()=>{ XS[key]=f(b.dataset.v); xsave(); panel.querySelectorAll('#'+id+' button').forEach(x=>x.classList.toggle('on',x===b)); upd(); }));
   document.getElementById('xgo').onclick=()=>{ const P=examPool(); if(!P.length){ document.getElementById('xpool').textContent='Bitte mindestens ein Kapitel mit passenden Aufgaben wählen.'; return; }
@@ -3263,7 +3271,7 @@ function renderExQ(){
   let h=`<div class="xtop"><span class="chtag">${CH[q.ch].tag}</span><span class="chip mode-${q.m}">${({k:'Kopfrechnen',t:'Taschenrechner',v:'Verständnis'})[q.m]}</span><span class="xtime" id="xtime"></span></div>`;
   h+=`<div class="qnav">${EX.Q.map((_,i)=>`<button data-go="${i}" class="${i===EX.i?'cur':''} ${EX.A[i]!=null?'ans':''}">${i+1}</button>`).join('')}</div>`;
   h+=`<p class="hint">Aufgabe ${EX.i+1} von ${EX.Q.length} · ${q.lv}${PKT.on?` · <b>${maxPts(t)} P</b> (gesamt ${ptsF(EX.Q.reduce((s,x)=>s+maxPts(x.t),0))} P)`:''}</p><div class="qtext">${t.text}</div>`;
-  if(t.formula) h+=`<div class="formula">${t.formula.map(f=>`<span>${f}</span>`).join('')}</div>`;
+  if(t.formula) h+=fmlBox(t.formula,'exam');
   if(t.t==='mc') h+=`<div class="opts">${t.opts.map((o,k)=>`<button class="opt ${a===k?'on':''}" data-o="${k}"><b>${String.fromCharCode(65+k)}</b><span>${o}</span></button>`).join('')}</div>`;
   if(t.t==='calc') h+=`<div class="step">${t.fields.map((f,k)=>`<div class="field"><label for="x${k}">${f[0]}</label><span class="numin"><button type="button" class="pm" data-for="x${k}" aria-label="Vorzeichen wechseln">±</button><input type="text" id="x${k}" inputmode="decimal" autocomplete="off" value="${a&&a[k]!=null?a[k]:''}"></span></div>`).join('')}</div>`;
   if(t.t==='sort') h+=`<div class="step">${t.items.map((it,k)=>`<div class="srow"><div class="sl">${it[0]}</div><div class="seg" data-r="${k}">${cats(it).map((c,j)=>`<button data-v="${j}" class="${a&&a[k]===j?'on':''}">${c}</button>`).join('')}</div></div>`).join('')}</div>`;
@@ -3302,10 +3310,10 @@ function renderExRes(){
   drawScene(EX.Q[0].fig(1));
   const GP=EX.gp?EX.gp.reduce((s,x)=>s+x,0):0, MX=EX.mx?EX.mx.reduce((s,x)=>s+x,0):0;
   if(EX.pk){ const keep=PKT.sc; PKT.sc=EX.pk; var pkHtml=noteBox(GP,MX,` · Dauer ${mmss(EX.t1-EX.t0)}`)+noteTable(MX); PKT.sc=keep; }
-  let h=EX.pk?`<div class="lab"><h2>Ergebnis: ${ptsF(GP)} von ${ptsF(MX)} Punkten</h2>${pkHtml}`:`<div class="lab"><h2>Ergebnis: ${fmt(S,1)} von ${n} Punkten (${fmt(p,0)} %)</h2><p>Grobe Einordnung: <b>${grade}</b> (Orientierung ab 50 % bestanden). Dauer: ${mmss(EX.t1-EX.t0)}. Tipp: Mit „Bepunktung“ in der Testauswahl bekommst du eine Notenprojektion.</p>`;
+  let h=EX.pk?`<div class="lab"><h2>Ergebnis: ${ptsF(GP)} von ${ptsF(MX)} Punkten</h2>${pkHtml}`:`<div class="lab"><h2>Ergebnis: ${fmt(S,1)} von ${n} Punkten (${fmt(p,0)} %)</h2><p>Grobe Einordnung: <b>${grade}</b> (Orientierung ab 50 % bestanden). Dauer: ${mmss(EX.t1-EX.t0)}. Tipp: Mit „Bepunktung“ in der Klausurauswahl bekommst du eine Notenprojektion.</p>`;
   h+=`
    <div class="tblwrap"><table class="tbl"><tr><th>Kapitel</th><th>Punkte</th><th>Quote</th></tr>${Object.keys(by).map(k=>{ let g=by[k].s,m=by[k].n; if(EX.pk){ g=0;m=0; EX.Q.forEach((q,i)=>{ if(q.ch===k){ g+=EX.gp[i]; m+=EX.mx[i]; } }); } return `<tr><td>${CHN[k]}</td><td>${fmt(g,1)}/${m}</td><td>${fmt(g/m*100,0)} %</td></tr>`; }).join('')}</table></div>
-   <div class="actions"><button class="btn" id="xwrong" ${EX.sc.every(x=>x===1)?'disabled':''}>Falsche Aufgaben wiederholen</button><button class="btn ghost" id="xnew">Neuer Test</button></div>
+   <div class="actions"><button class="btn" id="xwrong" ${EX.sc.every(x=>x===1)?'disabled':''}>Falsche Aufgaben wiederholen</button><button class="btn ghost" id="xnew">Neue Klausur</button></div>
    <div class="xh">Alle Aufgaben</div>`;
   h+=EX.Q.map((q,i)=>`<details class="xrev ${EX.sc[i]===1?'r':EX.sc[i]>0?'h':'w'}"><summary><b>${i+1}.</b> ${EX.pk?ptsF(EX.gp[i])+'/'+EX.mx[i]+' P · ':''}${EX.sc[i]===1?'richtig':EX.sc[i]>0?'teilweise ('+fmt(EX.sc[i]*100,0)+' %)':'falsch'} · ${CH[q.ch].tag} · ${q.lv}</summary>
      <div class="qtext">${q.t.text}</div><p><b>Deine Antwort:</b><br>${ansTxt(q,EX.A[i])}</p><p><b>Richtig:</b><br>${solTxt(q)}</p><div class="note">${q.t.ex||''}</div><button class="btn ghost xfig" data-i="${i}">Diagramm anzeigen</button></details>`).join('');
@@ -3321,7 +3329,7 @@ const txb=document.getElementById('tabX'); txb.onclick=()=>{mode='exam';renderAl
 function renderAll(){ tq.setAttribute('aria-selected',mode==='quiz'); tl.setAttribute('aria-selected',mode==='lab'); tfb.setAttribute('aria-selected',mode==='form'); txb.setAttribute('aria-selected',mode==='exam');
   clearInterval(exTimer); areaCb=null; const ex=mode==='exam';
   document.getElementById('chapters').hidden=ex||!!window.EXAM_ONLY;
-  document.getElementById('eb').textContent=ex?'Einführung in die VWL · Testmodus über alle Kapitel':CH[chKey].eb; document.getElementById('h1').innerHTML=ex?'Probe<span class="s">klausur</span>':CH[chKey].h1;
+  document.getElementById('eb').textContent=ex?'Einführung in die VWL · Klausur über alle Kapitel':CH[chKey].eb; document.getElementById('h1').innerHTML=ex?'Probe<span class="s">klausur</span>':CH[chKey].h1;
   if(ex){ delete document.documentElement.dataset.ch; return renderExam(); } document.documentElement.dataset.ch=chKey;
   if(mode==='form') return CH[chKey].form();
   if(mode==='quiz'){levelsEl.hidden=false;renderLevels();renderTask();} else renderLab(); }
