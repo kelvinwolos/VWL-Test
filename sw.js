@@ -1,6 +1,6 @@
 // Service Worker: macht die App offline nutzbar.
 // Bei jeder neuen Version die Nummer erhöhen, damit Handys das Update laden.
-const VERSION = 'vwl-labor-v15';
+const VERSION = 'vwl-labor-v16';
 const DATEIEN = ['./', 'index.html', 'manifest.json', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
