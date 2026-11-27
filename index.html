@@ -115,6 +115,7 @@ details.xrev{border:1px solid var(--line);border-radius:10px;padding:10px 14px;m
 .opt.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
 .opt.right{border-color:var(--ok);background:var(--ok-soft)}
 .opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.pktrow{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:0 0 10px;background:var(--bg)}.pkttog{all:unset;box-sizing:border-box;display:flex;width:100%;justify-content:space-between;align-items:center;cursor:pointer;font-size:14px;font-weight:600;color:var(--ink)}.sw{width:38px;height:22px;border-radius:999px;background:var(--line);position:relative;flex:0 0 auto;transition:background .15s}.sw i{position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s}.sw.on{background:var(--ink)}.sw.on i{left:19px}.pktsub{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:13px;color:var(--muted)}.seg.mini button{font-size:12px;padding:5px 10px;white-space:nowrap}.pktend{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
 .pktbtn{font:inherit;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--muted);cursor:pointer;white-space:nowrap}.pktbtn.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}.pktchip{font-size:12px;font-weight:600;margin-left:6px;padding:2px 8px;border-radius:999px;background:var(--paper);border:1px solid var(--line)}.pktbox{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:8px 0;line-height:1.5;background:var(--paper)}.ntab{margin:6px 0 10px}.ntab summary{cursor:pointer;font-size:14px}
 .numin{display:flex;gap:4px;align-items:stretch}.numin input{flex:1;min-width:0;width:100%}.pm{flex:0 0 38px;font:inherit;font-size:18px;font-weight:600;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);cursor:pointer;padding:0}.pm:active{background:var(--line)}
 .field{display:grid;grid-template-columns:minmax(0,1fr) 160px;gap:10px;align-items:center;margin-bottom:8px}
@@ -2922,7 +2923,7 @@ function navHtml(){const r=RES[cur.l];return `<div class="qnav">${r.map((x,i)=>`
 // Maßstäbe nach gängigen Uni-Notenschlüsseln: üblich linear ab 50 % (4,0), 5-%-Stufen; streng ab 60 %, 4-%-Stufen.
 const NSCH={'50':{n:'üblich (bestanden ab 50 %)',g:[[95,1.0],[90,1.3],[85,1.7],[80,2.0],[75,2.3],[70,2.7],[65,3.0],[60,3.3],[55,3.7],[50,4.0]]},
             '60':{n:'streng (bestanden ab 60 %)',g:[[96,1.0],[92,1.3],[88,1.7],[84,2.0],[80,2.3],[76,2.7],[72,3.0],[68,3.3],[64,3.7],[60,4.0]]}};
-let PKT={on:false,sc:'50',pts:{}}; try{ const s=JSON.parse(localStorage.getItem('vwllab-pkt')||'null'); if(s) PKT=Object.assign(PKT,s); }catch(e){}
+let PKT={on:false,sc:'50',fb:'sofort',pts:{}}; try{ const s=JSON.parse(localStorage.getItem('vwllab-pkt')||'null'); if(s) PKT=Object.assign(PKT,s); }catch(e){}
 const pktSave=()=>{ try{localStorage.setItem('vwllab-pkt',JSON.stringify(PKT));}catch(e){} };
 function noteOf(p,sc){ for(const [g,n] of NSCH[sc||PKT.sc].g) if(p>=g-1e-9) return n; return 5.0; }
 const noteW=n=>n<=1.5?'sehr gut':n<=2.5?'gut':n<=3.5?'befriedigend':n<=4?'ausreichend':'nicht ausreichend';
@@ -2931,16 +2932,21 @@ function maxPts(t){ return t.t==='calc'?2*t.fields.length:t.t==='sort'?t.items.l
 const ptsF=x=>fmt(x,Number.isInteger(x)?0:1);
 function noteBox(got,max,extra){ const p=max?got/max*100:0, n=noteOf(p); return `<div class="pktbox"><b>${ptsF(got)} von ${ptsF(max)} Punkten (${fmt(Math.floor(p*10)/10,1)} %)</b> → Notenprojektion <b>${noteF(n)}</b> (${noteW(n)})${extra||''}<br><span class="hint">Maßstab: ${NSCH[PKT.sc].n}. Die echte Grenze legt die Prüferin bzw. der Prüfer fest.</span></div>`; }
 function noteTable(max){ return `<details class="ntab"><summary>Notenschlüssel für ${ptsF(max)} Punkte</summary><div class="tblwrap"><table class="tbl"><tr><th>Note</th><th>ab Punkten</th><th>ab %</th></tr>${NSCH[PKT.sc].g.map(([g,n])=>`<tr><td>${noteF(n)}</td><td>${ptsF(Math.ceil(max*g/100*2)/2)}</td><td>${g} %</td></tr>`).join('')}<tr><td>5,0</td><td>darunter</td><td>&lt; ${NSCH[PKT.sc].g[9][0]} %</td></tr></table></div></details>`; }
-document.addEventListener('click',e=>{ if(!e.target.closest||!e.target.closest('#pktbtn')) return; PKT.on=!PKT.on; pktSave(); if(typeof renderTask==='function') renderTask(); });
+document.addEventListener('click',e=>{ const t=e.target.closest&&e.target.closest('[data-pkt]'); if(!t) return; const v=t.dataset.pkt; if(v==='tog') PKT.on=!PKT.on; else if(v==='redo'){ pktClear(cur.l); } else PKT.fb=v; pktSave(); if(typeof renderTask==='function'){ renderLevels(); renderTask(); } });
+function pktClear(l){ Object.keys(PKT.pts).forEach(k=>{ if(k.startsWith(chKey+'|'+l+'|')) delete PKT.pts[k]; }); pktSave(); }
+function lvDone(){ const L=LV[cur.l]; return (L.T||[]).length>0 && L.T.every((t,i)=>PKT.pts[chKey+'|'+cur.l+'|'+i]!=null); }
+function pktRow(t){ return `<div class="pktrow"><button type="button" class="pkttog" data-pkt="tog" role="switch" aria-checked="${PKT.on}"><span class="pkl">Klausur-Bepunktung</span><span class="sw ${PKT.on?'on':''}"><i></i></span></button>${PKT.on?`<div class="pktsub"><span>Diese Aufgabe: <b>${maxPts(t)} P</b></span><span class="seg mini">${[['sofort','Punkte sofort'],['ende','erst am Ende']].map(a=>`<button type="button" data-pkt="${a[0]}" class="${PKT.fb===a[0]?'on':''}">${a[1]}</button>`).join('')}</span></div>`:''}</div>`; }
+function lvSummary(){ const p=lvPts(); return `<div class="pktend"><b>Stufe geschafft – deine Auswertung</b>${noteBox(p.g,p.m)}${noteTable(p.m)}<button type="button" class="btn ghost" data-pkt="redo">Stufe neu bepunkten</button></div>`; }
 function pktBtn(){ return `<button type="button" class="pktbtn ${PKT.on?'on':''}" id="pktbtn" title="Bepunktung wie in der Klausur">${PKT.on?'Punkte an':'Punkte'}</button>`; }
 function lvPts(){ let g=0,m=0; const L=LV[cur.l]; (L.T||[]).forEach((t,i)=>{ const k=chKey+'|'+cur.l+'|'+i; if(PKT.pts[k]!=null){ g+=PKT.pts[k]; m+=maxPts(t); } }); return {g,m}; }
-function scoreTxt(){let ok=0,n=0;RES.forEach(r=>r.forEach(x=>{if(x===true)ok++;n++;})); if(PKT.on){ const p=lvPts(); if(p.m) return `Stufe: ${ptsF(p.g)}/${ptsF(p.m)} P · Note ${noteF(noteOf(p.g/p.m*100))}`; return 'Stufe: noch keine Punkte'; } return `gesamt ${ok} von ${n}`;}
+function scoreTxt(){let ok=0,n=0;RES.forEach(r=>r.forEach(x=>{if(x===true)ok++;n++;})); if(PKT.on){ const p=lvPts(); if(lvDone()) return `Stufe: ${ptsF(p.g)}/${ptsF(p.m)} P · Note ${noteF(noteOf(p.g/p.m*100))}`; if(PKT.fb==='ende') return `Bepunktet: ${(LV[cur.l].T||[]).filter((t,i)=>PKT.pts[chKey+'|'+cur.l+'|'+i]!=null).length} von ${(LV[cur.l].T||[]).length} Aufgaben`; return p.m?`Stufe: ${ptsF(p.g)}/${ptsF(p.m)} P`:'Stufe: 0 P'; } return `gesamt ${ok} von ${n}`;}
 
 function renderTask(){
   animId++; dragCb=null; areaCb=null; minibox.hidden=true;
   const L=LV[cur.l], t=L.T[cur.i]; let checked=false;
   let h=`<p class="ldesc"><span class="chtag">${CH[chKey].tag}</span><b>${L.grp?GRPN[L.grp]+' · ':''}${lvShowTeil(L.grp)?({V1:'V1',V2:'V2','':'V1 + V2'})[lvTeil(L)]+' · ':''}Stufe ${lvNum(cur.l)} · ${lvShowTeil(L.grp)?lvName(L):L.n}.</b> ${L.d}</p>`+navHtml();
-  h+=`<div class="meta"><span style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip">${TYPE[t.t]}</span>${t.m?`<span class="chip mode-${t.m}">${({k:'Kopfrechnen',t:'Taschenrechner',v:'Verständnis'})[t.m]}</span>`:''}</span><span style="display:flex;gap:6px;align-items:center"><span class="score">${scoreTxt()}</span>${pktBtn()}</span></div>${PKT.on?`<p class="hint" style="margin:2px 0 0">Bepunktung: <b>${maxPts(t)} P</b>${t.t==='calc'?' (2 je Feld)':t.t==='sort'?' (1 je Zeile)':''}</p>`:''}`;
+  h+=pktRow(t);
+  h+=`<div class="meta"><span style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip">${TYPE[t.t]}</span>${t.m?`<span class="chip mode-${t.m}">${({k:'Kopfrechnen',t:'Taschenrechner',v:'Verständnis'})[t.m]}</span>`:''}</span><span class="score">${scoreTxt()}</span></div>`;
   h+=`<div class="qtext">${t.text}</div>`;
   if(t.formula) h+=`<div class="formula">${t.formula.map(f=>`<span>${f}</span>`).join('')}</div>`;
   const cats=it=>it[2]||t.cats;
@@ -2953,7 +2959,7 @@ function renderTask(){
   if(t.t==='shape') h+=`<div class="step"><h3>${t.kind==='S'?'Angebotselastizität ε<sub>S</sub>':'Betrag der Nachfrageelastizität |ε|'}</h3><input type="range" id="es" min="0" max="${EL.length-1}" step="1" value="3" aria-label="Elastizität"><div class="readout" id="ro"></div></div>`;
   h+=`<div class="actions"><button class="btn" id="chk">Prüfen</button><button class="btn ghost" id="prev" ${cur.i===0&&cur.l===0?'disabled':''}>Zurück</button><button class="btn ghost" id="next">${cur.i===L.T.length-1?(cur.l===LV.length-1?'Von vorn':'Nächste Stufe'):'Weiter'}</button>${L.gen?'<button class="btn ghost" id="newn">Neue Zahlen</button>':''}</div><div id="fb"></div>`;
   panel.innerHTML=h;
-  const nb=document.getElementById('newn'); if(nb) nb.onclick=()=>(chKey==='k11'?newNumbers11(cur.l):chKey==='k17'?newNumbers17(cur.l):newNumbersV(cur.l));
+  const nb=document.getElementById('newn'); if(nb) nb.onclick=()=>(pktClear(cur.l),chKey==='k11'?newNumbers11(cur.l):chKey==='k17'?newNumbers17(cur.l):newNumbersV(cur.l));
   const fig=t.fig||L.fig; if(t.t!=='point'&&t.t!=='shape'&&t.t!=='pick'&&t.t!=='area') drawScene(fig(0));
 
   // MC
@@ -3018,7 +3024,7 @@ function renderTask(){
     const pk=chKey+'|'+cur.l+'|'+cur.i; if(PKT.pts[pk]==null){ PKT.pts[pk]=gp; pktSave(); }
     if(RES[cur.l][cur.i]===null){RES[cur.l][cur.i]=ok;save();}
     if(t.fig&&t.t!=='point'&&t.t!=='shape'&&t.t!=='pick'&&t.t!=='area') animate(t.fig,t.fig===G.mkt?1700:900);
-    fb.innerHTML=`<div class="fb ${ok?'ok':'no'}"><strong>${ok?'Richtig.':'Nicht ganz.'}${PKT.on?` <span class="pktchip">${ptsF(gp)} von ${maxPts(t)} P${PKT.pts[pk]!==gp?' · gewertet: erster Versuch '+ptsF(PKT.pts[pk])+' P':''}</span>`:''}</strong>${det}${t.ex}</div>`;
+    fb.innerHTML=`<div class="fb ${ok?'ok':'no'}"><strong>${ok?'Richtig.':'Nicht ganz.'}${PKT.on&&PKT.fb==='sofort'?` <span class="pktchip">${ptsF(gp)} von ${maxPts(t)} P${PKT.pts[pk]!==gp?' · gewertet: erster Versuch '+ptsF(PKT.pts[pk])+' P':''}</span>`:''}</strong>${det}${t.ex}</div>${PKT.on&&lvDone()?lvSummary():''}`;
     document.getElementById('chk').disabled=true;
     panel.querySelector('.qnav').outerHTML=navHtml();
     panel.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{cur.i=+b.dataset.go;save();renderTask();});
