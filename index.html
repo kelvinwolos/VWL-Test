@@ -115,6 +115,7 @@ details.xrev{border:1px solid var(--line);border-radius:10px;padding:10px 14px;m
 .opt.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
 .opt.right{border-color:var(--ok);background:var(--ok-soft)}
 .opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.mmodal{position:fixed;inset:0;z-index:50;background:rgba(10,14,20,.45);display:flex;align-items:center;justify-content:center;padding:16px}.mcard{width:100%;max-width:420px;max-height:calc(100vh - 32px);overflow:auto;box-shadow:0 12px 40px rgba(0,0,0,.25)}body.mlock{overflow:hidden}
 .mstart{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--paper)}.mstart h3{margin:0 0 8px;font-size:16px}.mopt{all:unset;box-sizing:border-box;display:flex;gap:10px;align-items:flex-start;width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:8px;cursor:pointer}.mopt.on{border:2px solid var(--ink);padding:9px}.mopt b{display:block;font-size:14px}.mopt small{display:block;font-size:12px;color:var(--muted);margin-top:2px;line-height:1.35}.mic{font-size:18px;width:22px;text-align:center}.mfoot{display:flex;justify-content:space-between;align-items:center;margin:12px 0 4px;gap:8px}.mfoot label{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center}.mline{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--muted);border-bottom:1px solid var(--line);padding:2px 0 8px;margin-bottom:10px}.mchg{all:unset;cursor:pointer;color:var(--ink);text-decoration:underline;font-size:12.5px}.kgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}.kgrid div{background:var(--bg);border-radius:8px;padding:10px}.kgrid small{display:block;font-size:12px;color:var(--muted)}.kgrid b{font-size:20px}.klist{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}.kres{all:unset;box-sizing:border-box;display:flex;justify-content:space-between;border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:13px;cursor:pointer}.kres.r{border-color:var(--good,#2f8f5b)}.kres.h{border-color:#c99a2e}.kres.w{border-color:var(--bad)}.krev{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:10px 0;background:var(--bg)}
 .pktrow{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:0 0 10px;background:var(--bg)}.pkttog{all:unset;box-sizing:border-box;display:flex;width:100%;justify-content:space-between;align-items:center;cursor:pointer;font-size:14px;font-weight:600;color:var(--ink)}.sw{width:38px;height:22px;border-radius:999px;background:var(--line);position:relative;flex:0 0 auto;transition:background .15s}.sw i{position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s}.sw.on{background:var(--ink)}.sw.on i{left:19px}.pktsub{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:13px;color:var(--muted)}.seg.mini button{font-size:12px;padding:5px 10px;white-space:nowrap}.pktend{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
 .pktbtn{font:inherit;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--muted);cursor:pointer;white-space:nowrap}.pktbtn.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}.pktchip{font-size:12px;font-weight:600;margin-left:6px;padding:2px 8px;border-radius:999px;background:var(--paper);border:1px solid var(--line)}.pktbox{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:8px 0;line-height:1.5;background:var(--paper)}.ntab{margin:6px 0 10px}.ntab summary{cursor:pointer;font-size:14px}
@@ -2935,12 +2936,30 @@ function noteBox(got,max,extra){ const p=max?got/max*100:0, n=noteOf(p); return 
 function noteTable(max){ return `<details class="ntab"><summary>Notenschlüssel für ${ptsF(max)} Punkte</summary><div class="tblwrap"><table class="tbl"><tr><th>Note</th><th>ab Punkten</th><th>ab %</th></tr>${NSCH[PKT.sc].g.map(([g,n])=>`<tr><td>${noteF(n)}</td><td>${ptsF(Math.ceil(max*g/100*2)/2)}</td><td>${g} %</td></tr>`).join('')}<tr><td>5,0</td><td>darunter</td><td>&lt; ${NSCH[PKT.sc].g[9][0]} %</td></tr></table></div></details>`; }
 const MODES={ueben:['ti-school','Üben','Rückmeldung nach jeder Aufgabe, keine Punkte'],punkte:['ti-target','Mit Punkten','Rückmeldung und Punkte, Note erst am Ende'],klausur:['ti-clock','Klausurmodus','Keine Rückmeldung unterwegs. Punkte, Note und Lösungen erst am Schluss']};
 const MI={ueben:'◎',punkte:'◉',klausur:'⏱'};
-if(!PKT.ses) PKT.ses={}; if(PKT.rem==null) PKT.rem=false; if(!PKT.def) PKT.def='ueben';
+if(!PKT.ses) PKT.ses={}; if(!PKT.chm) PKT.chm={}; if(PKT.rem==null) PKT.rem=false; if(!PKT.def) PKT.def='ueben';
 const sesKey=()=>chKey+'|'+cur.l;
-function MODE(){ const s=PKT.ses[sesKey()]; return s?s.m:'ueben'; }
+function MODE(){ return PKT.chm[chKey]||'ueben'; }
+const SES=()=>PKT.ses[sesKey()]||(PKT.ses[sesKey()]={});
 function pktClear(l){ Object.keys(PKT.pts).forEach(k=>{ if(k.startsWith(chKey+'|'+l+'|')) delete PKT.pts[k]; }); const s=PKT.ses[chKey+'|'+l]; if(s){ s.review=false; } pktSave(); }
 function lvDone(){ const L=LV[cur.l]; return (L.T||[]).length>0 && L.T.every((t,i)=>PKT.pts[chKey+'|'+cur.l+'|'+i]!=null); }
-function startMode(m){ PKT.ses[sesKey()]={m}; PKT.def=m; pktClear(cur.l); if(m!=='ueben'){ cur.i=0; save(); } pktSave(); renderLevels(); renderTask(); }
+function startMode(m){ const old=MODE(); PKT.chm[chKey]=m; PKT.def=m; if(m!==old&&m!=='ueben'){ pktClear(cur.l); cur.i=0; save(); } SES().review=false; pktSave(); closeModeModal(); renderLevels(); renderTask(); }
+function closeModeModal(){ const d=document.getElementById('mmodal'); if(d) d.remove(); document.body.classList.remove('mlock'); }
+function openModeModal(){ closeModeModal(); const sel=PKT.chm[chKey]||PKT.def||'ueben';
+  const d=document.createElement('div'); d.id='mmodal'; d.className='mmodal'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); d.setAttribute('aria-label','Lernmodus wählen');
+  d.innerHTML=`<div class="mstart mcard"><p class="hint" style="margin:0 0 4px">${CH[chKey].tag} · ${CHN[chKey]||''}</p><h3>Wie willst du das Kapitel machen?</h3>${Object.keys(MODES).map(k=>`<button type="button" class="mopt ${k===sel?'on':''}" data-mo="${k}"><span class="mic">${MI[k]}</span><span><b>${MODES[k][1]}</b><small>${MODES[k][2]}</small></span></button>`).join('')}
+   <div class="mfoot"><label><input type="checkbox" id="mrem" ${PKT.rem?'checked':''}> Nicht mehr fragen</label><button class="btn" id="mgo">Starten</button></div>
+   <p class="hint" style="margin:0">Punkte: Auswahl 2 P, Rechenfeld 2 P, Zuordnung 1 P je Zeile. Maßstab: <select id="msc">${Object.keys(NSCH).map(k=>`<option value="${k}" ${PKT.sc===k?'selected':''}>${NSCH[k].n}</option>`).join('')}</select></p>
+   <p class="hint" style="margin:6px 0 0">Gilt für alle Stufen des Kapitels. Ändern jederzeit oben über „ändern“.</p></div>`;
+  document.body.appendChild(d); document.body.classList.add('mlock');
+  let pick=sel;
+  d.querySelectorAll('.mopt').forEach(b=>b.onclick=()=>{ pick=b.dataset.mo; d.querySelectorAll('.mopt').forEach(x=>x.classList.toggle('on',x===b)); });
+  d.querySelector('#msc').onchange=e=>{ PKT.sc=e.target.value; pktSave(); };
+  d.querySelector('#mrem').onchange=e=>{ PKT.rem=e.target.checked; pktSave(); };
+  d.querySelector('#mgo').onclick=()=>startMode(pick);
+  d.addEventListener('click',e=>{ if(e.target===d) startMode(pick); });
+  d.querySelector('#mgo').focus();
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&document.getElementById('mmodal')){ const p=document.querySelector('#mmodal .mopt.on'); startMode(p?p.dataset.mo:'ueben'); } });
 function renderStart(){
   const L=LV[cur.l], mx=(L.T||[]).reduce((s,t)=>s+maxPts(t),0), sel=PKT.def||'ueben';
   panel.innerHTML=`<p class="ldesc"><span class="chtag">${CH[chKey].tag}</span><b>${L.grp?GRPN[L.grp]+' · ':''}Stufe ${lvNum(cur.l)} · ${lvShowTeil(L.grp)?lvName(L):L.n}</b> · ${(L.T||[]).length} Aufgaben · ${mx} P</p>
@@ -2955,11 +2974,11 @@ function renderStart(){
 }
 function modeLine(t){ const m=MODE(), L=LV[cur.l]; return `<div class="mline"><span>${MI[m]} ${MODES[m][1]} · Aufgabe ${cur.i+1} von ${L.T.length}${m!=='ueben'?` · ${maxPts(t)} P`:''}</span><button type="button" class="mchg" data-pkt="chg">ändern</button></div>`; }
 document.addEventListener('click',e=>{ const t=e.target.closest&&e.target.closest('[data-pkt]'); if(!t) return; const v=t.dataset.pkt;
-  if(v==='chg'){ delete PKT.ses[sesKey()]; pktSave(); renderTask(); return; }
-  if(v==='redo'){ startMode(MODE()); return; }
-  if(v==='review'){ PKT.ses[sesKey()].review=true; pktSave(); cur.i=0; renderTask(); return; }
-  if(v==='wrong'){ const L=LV[cur.l]; const w=L.T.map((x,i)=>i).filter(i=>(PKT.pts[chKey+'|'+cur.l+'|'+i]||0)<maxPts(L.T[i])); w.forEach(i=>RES[cur.l][i]=null); save(); PKT.ses[sesKey()]={m:'ueben'}; pktSave(); cur.i=w.length?w[0]:0; renderLevels(); renderTask(); return; }
-  if(v==='sum'){ PKT.ses[sesKey()].review=false; pktSave(); renderTask(); return; }
+  if(v==='chg'){ openModeModal(); return; }
+  if(v==='redo'){ pktClear(cur.l); cur.i=0; save(); renderLevels(); renderTask(); return; }
+  if(v==='review'){ SES().review=true; pktSave(); cur.i=0; renderTask(); return; }
+  if(v==='wrong'){ const L=LV[cur.l]; const w=L.T.map((x,i)=>i).filter(i=>(PKT.pts[chKey+'|'+cur.l+'|'+i]||0)<maxPts(L.T[i])); w.forEach(i=>RES[cur.l][i]=null); save(); PKT.chm[chKey]='ueben'; pktSave(); cur.i=w.length?w[0]:0; renderLevels(); renderTask(); return; }
+  if(v==='sum'){ SES().review=false; pktSave(); renderTask(); return; }
 });
 function taskSol(t){ if(t.t==='mc') return t.opts[t.c]; if(t.t==='calc') return t.fields.map(f=>`${f[0]}: <b>${fmt(f[1])}</b>`).join('<br>'); if(t.t==='sort') return t.items.map(it=>`${it[0]}: <b>${(it[2]||t.cats)[it[1]]}</b>`).join('<br>'); if(t.t==='point') return 'P = '+eur(t.target); if(t.t==='pick') return t.tl; if(t.t==='area') return t.c.join(' + '); return ''; }
 function renderKEnd(){
@@ -2971,7 +2990,7 @@ function renderKEnd(){
    <p class="hint">${fmt(Math.floor(pc*10)/10,1)} % · ${noteW(n)} · Maßstab ${NSCH[PKT.sc].n}. Die echte Grenze legt der Prüfer fest.</p>
    <div class="klist">${rows}</div>${noteTable(p.m)}
    <div class="actions"><button class="btn" data-pkt="review">Lösungen ansehen</button>${wr?`<button class="btn ghost" data-pkt="wrong">Fehler üben (${wr})</button>`:''}<button class="btn ghost" data-pkt="redo">Nochmal</button></div></div>`;
-  panel.querySelectorAll('[data-ki]').forEach(b=>b.onclick=()=>{ PKT.ses[sesKey()].review=true; pktSave(); cur.i=+b.dataset.ki; renderTask(); });
+  panel.querySelectorAll('[data-ki]').forEach(b=>b.onclick=()=>{ SES().review=true; pktSave(); cur.i=+b.dataset.ki; renderTask(); });
 }
 function lvSummary(){ const p=lvPts(); return `<div class="pktend"><b>Stufe geschafft – deine Auswertung</b>${noteBox(p.g,p.m)}${noteTable(p.m)}<button type="button" class="btn ghost" data-pkt="redo">Stufe neu bepunkten</button></div>`; }
 function pktBtn(){ return `<button type="button" class="pktbtn ${PKT.on?'on':''}" id="pktbtn" title="Bepunktung wie in der Klausur">${PKT.on?'Punkte an':'Punkte'}</button>`; }
@@ -2981,8 +3000,8 @@ function scoreTxt(){let ok=0,n=0;RES.forEach(r=>r.forEach(x=>{if(x===true)ok++;n
 function renderTask(){
   animId++; dragCb=null; areaCb=null; minibox.hidden=true;
   const L=LV[cur.l], t=L.T[cur.i]; let checked=false;
-  { let ses=PKT.ses[sesKey()]; if(!ses){ if(PKT.rem){ ses=PKT.ses[sesKey()]={m:PKT.def}; pktSave(); } else return renderStart(); }
-    if(ses.m==='klausur'&&lvDone()&&!ses.review) return renderKEnd(); }
+  if(!PKT.chm[chKey]&&PKT.rem){ PKT.chm[chKey]=PKT.def; pktSave(); }
+  if(MODE()==='klausur'&&lvDone()&&!SES().review) return renderKEnd();
   const KM=MODE()==='klausur', KREV=KM&&lvDone(), KSAVED=KM&&!KREV&&PKT.pts[sesKey()+'|'+cur.i]!=null;
   let h=`<p class="ldesc"><span class="chtag">${CH[chKey].tag}</span><b>${L.grp?GRPN[L.grp]+' · ':''}${lvShowTeil(L.grp)?({V1:'V1',V2:'V2','':'V1 + V2'})[lvTeil(L)]+' · ':''}Stufe ${lvNum(cur.l)} · ${lvShowTeil(L.grp)?lvName(L):L.n}.</b> ${L.d}</p>`+navHtml();
   h+=modeLine(t);
@@ -3292,8 +3311,8 @@ function renderAll(){ tq.setAttribute('aria-selected',mode==='quiz'); tl.setAttr
   if(mode==='quiz'){levelsEl.hidden=false;renderLevels();renderTask();} else renderLab(); }
 tq.onclick=()=>{mode='quiz';renderAll();};
 tl.onclick=()=>{mode='lab';renderAll();};
-document.querySelectorAll('#chapters button').forEach(b=>b.onclick=()=>{ if(b.dataset.ch===chKey) return; loadCh(b.dataset.ch); save(); renderAll(); window.scrollTo({top:0}); });
-loadCh(ST.ch); if(window.EXAM_ONLY){ mode='exam'; document.querySelector('.tabs').hidden=true; document.title='VWL-Probeklausur'; } renderAll();
+document.querySelectorAll('#chapters button').forEach(b=>b.onclick=()=>{ if(b.dataset.ch===chKey) return; loadCh(b.dataset.ch); save(); renderAll(); window.scrollTo({top:0}); if(!PKT.rem) openModeModal(); });
+loadCh(ST.ch); if(window.EXAM_ONLY){ mode='exam'; document.querySelector('.tabs').hidden=true; document.title='VWL-Probeklausur'; } renderAll(); if(!window.EXAM_ONLY&&mode!=='exam'&&!PKT.rem&&!PKT.chm[chKey]) setTimeout(openModeModal,300);
 </script>
 
 <script>if("serviceWorker" in navigator){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(had&&!rl){rl=true;location.reload();}});addEventListener("load",()=>navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{}));}</script>
