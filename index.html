@@ -55,6 +55,13 @@ h1 .s{color:var(--sup)} h1 .d{color:var(--dem)}
 #introPg h2{font-size:20px;margin:10px 0 8px}
 #introPg .ip{font-size:15px;line-height:1.6;margin:0}
 #introPg sub{line-height:0}
+#introPg .iey{font-size:12px;color:var(--muted);margin:12px 0 0;text-transform:uppercase;letter-spacing:.04em}
+#introPg .iey+h2,#introPg .ih h2{margin-top:2px}
+#introPg .ih{display:flex;justify-content:space-between;align-items:center;gap:10px}
+#introPg .isw2{display:flex;min-width:96px}#introPg .isw2 button{flex:1;padding:4px 10px}
+#introPg .ist{margin:6px 0 0;padding-left:22px;font-size:14px;line-height:1.5}#introPg .ist li{padding:5px 0;border-top:1px solid var(--grid)}
+#introPg .ibsp{margin:14px 0 0;padding:10px 12px;border:1px solid var(--grid);border-radius:8px;font-size:14px;line-height:1.55;display:grid;gap:2px}
+#introPg .ibsp b{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--chap)}
 #introPg .itop{display:flex;justify-content:space-between;align-items:center;gap:10px}
 #introPg .isw{display:flex;min-width:110px}
 #introPg .isw button{flex:1;padding:5px 12px}
@@ -3040,65 +3047,255 @@ function scoreTxt(){let ok=0,n=0;RES.forEach(r=>r.forEach(x=>{if(x===true)ok++;n
 const FR=(a,b)=>`<span class="frac"><span>${a}</span><span>${b}</span></span>`;
 const INTRO={
  'k3|':{h:'Elastizität',
-  p:'Die Elastizität misst, wie stark die Menge reagiert, wenn sich der Preis (oder das Einkommen) um 1&nbsp;% ändert. Ist die Reaktion stark, heißt die Nachfrage elastisch, ist sie schwach, unelastisch. Davon hängt ab, ob eine Preiserhöhung die Ausgaben der Käufer steigert oder senkt.',
-  fig:['k3',0,0], cap:'Lineare Nachfrage: oben elastisch, unten unelastisch, in der Mitte |ε| = 1.',
-  li:[['Preiselastizität',`ε = ${FR('%-Änderung Menge','%-Änderung Preis')}, bei normaler Nachfrage negativ`],['Mittelwert&shy;methode','Änderung durch den Mittelwert teilen, gleiches Ergebnis in beide Richtungen'],['|ε| > 1 / < 1','elastisch / unelastisch, bei |ε| = 1 einheitselastisch'],['Ausgaben P · Q','unelastisch: Preis rauf ⇒ Ausgaben rauf; elastisch: Ausgaben runter'],['Weitere','Einkommens-, Kreuzpreis- und Angebotselastizität']],
-  kl:'Typisch in der Klausur: Elastizität mit der Mittelwertmethode berechnen, einordnen und die Folge für die Ausgaben begründen.'},
+  p:'Die Elastizität misst, wie stark Käufer und Verkäufer auf eine Änderung der Marktlage reagieren: um wie viel Prozent sich die Menge ändert, wenn der Preis um 1&nbsp;% steigt. Anders als im Buch behält die Preiselastizität der Nachfrage in dieser Vorlesung ihr Vorzeichen, sie ist also normalerweise negativ (z. B. −2). Ob eine Preiserhöhung die Ausgaben P · Q steigert oder senkt, hängt nur davon ab, ob die Nachfrage elastisch oder unelastisch ist.',
+  fig:['k3',0,0], cap:'Lineare Nachfrage Q = 30 − 10P: oben elastisch, unten unelastisch, in der Mitte |ε| = 1.',
+  li:[['Preiselastizität',`ε = ${FR('%-Änderung der Menge','%-Änderung des Preises')}`],['Bestimmungs&shy;gründe','enge Substitute, lebensnotwendig oder Luxus, Marktabgrenzung, Zeithorizont'],['Drei Methoden','einfach (Basis = Startwert), Mittelwertmethode, Punktelastizität'],['|ε| > 1 / < 1','elastisch / unelastisch; |ε| = 1 einheitselastisch'],['Ausgaben P · Q','unelastisch: Preis ↑ ⇒ Ausgaben ↑; elastisch: Preis ↑ ⇒ Ausgaben ↓'],['Weitere','Einkommens-, Kreuzpreis- und Angebotselastizität']],
+  kl:'Typisch in der Klausur: Elastizität mit der verlangten Methode berechnen (auch als Punktelastizität aus einer Nachfragefunktion), einordnen und die Wirkung auf die Ausgaben begründen. Dazu MC-Fragen zu Kurvenformen und den Anwendungen (Skiurlaub, Rauschgift, CO<sub>2</sub>-Steuer).'},
  'k5|':{h:'Unternehmen im Wettbewerb',
-  p:'Bei vollständiger Konkurrenz ist jedes Unternehmen Preisnehmer: Es verkauft zum Marktpreis, so viel es will. Den Gewinn maximiert es dort, wo der Grenzerlös (= Preis) den Grenzkosten entspricht. Deshalb ist die Grenzkostenkurve die Angebotskurve des Unternehmens.',
+  p:'Bei vollständiger Konkurrenz ist jedes Unternehmen Preisnehmer: Es verkauft jede Menge zum Marktpreis, deshalb gilt P = AR = MR. Den Gewinn maximiert es dort, wo der Preis den Grenzkosten entspricht. Darum ist die Grenzkostenkurve oberhalb des Betriebsminimums die Angebotskurve des Unternehmens, und langfristig sorgen Ein- und Austritte für einen Gewinn von null.',
   fig:['k5',3,1], cap:'Gewinnmaximum bei P = MC, Gewinn = Rechteck (P − ATC) · Q.',
-  li:[['Kosten','explizit und implizit; fix und variabel'],['ATC, MC',`ATC = ${FR('TC','Q')}, MC = Kosten der letzten Einheit`],['Betriebs&shy;optimum','Minimum der ATC, dort schneidet die MC-Kurve'],['P = MR = MC','Regel für die gewinnmaximale Menge'],['Schließen','kurzfristig bei P < AVC, langfristig Austritt bei P < ATC']],
-  kl:'Typisch in der Klausur: Kostentabelle ausfüllen, gewinnmaximale Menge und Gewinn bestimmen, Schließungs- und Austrittsentscheidung begründen.'},
+  li:[['Kosten','explizit und implizit; fix und variabel; versunkene Kosten zählen nicht'],['ATC, AVC, MC',`ATC = ${FR('TC','Q')}, AVC = ${FR('VC','Q')}, MC = ${FR('ΔTC','ΔQ')}`],['Betriebs&shy;optimum','min ATC; Betriebsminimum = min AVC'],['P = MR = MC','Regel für die gewinnmaximale Menge'],['Schließen','kurzfristig bei P < min AVC, langfristig Austritt bei P < min ATC']],
+  kl:'Typisch in der Klausur: Kostenfunktionen aufstellen, gewinnmaximale Menge und Gewinn berechnen, Betriebsminimum und -optimum bestimmen und die Schließungs- bzw. Austrittsentscheidung begründen.'},
  'k7|V1':{h:'Preiskontrollen und Steuern',
-  p:'Ein Höchstpreis unter dem Gleichgewicht erzeugt einen Nachfrageüberschuss, ein Mindestpreis darüber einen Angebotsüberschuss. Eine Mengensteuer treibt einen Keil zwischen den Preis, den Käufer zahlen, und den Preis, den Verkäufer erhalten. Wer die Last trägt, hängt nur von den Elastizitäten ab, nicht davon, wer die Steuer abführt.',
+  p:'Ein Höchstpreis wirkt nur, wenn er unter dem Gleichgewichtspreis liegt, und erzeugt dann einen Nachfrageüberschuss. Ein Mindestpreis wirkt nur darüber und erzeugt einen Angebotsüberschuss. Eine Mengensteuer treibt einen Keil zwischen den Preis, den Käufer zahlen, und den Preis, den Verkäufer erhalten. Wer die Last trägt, hängt nur von den Elastizitäten ab, nicht davon, wer die Steuer abführt.',
   fig:['k7',0,1], cap:'Bindender Höchstpreis: Die Nachfrage übersteigt das Angebot.',
-  li:[['Höchstpreis','nur bindend, wenn er unter dem Gleichgewichtspreis liegt'],['Mindestpreis','nur bindend, wenn er über dem Gleichgewichtspreis liegt'],['Steuerkeil','Käuferpreis − Verkäuferpreis = Steuer t'],['Inzidenz','die unelastischere Seite trägt den größeren Teil'],['Subvention','umgekehrter Keil, beide Seiten profitieren']],
-  kl:'Typisch in der Klausur: bindend oder nicht, Überschuss berechnen, Käufer- und Verkäuferpreis mit Steuer bestimmen und die Lastverteilung erklären.'},
+  li:[['Höchstpreis','bindend nur unter dem Gleichgewichtspreis (Mietpreisbremse)'],['Mindestpreis','bindend nur über dem Gleichgewichtspreis (Mindestlohn)'],['Steuerkeil','P<sub>D</sub> = P<sub>S</sub> + T'],['Inzidenz','die unelastischere Seite trägt den größeren Teil'],['Subvention','umgekehrter Keil: P<sub>S</sub> = P<sub>D</sub> + Subvention']],
+  kl:'Typisch in der Klausur: prüfen, ob eine Preiskontrolle bindet, Überschuss und Renten berechnen, Käufer- und Verkäuferpreis mit Steuer bestimmen und die Lastverteilung mit den Elastizitäten erklären.'},
  'k7|V2':{h:'Kosten der Besteuerung',
-  p:'Eine Steuer bringt dem Staat Einnahmen, verringert aber Konsumenten- und Produzentenrente um mehr als diese Einnahmen. Die Differenz ist der Nettowohlfahrtsverlust: Tauschgeschäfte, die sich gelohnt hätten, finden nicht mehr statt. Er ist umso größer, je elastischer Angebot und Nachfrage sind und je höher die Steuer.',
-  fig:['k7',4,1], cap:'Steueraufkommen = Rechteck, Nettowohlfahrtsverlust = Dreieck.',
-  li:[['Steuer&shy;aufkommen','t · Menge mit Steuer'],['NWL',`${FR('1','2')} · t · Mengenrückgang`],['Steuer verdoppeln','NWL vervierfacht sich'],['Laffer-Kurve','Aufkommen steigt erst, sinkt bei sehr hohen Sätzen'],['Steuer&shy;systeme','Effizienz gegen Gerechtigkeit']],
-  kl:'Typisch in der Klausur: Aufkommen und NWL berechnen, Flächen im Diagramm benennen und erklären, warum der NWL bei höherer Steuer überproportional wächst.'},
+  p:'Die Gesamtwohlfahrt besteht aus Konsumentenrente, Produzentenrente und Steueraufkommen. Eine Steuer senkt die beiden Renten um mehr, als sie an Aufkommen bringt: Tauschgeschäfte, die sich gelohnt hätten, finden nicht mehr statt. Dieser Nettowohlfahrtsverlust ist umso größer, je elastischer Angebot und Nachfrage sind und je höher die Steuer.',
+  fig:['k7',4,1], cap:'Steueraufkommen = Rechteck T · Q<sub>T</sub>, Nettowohlfahrtsverlust = Dreieck.',
+  li:[['Steuer&shy;aufkommen','R = T · Q<sub>T</sub>'],['NWL',`${FR('1','2')} · T · (Q<sub>1</sub> − Q<sub>T</sub>)`],['Elastizität','elastisch ⇒ Menge reagiert stark ⇒ großer NWL'],['Steuer verdoppeln','NWL vervierfacht sich (lineare Kurven)'],['Laffer-Kurve','Aufkommen steigt erst, sinkt bei sehr hohen Sätzen'],['Gerechtigkeit','Äquivalenz- oder Leistungsfähigkeitsprinzip (vertikal, horizontal)']],
+  kl:'Typisch in der Klausur: Aufkommen und NWL berechnen, die Flächen im Diagramm benennen, erklären, warum der NWL bei höherer Steuer überproportional wächst, und Steuertypen (proportional, progressiv, regressiv) einordnen.'},
  'k8|':{h:'Öffentliche Güter und Externalitäten',
-  p:'Güter unterscheiden sich darin, ob man jemanden vom Konsum ausschließen kann und ob sie rivalisieren. Bei öffentlichen Gütern fahren viele Trittbrett, darum bietet der Markt zu wenig an. Bei Externalitäten trägt der Verursacher nicht alle Kosten oder erhält nicht den ganzen Nutzen, deshalb ist die Marktmenge zu groß oder zu klein.',
-  fig:['k8',3,1], cap:'Negative Externalität: Das Marktergebnis liegt rechts vom sozialen Optimum.',
-  li:[['Güterarten','privat, öffentlich, Allmende, Klubgut'],['Trittbrett&shy;fahrer','nutzt das Gut, ohne zu zahlen'],['Externalität','soziale Kosten = private Kosten + externe Kosten'],['Coase-Theorem','Verhandlung löst das Problem, wenn sie fast nichts kostet'],['Pigou-Steuer','Steuer in Höhe des externen Schadens, Gegenstück: Subvention']],
-  kl:'Typisch in der Klausur: Güter einordnen, privates und soziales Optimum im Diagramm bestimmen, Wohlfahrtsverlust und passende Steuer oder Subvention berechnen.'},
+  p:'Kapitel 8: Güter unterscheiden sich darin, ob man jemanden von der Nutzung ausschließen kann und ob sie rivalisieren. Bei öffentlichen Gütern fahren viele Trittbrett, darum bietet der Markt sie nicht an, auch wenn der Nutzen die Kosten übersteigt. Kapitel 9: Eine Externalität ist eine unkompensierte Wirkung auf unbeteiligte Dritte. Bei negativen Externalitäten produziert der Markt zu viel, bei positiven zu wenig.',
+  fig:['k8',3,1], cap:'Negative Externalität (Aluminium): Das Marktergebnis liegt rechts vom sozialen Optimum.',
+  li:[['Güterarten','privat, öffentlich, Allmende, Clubgut'],['Trittbrett&shy;fahrer','nutzt das Gut, ohne zu zahlen (Feuerwerk Kieler Woche)'],['Volksw. Kosten','private Kosten + externe Kosten'],['Internalisierung','Anreize, damit die externen Effekte mitgerechnet werden'],['Coase-Theorem','private Verhandlung genügt bei klaren Eigentumsrechten und geringen Transaktionskosten'],['Pigou-Steuer','Steuer in Höhe der externen Kosten; Gegenstück: Subvention']],
+  kl:'Typisch in der Klausur: Güter einordnen, privates und soziales Optimum im Diagramm oder aus Funktionen bestimmen, Wohlfahrtsverlust und passende Pigou-Steuer berechnen und Steuer, Zertifikate und Vorschriften vergleichen.'},
  'kv|':{h:'Vermeidungstraining',
-  p:'Verschiedene Fabriken können Emissionen unterschiedlich billig vermeiden. Eine Steuer oder handelbare Zertifikate sorgen dafür, dass dort vermieden wird, wo es am wenigsten kostet. Eine starre Vorschrift für alle erreicht dasselbe Ziel nur teurer.',
+  p:'Verschiedene Fabriken können Emissionen unterschiedlich billig vermeiden. Eine Pigou-Steuer oder handelbare Zertifikate sorgen dafür, dass dort vermieden wird, wo es am wenigsten kostet. Eine starre Vorschrift für alle erreicht dasselbe Ziel nur teurer.',
   fig:['kv',2,0], cap:'Vermeidungskosten je Tonne, sortiert: Unter der Steuerlinie lohnt sich Vermeiden.',
   li:[['Vermeidungs&shy;kosten','was eine Tonne weniger Emission kostet'],['Steuer','vermeiden, wenn Vermeidungskosten < Steuer, sonst zahlen'],['Vorschrift','alle vermeiden gleich viel, egal wie teuer'],['Zertifikate','billige Vermeider verkaufen, teure kaufen'],['Sichtweise','Fabrik zählt Zahlungen, Gesellschaft nur echte Kosten']],
   kl:'Typisch in der Klausur: Wer vermeidet bei Steuer oder Zertifikaten, Gesamtkosten im Vergleich zur Vorschrift und die Ersparnis berechnen.'},
  'k11|':{h:'Monopol',
-  p:'Ein Monopolist ist der einzige Anbieter und kann den Preis selbst setzen. Er wählt die Menge mit Grenzerlös = Grenzkosten und verlangt den höchsten Preis, den die Nachfrage dafür hergibt. Weil diese Menge kleiner ist als die effiziente, entsteht ein Nettowohlfahrtsverlust.',
+  p:'Ein Monopolist ist der einzige Verkäufer eines Gutes ohne nahe Substitute und sieht sich der fallenden Marktnachfrage gegenüber. Wie jedes Unternehmen wählt er die Menge mit Grenzerlös = Grenzkosten, verlangt dafür aber den Preis, den die Nachfrage hergibt: P > MR = MC. Weil seine Menge kleiner ist als die effiziente, entsteht ein Nettowohlfahrtsverlust.',
   fig:['k11',3,1], cap:'Monopolmenge bei MR = MC, Preis auf der Nachfragekurve, NWL als Dreieck.',
-  li:[['Eintritts&shy;barrieren','Schlüsselressource, Staat, natürliches Monopol'],['Grenzerlös','liegt unter der Nachfrage, bei linearer Nachfrage doppelt so steil'],['MR = MC','gewinnmaximale Menge'],['Gewinn','(P − ATC) · Q'],['Preis&shy;differenzierung','gleiches Gut, verschiedene Preise je nach Zahlungsbereitschaft']],
-  kl:'Typisch in der Klausur (wie die Bratwurst-Aufgabe): Menge, Preis und Gewinn bestimmen, mit dem effizienten Ergebnis vergleichen und den NWL berechnen.'},
+  li:[['Eintritts&shy;barrieren','Schlüsselressource, staatliches Monopol (Patente), natürliches Monopol'],['Grenzerlös','liegt immer unter dem Preis (Preiseffekt gegen Mengeneffekt)'],['MR = MC','gewinnmaximale Menge, Preis von der Nachfragekurve'],['Gewinn','(P − ATC) · Q'],['Politik','Wettbewerb öffnen, regulieren, verstaatlichen oder nicht einschreiten'],['Preis&shy;differenzierung','gleiches Gut, verschiedene Preise; senkt den NWL']],
+  kl:'Typisch in der Klausur (wie die Bratwurst-Aufgabe): Grenzerlös bilden, Menge, Preis und Gewinn bestimmen, mit dem effizienten Ergebnis vergleichen und Renten sowie NWL berechnen.'},
  'k17|V1':{h:'Handelsvorteile',
-  p:'Jeder sollte das herstellen, was er mit den geringsten Opportunitätskosten produziert. Das ist der komparative Vorteil, und er gilt auch für den, der alles schneller kann. Spezialisieren sich beide und tauschen zu einem Preis dazwischen, können beide mehr konsumieren.',
-  fig:['k17',1,1], cap:'Produktionsmöglichkeitenkurve aus den Arbeitszeiten.',
-  li:[['Absoluter Vorteil','weniger Zeit für dasselbe Gut'],['Opportunitäts&shy;kosten','worauf man für eine Einheit verzichtet'],['Komparativer Vorteil','geringere Opportunitätskosten'],['Tauschpreis','muss zwischen den beiden Opportunitätskosten liegen'],['Handelsgewinn','Konsum mit Handel minus Konsum ohne Handel']],
-  kl:'Typisch in der Klausur (wie Hemden und Waschmaschinen): PMK zeichnen, Opportunitätskosten und Vorteile bestimmen, Preisintervall und Handelsgewinne berechnen.'},
+  p:'Spezialisierung und Handel lohnen sich auch dann, wenn einer in allem produktiver ist. Entscheidend ist nicht der absolute Vorteil (weniger Arbeitszeit), sondern der komparative Vorteil: geringere Opportunitätskosten. Spezialisieren sich beide auf ihren komparativen Vorteil und tauschen zu einem Preis zwischen ihren Opportunitätskosten, können beide mehr konsumieren als in Autarkie.',
+  fig:['k17',1,1], cap:'Produktionsmöglichkeitenkurve des Ackerbauern aus den Arbeitszeiten.',
+  li:[['Absoluter Vorteil','weniger Input für dasselbe Gut; bestimmt das Lohnniveau'],['Opportunitäts&shy;kosten','worauf man für eine Einheit verzichtet; Steigung der PMK'],['Komparativer Vorteil','geringere Opportunitätskosten; bestimmt den Handel'],['Tauschpreis','muss zwischen den beiden Opportunitätskosten liegen'],['Handelsgewinn','Konsum mit Handel minus Konsum ohne Handel']],
+  kl:'Typisch in der Klausur (wie Hemden und Waschmaschinen): PMK zeichnen, Opportunitätskosten und Vorteile bestimmen, Preisintervall angeben und Handelsgewinne berechnen.'},
  'k17|V2':{h:'Außenhandel',
-  p:'Ein kleines Land übernimmt nach der Öffnung den Weltmarktpreis P<sub>W</sub>. Liegt er über dem Inlandspreis, wird exportiert, liegt er darunter, wird importiert. Handel erhöht die Gesamtwohlfahrt, verteilt aber zwischen Käufern und Verkäufern um. Ein Zoll oder eine Quote nimmt einen Teil dieses Gewinns wieder weg.',
-  fig:['k17',9,1], cap:'Importland mit Zoll: Preis steigt von P<sub>W</sub> auf P<sub>W</sub> + t, die Importmenge schrumpft.',
-  li:[['Weltmarktpreis','waagerechte Linie, das kleine Land kann ihn nicht beeinflussen'],['Export / Import','Lücke zwischen Angebot und Nachfrage beim Weltmarktpreis'],['Zoll t','Inlandspreis = P<sub>W</sub> + t, der Staat kassiert t je importierter Einheit'],['Quote','Höchstmenge für Importe, wirkt wie ein Zoll'],['NWL','zwei Dreiecke, die durch Zoll oder Quote verloren gehen']],
-  kl:'Typisch in der Klausur: Export- oder Importmenge bestimmen, Renten vor und nach dem Handel, Zolleinnahmen und Nettowohlfahrtsverlust berechnen.'}
+  p:'Ein kleines Land übernimmt nach der Öffnung den Weltmarktpreis P<sub>W</sub>. Liegt er über dem Preis ohne Außenhandel, hat das Land einen komparativen Vorteil und exportiert, liegt er darunter, importiert es. Handel erhöht die Gesamtrente, verteilt aber um: im Exportland gewinnen die Produzenten, im Importland die Konsumenten. Zölle und Quoten bringen den Markt näher an die Autarkie und kosten Wohlfahrt.',
+  fig:['k17',9,1], cap:'Importland mit Zoll: Preis steigt von P<sub>W</sub> auf P<sub>W</sub> + Zoll, die Importmenge schrumpft.',
+  li:[['Weltmarktpreis','waagerechte Linie, das kleine Land kann ihn nicht beeinflussen'],['Export / Import','Lücke zwischen Angebot und Nachfrage beim Weltmarktpreis'],['Zoll','Inlandspreis = P<sub>W</sub> + Zoll; der Staat erhält Zoll · Import'],['Quote','begrenzt die Importmenge, wirkt ähnlich wie ein Zoll'],['NWL','zwei Dreiecke (D + F), die durch Zoll oder Quote verloren gehen'],['Argumente','Beschäftigung, junge Industrien, unfairer Wettbewerb, Ausbeutung']],
+  kl:'Typisch in der Klausur: Export- oder Importmenge bestimmen, Renten vor und nach dem Handel, Zolleinnahmen und Nettowohlfahrtsverlust berechnen und die Flächen A bis G zuordnen.'}
+};
+// Einstiege je Stufe: SI[Kapitel][Stufenname]
+const SI={
+ k3:{
+  'Grundlagen':{p:'Die Preiselastizität der Nachfrage sagt, um wie viel Prozent sich die nachgefragte Menge ändert, wenn der Preis um 1&nbsp;% steigt. Wir behalten das Vorzeichen: Bei normaler Nachfrage ist sie negativ. Wie stark Käufer reagieren, hängt von vier Bestimmungsgründen ab.',
+   li:[['Definition',`ε = ${FR('%-Änderung der Menge','%-Änderung des Preises')}`],['Substitute','viele enge Substitute ⇒ elastischer'],['Notwendigkeit','lebensnotwendig ⇒ unelastisch, Luxus ⇒ elastisch'],['Marktabgrenzung','eng abgegrenzt (Vanilleeis) ⇒ elastischer als weit (Eis)'],['Zeithorizont','langfristig elastischer als kurzfristig']],
+   tip:'|ε| > 1 heißt elastisch, |ε| < 1 unelastisch, |ε| = 1 einheitselastisch. Verglichen wird immer der Betrag.'},
+  'Berechnen':{p:'Es gibt drei Wege. Die einfache Methode teilt durch den Startwert, liefert aber je nach Richtung ein anderes Ergebnis. Die Mittelwertmethode (Bogenelastizität) teilt durch den Mittelwert und gibt in beide Richtungen dasselbe. Die Punktelastizität misst an einem Punkt und braucht die Ableitung der Nachfragefunktion.',
+   li:[['Einfach',`ε = ${FR('(Q<sub>2</sub> − Q<sub>1</sub>) / Q<sub>1</sub>','(P<sub>2</sub> − P<sub>1</sub>) / P<sub>1</sub>')}`],['Mittelwert',`ε = ${FR('(Q<sub>2</sub> − Q<sub>1</sub>) / ((Q<sub>1</sub> + Q<sub>2</sub>) / 2)','(P<sub>2</sub> − P<sub>1</sub>) / ((P<sub>1</sub> + P<sub>2</sub>) / 2)')}`],['Punkt',`ε = ${FR('dQ','dP')} · ${FR('P','Q')}`]],
+   bsp:'Eiskugel 2,00 € → 2,20 €, Menge 10 → 8. Einfach: −20&nbsp;% / +10&nbsp;% = −2 (rückwärts aber −2,75). Mittelwert: −22,2&nbsp;% / 9,5&nbsp;% ≈ −2,3 in beide Richtungen. Punkt bei Q = 30 − 10P und P = 2: −10 · 2 / 10 = −2.',
+   tip:'Lies genau, welche Methode verlangt ist, und behalte das Minuszeichen.'},
+  'Kurvenformen':{p:'Die Elastizität hängt eng mit der Steigung zusammen: Je steiler die Nachfragekurve durch einen Punkt, desto unelastischer. Auf einer Geraden ist die Elastizität aber nicht überall gleich, sie fällt zusammen mit dem Preis.',fig:1,
+   li:[['Senkrecht','vollkommen unelastisch, ε = 0'],['Steil','unelastisch, |ε| < 1'],['|ε| = 1','Menge ändert sich um denselben Prozentsatz wie der Preis'],['Flach','elastisch, |ε| > 1'],['Waagerecht','vollkommen elastisch, |ε| → ∞'],['Auf der Geraden','oben (teuer) elastisch, unten (billig) unelastisch']],
+   bsp:'Bei P = 2: Q = 30 − 10P gibt ε = −2 (elastisch), die steilere Q = 15 − 2,5P gibt ε = −0,5 (unelastisch).'},
+  'Ausgaben':{p:'Die Gesamtausgaben der Käufer sind P · Q, also das Rechteck unter dem Punkt auf der Nachfragekurve. Steigt der Preis, wirken zwei Kräfte gegeneinander: höherer Preis, aber geringere Menge. Welche überwiegt, sagt die Elastizität.',fig:1,
+   li:[['|ε| < 1','Preis ↑ ⇒ Ausgaben ↑, Preis ↓ ⇒ Ausgaben ↓'],['|ε| > 1','Preis ↑ ⇒ Ausgaben ↓, Preis ↓ ⇒ Ausgaben ↑'],['|ε| = 1','Preisänderungen lassen die Ausgaben gleich']],
+   bsp:'Preis 4 € → 5 €: bei unelastischer Nachfrage steigen die Ausgaben von 400 € auf 450 €, bei elastischer fallen sie von 400 € auf 250 €.',
+   tip:'Auf einer geraden Nachfrage sind die Ausgaben bei |ε| = 1 (Mitte) am größten.'},
+  'Weitere Elastizitäten':{p:'Nach demselben Muster misst man die Reaktion auf andere Größen. Immer gilt: prozentuale Mengenänderung geteilt durch die prozentuale Änderung der Ursache.',
+   li:[['Einkommen',`${FR('%-Änderung der Menge','%-Änderung des Einkommens')}`],['Kreuzpreis',`${FR('%-Änderung Menge von Gut 1','%-Änderung Preis von Gut 2')}; positiv bei Substituten, negativ bei Komplementen`],['Angebot',`${FR('%-Änderung der angebotenen Menge','%-Änderung des Preises')}`],['Angebot elastisch','wenn sich leicht mehr produzieren lässt (Bücher, Autos), und langfristig'],['Angebot unelastisch','wenn die Menge kaum wächst (Land mit Strandzugang), und kurzfristig']]},
+  'Anwendungen':{p:'Drei Fälle aus der Vorlesung zeigen, warum die Elastizität über das Ergebnis entscheidet.',
+   li:[['Skiurlaub','Hauptsaison: Angebot unelastisch, mehr Nachfrage treibt vor allem den Preis; Nebensaison: elastisch, vor allem die Menge steigt'],['Rauschgift&shy;verbot','Angebot sinkt: Preis ↑, Menge ↓; bei unelastischer Nachfrage steigen die Ausgaben der Süchtigen'],['Aufklärung','Nachfrage sinkt: Preis ↓ und Menge ↓'],['CO<sub>2</sub>-Steuer','Stadt (Nachfrage elastisch): Ausgaben sinken; Land (unelastisch): Ausgaben steigen']]},
+  'Klausur':{p:'Hier kommt alles zusammen. Arbeite die Teilaufgaben in dieser Reihenfolge ab.',
+   st:['Methode und Richtung der Änderung aus der Aufgabe lesen','Prozentuale Änderungen bzw. Ableitung bestimmen','Elastizität mit Vorzeichen ausrechnen','Betrag mit 1 vergleichen und einordnen','Folgerung für die Ausgaben oder die Anwendung begründen']}
+ },
+ k5:{
+  'Kostenbegriffe':{p:'Gewinn ist Erlös minus Kosten. Ökonomen zählen dabei alle Opportunitätskosten mit, also auch die impliziten Kosten, für die nichts gezahlt wird.',
+   li:[['Explizit','Zahlungen, z. B. Löhne, Material, Miete'],['Implizit','entgangene Alternativen, z. B. eigener Lohn, Zinsen auf das eigene Kapital'],['Ökonomischer Gewinn','Erlös − explizite − implizite Kosten (buchhalterisch nur explizite)'],['Fix / variabel','fixe Kosten hängen nicht von der Menge ab, variable schon'],['Versunken','nicht zurückholbar, für Entscheidungen irrelevant']]},
+  'Kostenfunktionen':{p:'Aus den Gesamtkosten leitet man Durchschnitts- und Grenzkosten ab. Die Grenzkostenkurve schneidet die ATC- und die AVC-Kurve jeweils in deren Minimum.',
+   li:[['TC','FC + VC(Q)'],['ATC / AVC',`ATC = ${FR('TC','Q')}, AVC = ${FR('VC','Q')}`],['MC',`${FR('ΔTC','ΔQ')} bzw. Ableitung von TC`],['Betriebsoptimum','min ATC (dort MC = ATC)'],['Betriebsminimum','min AVC (dort MC = AVC)']],
+   bsp:'TC = 200 + 6Q + ½Q²: ATC = 200/Q + 6 + ½Q, MC = 6 + Q. Betriebsoptimum aus MC = ATC: Q = 20, ATC = 26.'},
+  'Erlöse':{p:'Ein Preisnehmer verkauft jede zusätzliche Einheit zum selben Marktpreis. Deshalb sind Durchschnitts- und Grenzerlös gleich dem Preis.',
+   li:[['Gesamterlös','R = P · Q'],['Durchschnittserlös',`AR = ${FR('R','Q')} = P`],['Grenzerlös',`MR = ${FR('ΔR','ΔQ')} = P`]],
+   bsp:'P = 6 €: 10 Stück bringen 60 €, 11 Stück 66 €, also MR = 6 €.'},
+  'Gewinnmaximierung':{p:'Produziere so lange, wie eine weitere Einheit mehr Erlös als Kosten bringt. Das Optimum liegt bei MR = MC, für den Preisnehmer also bei P = MC. Der Gewinn ist das Rechteck zwischen Preis und ATC.',
+   li:[['MR > MC','Menge erhöhen'],['MR < MC','Menge senken'],['Optimum','P = MR = MC'],['Gewinn','π = (P − ATC) · Q']],
+   bsp:'TC = 200 + 6Q + ½Q², P = 30: 30 = 6 + Q ⇒ Q = 24, ATC ≈ 26,33, Gewinn ≈ (30 − 26,33) · 24 = 88.'},
+  'Angebot & Produktion':{p:'Die Grenzkostenkurve zeigt, welche Menge das Unternehmen bei jedem Preis anbietet, aber nur oberhalb der Schwelle, ab der Produzieren sich lohnt. Kurzfristig sind die Fixkosten versunken, langfristig nicht.',fig:1,
+   li:[['Angebotskurve','MC-Kurve oberhalb von min AVC'],['Kurzfristig schließen','wenn P < min AVC (laufende Kosten nicht gedeckt)'],['Langfristig austreten','wenn P < min ATC (Verlust)'],['Dazwischen','min AVC ≤ P < min ATC: mit Verlust weiterproduzieren']]},
+  'Marktangebot':{p:'Das Marktangebot entsteht, indem man die Angebotskurven aller Unternehmen waagerecht addiert. Langfristig treten Unternehmen ein, solange es Gewinne gibt, und aus, solange es Verluste gibt.',fig:1,
+   li:[['Kurzfristig','feste Zahl von Unternehmen, Summe der MC-Kurven'],['Langfristig','Ein- und Austritt bis Gewinn = 0, also P = min ATC'],['Langfristige Angebotskurve','waagerecht bei min ATC (gleiche Kosten)'],['Mehr Nachfrage','kurzfristig Preis ↑ und Gewinn, langfristig gleicher Preis, größere Menge, mehr Unternehmen']]},
+  'Klausur':{p:'Altklausur und mehrteilige Fälle. So gehst du vor:',
+   st:['ATC, AVC und MC aus TC bilden','P = MC nach Q auflösen','Gewinn = (P − ATC) · Q','Betriebsminimum (min AVC) und Betriebsoptimum (min ATC) bestimmen','Mit dem Preis vergleichen: weiterproduzieren, kurzfristig schließen oder austreten']}
+ },
+ k7:{
+  'Preiskontrollen':{p:'Preiskontrollen legen fest, wie hoch oder niedrig ein Preis sein darf. Sie wirken nur, wenn sie das Gleichgewicht verhindern (bindend).',fig:1,
+   bsp:'Eiscreme, Gleichgewicht P = 3 €, Q = 100. Höchstpreis 2,50 €: Nachfrage 125, Angebot 75 ⇒ Nachfrageüberschuss 50 Kugeln, gehandelt werden 75.',
+   li:[['Höchstpreis','bindend, wenn unter dem Gleichgewichtspreis ⇒ Nachfrageüberschuss'],['Mindestpreis','bindend, wenn über dem Gleichgewichtspreis ⇒ Angebotsüberschuss'],['Nicht bindend','Markt bleibt im Gleichgewicht'],['Überschuss','Differenz der Mengen von Nachfrage und Angebot beim Kontrollpreis']],
+   tip:'Bei einem bindenden Höchstpreis wird die kleinere Menge (das Angebot) gehandelt.'},
+  'Wohlfahrt & Fälle':{p:'Mit Konsumenten- und Produzentenrente sieht man, wer bei einer Preiskontrolle gewinnt und wer verliert, und wie viel Wohlfahrt verloren geht.',fig:1,
+   li:[['Konsumentenrente','Fläche zwischen Nachfrage und Preis'],['Produzentenrente','Fläche zwischen Preis und Angebot'],['Dreieck',`${FR('1','2')} · Menge · Preisabstand`],['Mietpreisbremse','kurzfristig unelastisch, kleine Knappheit; langfristig elastischer, große Knappheit'],['Mindestlohn','im Modell Arbeitslosigkeit; bei Marktmacht der Arbeitgeber evtl. mehr Beschäftigung']]},
+  'Steuern & Keil':{p:'Eine Mengensteuer T je Einheit sorgt dafür, dass Käufer mehr zahlen, als Verkäufer erhalten. Die neue Menge ist die, bei der Nachfrage beim Käuferpreis und Angebot beim Verkäuferpreis übereinstimmen. Ob Käufer oder Verkäufer die Steuer abführen, ändert am Ergebnis nichts.',fig:1,
+   li:[['Keil','P<sub>D</sub> = P<sub>S</sub> + T'],['Neue Menge','Q<sub>D</sub>(P<sub>D</sub>) = Q<sub>S</sub>(P<sub>S</sub>)'],['Folge','Menge sinkt, Käuferpreis steigt, Verkäuferpreis sinkt']],
+   bsp:'Eiscreme: Q<sub>D</sub> = 250 − 50P, Q<sub>S</sub> = 50P − 50, T = 1 € je Kugel: 250 − 50(P<sub>S</sub> + 1) = 50P<sub>S</sub> − 50 ⇒ P<sub>S</sub> = 2,50 €, P<sub>D</sub> = 3,50 €, Q = 75 (vorher P = 3 €, Q = 100).'},
+  'Inzidenz & Subvention':{p:'Die Steuerlast teilt sich danach auf, wer schlechter ausweichen kann. Eine Subvention wirkt wie eine negative Steuer.',
+   li:[['Käuferanteil','P<sub>D</sub> − P<sub>alt</sub>'],['Verkäuferanteil','P<sub>alt</sub> − P<sub>S</sub>'],['Inzidenz','die unelastischere Seite trägt mehr'],['Subvention','P<sub>S</sub> = P<sub>D</sub> + Subvention, Menge steigt, beide Seiten profitieren']],
+   bsp:'Eiscreme mit T = 1 €: Käufer zahlen 0,50 € mehr (3,50 statt 3), Verkäufer erhalten 0,50 € weniger (2,50 statt 3), weil beide Seiten gleich stark reagieren.'},
+  'Kosten der Steuer':{p:'Die Steuer verringert Konsumenten- und Produzentenrente. Ein Teil davon geht als Aufkommen an den Staat, der Rest ist der Nettowohlfahrtsverlust: Tausch, der sich gelohnt hätte, findet nicht statt.',fig:1,
+   li:[['Aufkommen','T · Q<sub>T</sub> (Rechteck)'],['NWL',`${FR('1','2')} · T · (Q<sub>1</sub> − Q<sub>T</sub>) (Dreieck)`],['Elastisch','große Mengenreaktion ⇒ großer NWL'],['Unelastisch','kleine Mengenreaktion ⇒ kleiner NWL']],
+   bsp:'Eiscreme, T = 1 €, Q sinkt von 100 auf 75: Aufkommen 1 · 75 = 75 €, NWL = ½ · 1 · 25 = 12,50 €.'},
+  'Steuersatz & System':{p:'Mit steigendem Steuersatz wächst der NWL immer schneller, das Aufkommen dagegen erst schneller, dann langsamer, und ab einem Punkt sinkt es. Daneben geht es um Gerechtigkeit.',fig:1,
+   li:[['NWL(T)','wächst mit T² (Steuer verdoppeln ⇒ NWL × 4)'],['Laffer-Kurve','Aufkommen R(T) = T · Q<sub>T</sub> steigt erst, fällt dann'],['Äquivalenzprinzip','zahlen nach empfangenem Vorteil'],['Leistungsfähigkeit','vertikal: mehr Leistungsfähigkeit, mehr Steuer; horizontal: gleich viel'],['Steuertypen','proportional (gleicher Satz), progressiv (steigend), regressiv (fallend)']],
+   bsp:'Eiscreme: T = 2 € ⇒ P<sub>S</sub> = 2 €, P<sub>D</sub> = 4 €, Q = 50. Aufkommen 100 €, NWL = ½ · 2 · 50 = 50 €, also viermal so groß wie bei T = 1 €.'},
+  'Klausur':{p:'Beide alten Klausuraufgaben und weitere mehrteilige Fälle. So gehst du vor:',
+   st:['Gleichgewicht ohne Eingriff berechnen','Bei Preiskontrolle: bindend? Dann Mengen beim Kontrollpreis','Bei Steuer: P<sub>D</sub> = P<sub>S</sub> + T einsetzen, Q<sub>T</sub> bestimmen','Renten, Aufkommen und NWL als Flächen berechnen','Lastverteilung bzw. Wirkung mit Elastizitäten begründen']}
+ },
+ k8:{
+  'Arten von Gütern':{p:'Zwei Fragen ordnen jedes Gut ein: Kann man jemanden von der Nutzung ausschließen? Schränkt die Nutzung durch einen die anderen ein (Rivalität)?',
+   li:[['Privat','ausschließbar und rival: Schokoriegel, Kleidung, Maut-Straße mit Stau'],['Clubgut','ausschließbar, nicht rival: z. B. Maut-Straße ohne Stau'],['Allmende','nicht ausschließbar, rival: Fische im Meer, Umwelt, freie Straße mit Stau'],['Öffentlich','weder ausschließbar noch rival: Verteidigung, Feuerwerk, freie Straße ohne Stau']],
+   tip:'Ob es Stau gibt, entscheidet über die Rivalität: dieselbe Straße kann in verschiedenen Feldern landen.'},
+  'Öffentliche Güter':{p:'Weil niemand ausgeschlossen werden kann, hofft jeder, dass andere zahlen. Der Markt bietet das Gut deshalb nicht an, obwohl es sich lohnt. Der Staat kann es bereitstellen, wenn der Gesamtnutzen die Kosten übersteigt.',
+   li:[['Trittbrettfahrer','nutzt das Gut, ohne zu zahlen'],['Kosten-Nutzen','Summe der Zahlungsbereitschaften gegen Kosten'],['Finanzierung','über Steuern, z. B. eine Kopfsteuer']],
+   bsp:'Feuerwerk Kieler Woche: 200.000 Einwohner zahlen im Schnitt 3 € ⇒ 600.000 € Nutzen bei 100.000 € Kosten. Tickets zu 2 € kauft kaum jemand. Kopfsteuer 0,50 € ⇒ jeder hat im Schnitt 2,50 € Konsumentenrente.'},
+  'Externalitäten':{p:'Eine Externalität ist eine unkompensierte Wirkung ökonomischen Handelns auf unbeteiligte Dritte, im Konsum oder in der Produktion. Weil der Verursacher sie nicht einrechnet, liegt die Marktmenge falsch.',
+   li:[['Negativ','Abgase, Zigarettenrauch, Lärm ⇒ Markt produziert zu viel'],['Positiv','Impfungen, Bildung, Erfindungen ⇒ Markt produziert zu wenig'],['Marktversagen','Gleichgewicht weicht vom sozialen Optimum ab']]},
+  'Negativ im Diagramm':{p:'Im Aluminiummarkt verursachen die Werke Luftverschmutzung, die sie nicht bezahlen. Die volkswirtschaftlichen Kosten liegen daher über der Angebotskurve (private Kosten).',fig:1,
+   li:[['Volksw. Kosten','private Kosten + externe Kosten je Einheit'],['Optimum','Nachfrage schneidet die volksw. Kosten'],['Markt','Nachfrage schneidet das Angebot, Menge zu groß'],['NWL',`${FR('1','2')} · externe Kosten je Einheit · (Q<sub>Markt</sub> − Q<sub>Opt</sub>)`],['Pigou-Steuer','in Höhe der externen Kosten je Einheit ⇒ Markt erreicht das Optimum']]},
+  'Positiv im Diagramm':{p:'Bei Bildung profitieren auch andere. Der volkswirtschaftliche Wert liegt über der Nachfrage (privater Wert), das Optimum also rechts vom Marktgleichgewicht.',fig:1,
+   li:[['Volksw. Wert','privater Wert + externer Nutzen je Einheit'],['Optimum','volksw. Wert schneidet das Angebot'],['Lösung','Subvention in Höhe des externen Nutzens'],['Patente','Eigentumsrecht an einer Erfindung, internalisieren technologische Spillover']]},
+  'Private Lösungen':{p:'Nicht jede Externalität braucht den Staat. Betroffene können sich oft selbst einigen, solange das nicht zu teuer ist.',
+   li:[['Ohne Staat','moralische Normen, Vereine und Stiftungen, Verträge'],['Coase-Theorem','private Verhandlungen führen zur effizienten Lösung, wenn Eigentumsrechte klar und Transaktionskosten gering sind'],['Transaktionskosten','Kosten für Abschluss und Erfüllung eines Vertrags'],['Grenzen','hohe Transaktionskosten, viele Beteiligte (Klimawandel)']],
+   bsp:'WG-Party: Statt auf die Polizei zu warten, einigt man sich mit den Nachbarn, z. B. mit einer Einladung oder einer Uhrzeit.'},
+  'Staatliche Maßnahmen':{p:'Findet sich keine private Lösung, kann der Staat Verhalten vorschreiben oder Preise setzen.',
+   li:[['Ge- und Verbote','Impfpflicht, Emissionsgrenzen, Katalysatorpflicht'],['Pigou-Steuer','Preis je Einheit Verschmutzung; billige Vermeider vermeiden, teure zahlen'],['Zertifikate','Menge fest, der Preis bildet sich am Markt; billige Vermeider verkaufen Rechte'],['Äquivalenz','Steuer legt den Preis fest, Zertifikate die Menge; beide erreichen dasselbe Ergebnis']],
+   tip:'Steuer und Zertifikate sind billiger als eine Vorschrift, weil dort vermieden wird, wo es am wenigsten kostet.'},
+  'Klausur':{p:'Die alte Klausuraufgabe Schritt für Schritt. So gehst du vor:',
+   st:['Marktgleichgewicht aus Nachfrage und Angebot','Volksw. Kosten = Angebot + externe Kosten je Einheit','Optimum aus Nachfrage und volksw. Kosten','NWL als Dreieck zwischen den beiden Mengen','Pigou-Steuer = externe Kosten je Einheit']},
+  'Rechentraining':{p:'Mehrteilige Rechenaufgaben, die Kapitel 3 bis 9 verbinden. Die Funktionen stehen in der Aufgabe, gesucht sind Gleichgewicht, Optimum, Renten, Steuerwirkung und Elastizität.',
+   st:['Gleichgewicht: Q<sub>D</sub> = Q<sub>S</sub>','Volksw. Kosten: Angebot um die externen Kosten nach oben verschieben','Renten als Dreiecke und Rechtecke','Steuer: P<sub>D</sub> = P<sub>S</sub> + T','Elastizität: dQ/dP · P/Q']},
+  'Rechentraining II':{p:'Neue Fälle im selben Stil: Zement, eine zu hohe Steuer, Solar (positiv), Straßenbeleuchtung, drei Fabriken und Coase.',
+   st:['Negative oder positive Externalität? Kurve richtig verschieben','Optimum und Marktmenge bestimmen','Wohlfahrtsverlust berechnen','Bei zu hoher Steuer: Menge liegt nun unter dem Optimum, neuer NWL','Öffentliches Gut: Summe der Zahlungsbereitschaften gegen Kosten']},
+  'Internalisierung':{p:'Eine Pigou-Steuer oder Subvention bringt private und volkswirtschaftliche Kosten bzw. Werte zusammen. Mit Steuer zählt das Aufkommen zur Wohlfahrt.',fig:1,
+   li:[['Pigou-Steuer','T = externe Kosten je Einheit'],['Wohlfahrt','W = KR + PR + Aufkommen − externe Kosten'],['Subvention','in Höhe des externen Nutzens bei positiver Externalität'],['Vermeidung','Steuer oder Zertifikate verteilen die Vermeidung kostengünstig']]},
+  'Perspektiven':{p:'Wer rechnet? Die Fabrik zählt jede Zahlung, auch die Steuer. Für die Gesellschaft ist die Steuer nur Umverteilung, es zählen nur die echten Vermeidungskosten. Der Staat erhält die Einnahmen.',
+   li:[['Fabrik','Vermeidungskosten + gezahlte Steuer'],['Gesellschaft','nur Vermeidungskosten (Steuer zählt nicht)'],['Staat','Steuereinnahmen']],
+   bsp:'Vier Fabriken je 10 t, Vermeidungskosten A 10 €, B 20 €, C 40 €, D 60 € je t, Ziel 20 t, Steuer 30 €: A und B vermeiden (Kosten 300 €), C und D zahlen 600 € Steuer. Vorschrift (je 5 t): 650 €, also 350 € teurer.'}
+ },
+ kv:{
+  'Sicht':{p:'Bevor du rechnest: Wer ist gefragt? Die Fabrik zählt alle Zahlungen, die Gesellschaft nur echte Kosten, der Staat seine Einnahmen.',
+   li:[['Fabrik','Vermeidungskosten + Steuer bzw. Zertifikatskäufe − Verkäufe'],['Gesellschaft','nur Vermeidungskosten, Steuer und Zertifikatszahlungen sind Umverteilung'],['Staat','Steuereinnahmen bzw. Erlös aus versteigerten Zertifikaten']]},
+  'Vermeidungskosten':{p:'Jede Fabrik hat eigene Kosten je vermiedener Tonne. Am billigsten erreicht man ein Ziel, wenn man die Tonnen von der günstigsten Fabrik an aufwärts vermeidet.',fig:1,
+   li:[['Sortieren','Fabriken nach Vermeidungskosten je Tonne ordnen'],['Kostengünstig','von unten auffüllen, bis das Ziel erreicht ist'],['Vorschrift','alle vermeiden gleich viel, auch die teuren']]},
+  'Steuer oder Vermeidung':{p:'Mit einer Steuer je Tonne rechnet jede Fabrik für sich: Ist Vermeiden billiger als Zahlen, vermeidet sie.',fig:1,
+   li:[['Vermeiden','wenn Vermeidungskosten < Steuer'],['Zahlen','wenn Vermeidungskosten > Steuer'],['Ergebnis','automatisch die kostengünstige Aufteilung']]},
+  'Ersparnis':{p:'Der Vergleich zeigt, was eine marktbasierte Lösung bringt: dasselbe Ziel zu geringeren gesellschaftlichen Kosten.',
+   li:[['Kosten Vorschrift','jede Fabrik × ihre Tonnen × ihre Kosten'],['Kosten Steuer','nur die billigen Vermeider × ihre Kosten'],['Ersparnis','Kosten Vorschrift − Kosten Steuer bzw. Zertifikate']]},
+  'Kosten oder Nutzen':{p:'Für die Gesellschaft zählt, was das Vermeiden kostet und welchen Schaden es verhindert. Steuerzahlungen heben sich auf, weil der Staat sie erhält.',
+   li:[['Gesellschaftliche Kosten','Summe der Vermeidungskosten'],['Umverteilung','Steuer: Fabrik zahlt, Staat erhält'],['Vermiedener Schaden','vermiedene Tonnen × Schaden je Tonne'],['Nettonutzen','vermiedener Schaden − Vermeidungskosten']]},
+  'Zertifikate':{p:'Der Staat legt die erlaubte Menge fest und verteilt Rechte. Wer billig vermeiden kann, vermeidet mehr und verkauft seine Rechte an teure Vermeider.',fig:1,
+   li:[['Verkäufer','Fabriken mit Vermeidungskosten unter dem Zertifikatspreis'],['Käufer','Fabriken mit Kosten über dem Preis'],['Preis','bildet sich am Markt'],['Gleiches Ergebnis','wie eine Steuer in Höhe des Zertifikatspreises']]},
+  'Gemischt':{p:'Alles durcheinander. Arbeite jede Aufgabe so ab:',
+   st:['Sichtweise klären (Fabrik, Gesellschaft, Staat)','Fabriken nach Vermeidungskosten sortieren','Steuer oder Zertifikatspreis als Grenze nehmen','Kosten, Zahlungen und Ersparnis getrennt berechnen']},
+  'Rechnen':{p:'Dasselbe mit größeren ganzen Zahlen und dem Taschenrechner.',
+   st:['Sortieren und Ziel prüfen','Wer vermeidet bei der Steuer?','Kosten der Vorschrift','Ersparnis und Nettonutzen']},
+  'Klausur':{p:'Gemischte Rechenaufgaben auf Klausurniveau.',
+   st:['Sichtweise klären','Kostengünstige Aufteilung bestimmen','Vorschrift zum Vergleich rechnen','Steuer- oder Zertifikatszahlungen als Umverteilung behandeln','Ergebnis in einem Satz begründen']}
+ },
+ k11:{
+  'Monopol & Barrieren':{p:'Ein Monopolist ist der einzige Verkäufer eines Gutes ohne nahe Substitute. Er ist kein Preisnehmer, sondern kann den Preis beeinflussen. Monopole entstehen vor allem durch Markteintrittsbarrieren.',
+   li:[['Schlüsselressource','ein Unternehmen besitzt einen wichtigen Input'],['Staatliches Monopol','Staat erlaubt nur einem Anbieter den Markt, z. B. Patente und Copyrights'],['Natürliches Monopol','ein Anbieter produziert am billigsten (sinkende Durchschnittskosten)'],['Weitere Marktmacht','Innovation, Marken, Netzwerkeffekte, Wechselkosten']]},
+  'Erlös im Monopol':{p:'Will der Monopolist mehr verkaufen, muss er den Preis für alle Einheiten senken. Deshalb liegt der Grenzerlös unter dem Preis.',fig:1,
+   li:[['Gesamterlös','R = P · Q'],['Durchschnittserlös',`AR = ${FR('R','Q')} = P (Nachfragekurve)`],['Grenzerlös',`MR = ${FR('ΔR','ΔQ')} < P`],['Zwei Effekte','Mengeneffekt (mehr verkauft) gegen Preiseffekt (niedrigerer Preis)'],['Lineare Nachfrage','P = a − bQ ⇒ MR = a − 2bQ (doppelt so steil)']],
+   bsp:'P = 50 − Q: R = 50Q − Q², MR = 50 − 2Q. Bei Q = 25 ist MR = 0, dort ist der Erlös maximal.'},
+  'Gewinnmaximierung':{p:'Erst die Menge, dann der Preis: Die Menge kommt aus MR = MC, der Preis aus der Nachfragekurve über dieser Menge.',fig:1,
+   li:[['Menge','MR = MC'],['Preis','auf der Nachfragekurve bei dieser Menge'],['Vergleich','Wettbewerb: P = MR = MC; Monopol: P > MR = MC'],['Gewinn','(P − ATC) · Q, positiv wenn P > ATC']],
+   bsp:'P = 50 − Q, MC = 10: 50 − 2Q = 10 ⇒ Q = 20, P = 30.'},
+  'Wohlfahrt':{p:'Effizient wäre die Menge, bei der der Wert für die Käufer (Nachfrage) den Grenzkosten entspricht. Der Monopolist bietet weniger an, dazwischen geht Wohlfahrt verloren.',fig:1,
+   li:[['Effiziente Menge','Nachfrage = MC'],['Konsumentenrente','Dreieck über dem Monopolpreis'],['Produzentenrente','zwischen Monopolpreis und MC'],['NWL','Dreieck zwischen Nachfrage und MC von Monopol- bis effizienter Menge'],['Patente','zeitweiser NWL, dafür Anreiz für Forschung']],
+   bsp:'P = 50 − Q, MC = 10: effizient Q = 40. Monopol Q = 20, P = 30: KR = 200, PR = 400, NWL = ½ · 20 · 20 = 200.'},
+  'Wirtschaftspolitik':{p:'Der Staat kann auf vier Arten reagieren. Jede hat Kosten.',
+   li:[['Wettbewerb','Kartellrecht (GWB), Bundeskartellamt: Kartellverbot, Fusionskontrolle, Missbrauchsaufsicht'],['Regulierung','Preis festlegen; P = MC ist effizient, macht beim natürlichen Monopol aber Verluste'],['Verstaatlichung','Problem: wenig Anreiz, Kosten zu senken'],['Nicht einschreiten','sinnvoll, wenn Regulierung mehr kostet als das Marktversagen']]},
+  'Preisdifferenzierung':{p:'Preisdifferenzierung heißt, dasselbe Gut verschiedenen Kunden zu verschiedenen Preisen zu verkaufen. Wer elastischer reagiert, bekommt den niedrigeren Preis.',
+   li:[['Beispiele','Studierendenrabatt, Kino, Flug- und Bahnkarten, Coupons, Black Friday'],['Elastizität','elastisch ⇒ Preis knapp über MC, unelastisch ⇒ hoher Aufschlag'],['Folgen','Produzentenrente steigt, NWL sinkt'],['Perfekt','jeder zahlt seine Zahlungsbereitschaft: kein NWL, keine Konsumentenrente']],
+   tip:'Coupon-Nutzer reagieren elastischer als Nicht-Nutzer, deshalb bekommen sie den Rabatt.'},
+  'Klausur':{p:'Die alte Klausuraufgabe (Bratwurst) und ein Fall mit steigenden Grenzkosten. So gehst du vor:',
+   st:['Erlös R = P(Q) · Q und Grenzerlös bilden','MR = MC nach Q auflösen','Preis aus der Nachfrage','Gewinn = (P − ATC) · Q','Effiziente Menge (P = MC) und NWL als Dreieck']}
+ },
+ k17:{
+  'V1 · Grundlagen':{p:'Eine Wirtschaft kann autark sein oder sich spezialisieren und handeln. Spezialisierung lohnt sich sogar für den, der alles besser kann: MrBeast könnte auch besser schneiden als sein Cutter, filmt aber trotzdem selbst und lässt schneiden.',
+   li:[['Autarkie','Produktionsmöglichkeiten = Konsummöglichkeiten'],['Absoluter Vorteil','weniger Input für eine Einheit (bzw. mehr Output je Stunde)'],['Komparativer Vorteil','geringere Opportunitätskosten'],['Smith / Ricardo','Arbeitsteilung steigert Produktivität; unterschiedliche Opportunitätskosten schaffen Handelsgewinne']]},
+  'V1 · PMK':{p:'Die Produktionsmöglichkeitenkurve zeigt alle Kombinationen, die mit der verfügbaren Zeit möglich sind. Bei konstanten Arbeitszeiten ist sie eine Gerade.',fig:1,
+   li:[['Achsenabschnitte',`${FR('verfügbare Zeit','Zeit je Einheit')}`],['Steigung','−Opportunitätskosten des Gutes auf der waagerechten Achse'],['Machbar','auf oder unter der Kurve']],
+   bsp:'8 Stunden = 480 Minuten. Ackerbauer: Fleisch 60 min/kg ⇒ 8 kg, Kartoffeln 15 min/kg ⇒ 32 kg, Steigung −0,25. Viehbauer: 20 bzw. 10 min ⇒ 24 kg Fleisch, 48 kg Kartoffeln, Steigung −0,5.'},
+  'V1 · Vorteile':{p:'Opportunitätskosten sagen, wie viel vom anderen Gut man für eine Einheit aufgibt. Wer sie niedriger hat, hat den komparativen Vorteil. Beide haben immer bei verschiedenen Gütern einen komparativen Vorteil.',
+   li:[['OK von Fleisch','in kg Kartoffeln: Ackerbauer 4, Viehbauer 2'],['OK von Kartoffeln','in kg Fleisch: Ackerbauer ¼, Viehbauer ½'],['Ergebnis','Viehbauer: komparativer Vorteil bei Fleisch, Ackerbauer bei Kartoffeln'],['Absolut','Viehbauer in beiden Gütern (weniger Minuten)']],
+   tip:'Die OK des einen Gutes sind der Kehrwert der OK des anderen.'},
+  'V1 · Handel':{p:'Jeder spezialisiert sich auf seinen komparativen Vorteil und tauscht. Beide gewinnen, wenn der Tauschpreis zwischen ihren Opportunitätskosten liegt.',fig:1,
+   li:[['Preisintervall','1 kg Fleisch für 2 bis 4 kg Kartoffeln'],['Handelsgewinn','Konsum mit Handel − Konsum ohne Handel']],
+   bsp:'Tausch 1 : 3. Ackerbauer produziert 32 kg Kartoffeln, gibt 15 für 5 kg Fleisch: Konsum 5 F / 17 K statt 4 / 16. Viehbauer produziert 18 F / 12 K, gibt 5 F für 15 K: Konsum 13 / 27 statt 12 / 24.'},
+  'V1 · Außenhandel':{p:'Zwischen Ländern gilt dasselbe. Koordiniert wird der Handel über Preise: Wo die Opportunitätskosten niedrig sind, ist das Gut billig, und Händler kaufen dort.',
+   li:[['Beispiel','Maschine: China 6 h, Deutschland 1 h; E-Auto: China 3 h, Deutschland 2 h'],['OK Maschine','China 2 E-Autos, Deutschland ½ E-Auto'],['Ergebnis','Deutschland exportiert Maschinen, China E-Autos'],['Löhne','folgen dem absoluten Vorteil (Arbeitsproduktivität)']]},
+  'V1 · Klausur':{p:'Alte Klausuraufgabe Hemden und Waschmaschinen a) bis h). So gehst du vor:',
+   st:['Maximale Mengen je Land berechnen, PMK zeichnen','Opportunitätskosten beider Güter für beide Länder','Absolute und komparative Vorteile benennen','Spezialisierung und Preisintervall angeben','Konsum mit Handel und Handelsgewinn ausrechnen']},
+  'V2 · Grundlagen':{p:'Ohne Außenhandel bestimmen Inlandsangebot und -nachfrage den Preis. Mit Handel gilt der Weltmarktpreis, den ein kleines Land nicht beeinflussen kann. Der Vergleich der beiden Preise verrät den komparativen Vorteil.',
+   li:[['P<sub>W</sub> > Autarkiepreis','komparativer Vorteil ⇒ Exportland'],['P<sub>W</sub> < Autarkiepreis','Vorteil im Ausland ⇒ Importland'],['Exportland','Produzenten gewinnen, Konsumenten verlieren'],['Importland','Konsumenten gewinnen, Produzenten verlieren'],['Insgesamt','Gewinner gewinnen mehr, als Verlierer verlieren']]},
+  'V2 · Exportland':{p:'Der Weltmarktpreis liegt über dem Inlandspreis. Inländer kaufen weniger, Produzenten bieten mehr an, die Differenz wird exportiert.',fig:1,
+   li:[['Export','Q<sub>S</sub>(P<sub>W</sub>) − Q<sub>D</sub>(P<sub>W</sub>)'],['Konsumentenrente','sinkt um B'],['Produzentenrente','steigt um B + D'],['Gesamtrente','steigt um D']],
+   bsp:'Q<sub>D</sub> = 100 − P, Q<sub>S</sub> = P, P<sub>W</sub> = 70: Nachfrage 30, Angebot 70, Export 40. KR 1250 → 450, PR 1250 → 2450, Gewinn D = ½ · 20 · 40 = 400.'},
+  'V2 · Importland':{p:'Der Weltmarktpreis liegt unter dem Inlandspreis. Inländer kaufen mehr, Produzenten bieten weniger an, die Differenz wird importiert.',fig:1,
+   li:[['Import','Q<sub>D</sub>(P<sub>W</sub>) − Q<sub>S</sub>(P<sub>W</sub>)'],['Konsumentenrente','steigt um B + D'],['Produzentenrente','sinkt um B'],['Gesamtrente','steigt um D']],
+   bsp:'Gleicher Markt, P<sub>W</sub> = 30: Nachfrage 70, Angebot 30, Import 40. KR 1250 → 2450, PR 1250 → 450, Gewinn D = 400.'},
+  'V2 · Zoll & Quote':{p:'Ein Importzoll ist eine Steuer auf Importe und hebt den Inlandspreis um den Zollsatz. Die Importe schrumpfen, der Markt rückt näher an die Autarkie.',fig:1,
+   li:[['Konsumentenrente','− (C + D + E + F)'],['Produzentenrente','+ C'],['Zolleinnahmen','+ E = Zoll · Import mit Zoll'],['NWL','D + F (zwei Dreiecke)'],['Quote','begrenzt die Importmenge; gleicher Preis wie beim passenden Zoll, Wohlfahrtswirkung ähnlich']],
+   bsp:'P<sub>W</sub> = 30, Zoll 10 ⇒ Preis 40: Nachfrage 60, Angebot 40, Import 20. Einnahmen 200, KR −650, PR +350, NWL = 50 + 50 = 100.'},
+  'V1 + V2 · Klausur':{p:'Beide Teile gemischt. So gehst du vor:',
+   st:['Teil 1: Opportunitätskosten, Vorteile, Preisintervall, Handelsgewinn','Teil 2: Autarkiepreis mit P<sub>W</sub> vergleichen ⇒ Export oder Import','Mengen beim Weltmarktpreis, Renten vorher und nachher','Zoll: neuer Preis, Import, Einnahmen, NWL = D + F']},
+  'V2 · Rechnen':{p:'Export, Import und Zoll mit krummen Zahlen. Gleiche Schritte, nur mit Taschenrechner.',
+   st:['Autarkie: Q<sub>D</sub> = Q<sub>S</sub>','Mengen beim Weltmarktpreis','Renten als Dreiecke','Mit Zoll: Preis P<sub>W</sub> + Zoll, Import, Einnahmen, NWL']}
+ }
 };
 let introSel=null;
 function introKey(L){ const t=lvTeil(L); if(INTRO[chKey+'|'+t]) return chKey+'|'+t; if(INTRO[chKey+'|V1']) return chKey+'|V1'; return INTRO[chKey+'|']?chKey+'|':null; }
 function introFig(f){ const L=CH[f[0]].LV[f[1]]; const fn=(L.T.find(t=>t.fig)||{}).fig||L.fig; return fn(f[2]); }
-function introBtn(L){ return introKey(L)?`<button type="button" class="ibk" data-intro="1" aria-label="Einstieg lesen">📖</button>`:''; }
-function openIntro(key){ const k=key||introKey(LV[cur.l]); if(!k) return; const I=INTRO[k], pg=document.getElementById('introPg');
-  const keepSC=SC, keepH=chart.innerHTML; let fig='';
-  try{ drawScene(introFig(I.fig)); fig=chart.innerHTML.replace(/id="cp"/g,'id="cpI"').replace(/#cp\)/g,'#cpI)').replace(/id="ar"/g,'id="arI"').replace(/#ar\)/g,'#arI)'); }catch(e){}
+function introBtn(L){ return (introKey(L)||siOf(L))?`<button type="button" class="ibk" data-intro="1" aria-label="Einstieg lesen">📖</button>`:''; }
+let introView='stufe', introCh=null;
+function siOf(L){ return (SI[chKey]||{})[L.n]||null; }
+function stageFig(L){ try{ const fn=(L.T.find(t=>t.fig)||{}).fig||L.fig; if(!fn) return ''; drawScene(fn(1)); return chart.innerHTML; }catch(e){ return ''; } }
+function figWrap(f){ return f?`<svg viewBox="0 0 560 420" aria-label="Diagramm">${f.replace(/id="cp"/g,'id="cpI"').replace(/#cp\)/g,'#cpI)').replace(/id="ar"/g,'id="arI"').replace(/#ar\)/g,'#arI)')}</svg>`:''; }
+function openIntro(arg){
+  const L=LV[cur.l], S=siOf(L);
+  if(arg==='stufe'||arg==='kap') introView=arg;
+  else if(arg&&arg.includes('|')){ introView='kap'; introCh=arg; }
+  else { introView=S?'stufe':'kap'; introCh=null; }
+  if(introView==='stufe'&&!S) introView='kap';
+  const k=introCh||introKey(L); if(introView==='kap'&&!k) return;
+  const pg=document.getElementById('introPg'), keepSC=SC, keepH=chart.innerHTML; let body='';
+  const seg=S&&k?`<div class="seg isw">${[['stufe','Stufe'],['kap','Kapitel']].map(([v,t])=>`<button type="button" class="${introView===v?'on':''}" data-iview="${v}">${t}</button>`).join('')}</div>`:'';
+  if(introView==='stufe'){
+    const f=S.fig?stageFig(L):'';
+    body=`<p class="iey">${CH[chKey].tag} · Stufe</p><h2>${L.n}</h2><p class="ip">${S.p}</p>${figWrap(f)}`
+      +(S.li?S.li.map(r=>`<div class="ili"><b>${r[0]}</b><span>${r[1]}</span></div>`).join(''):'')
+      +(S.st?`<ol class="ist">${S.st.map(x=>`<li>${x}</li>`).join('')}</ol>`:'')
+      +(S.bsp?`<div class="ibsp"><b>Beispiel</b><span>${S.bsp}</span></div>`:'')
+      +(S.tip?`<p class="ikl">${S.tip}</p>`:'');
+  } else {
+    const I=INTRO[k]; let f=''; try{ drawScene(introFig(I.fig)); f=chart.innerHTML; }catch(e){}
+    const ch=k.split('|')[0], two=INTRO[ch+'|V1']&&INTRO[ch+'|V2'];
+    const sw=two?`<div class="seg isw2">${['V1','V2'].map(t=>`<button type="button" class="${k===ch+'|'+t?'on':''}" data-intro="${ch}|${t}">${t}</button>`).join('')}</div>`:'';
+    body=`<p class="iey">${CH[chKey].tag} · Kapitel</p><div class="ih"><h2>${I.h}</h2>${sw}</div><p class="ip">${I.p}</p>${f?figWrap(f)+`<p class="icap">${I.cap}</p>`:''}${I.li.map(r=>`<div class="ili"><b>${r[0]}</b><span>${r[1]}</span></div>`).join('')}<p class="ikl">${I.kl}</p>`;
+  }
   chart.innerHTML=keepH; SC=keepSC;
-  const ch=k.split('|')[0], two=INTRO[ch+'|V1']&&INTRO[ch+'|V2'];
-  const sw=two?`<div class="seg isw">${['V1','V2'].map(t=>`<button type="button" class="${k===ch+'|'+t?'on':''}" data-intro="${ch}|${t}">${t}</button>`).join('')}</div>`:'';
-  pg.querySelector('.iw').innerHTML=`<div class="itop"><button type="button" class="iback" data-introclose="1">‹ Zurück zur Aufgabe</button>${sw}</div><h2>${I.h}</h2><p class="ip">${I.p}</p>${fig?`<svg viewBox="0 0 560 420" aria-label="Diagramm">${fig}</svg><p class="icap">${I.cap}</p>`:''}${I.li.map(r=>`<div class="ili"><b>${r[0]}</b><span>${r[1]}</span></div>`).join('')}<p class="ikl">${I.kl}</p>`;
+  pg.querySelector('.iw').innerHTML=`<div class="itop"><button type="button" class="iback" data-introclose="1">‹ Zurück zur Aufgabe</button>${seg}</div>${body}`;
   pg.hidden=false; pg.scrollTop=0; document.body.style.overflow='hidden'; }
 function closeIntro(){ document.getElementById('introPg').hidden=true; document.body.style.overflow=''; }
-document.addEventListener('click',e=>{ const b=e.target.closest('[data-intro]'); if(b){e.preventDefault();openIntro(b.dataset.intro==='1'?null:b.dataset.intro);} else if(e.target.closest('[data-introclose]')){e.preventDefault();closeIntro();} });
+document.addEventListener('click',e=>{ const v=e.target.closest('[data-iview]'); if(v){e.preventDefault();openIntro(v.dataset.iview);return;} const b=e.target.closest('[data-intro]'); if(b){e.preventDefault();openIntro(b.dataset.intro==='1'?null:b.dataset.intro);} else if(e.target.closest('[data-introclose]')){e.preventDefault();closeIntro();} });
 function renderTask(){
   animId++; dragCb=null; areaCb=null; minibox.hidden=true;
   const L=LV[cur.l], t=L.T[cur.i]; let checked=false;
